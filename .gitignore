@@ -12,3 +12,5 @@ src/.DS_Store
 src\ copy/
 src_partial
 src_partial.zip
+client/.env
+server/.env

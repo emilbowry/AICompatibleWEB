@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHref } from "react-router-dom";
+import { AuthGuard, useAuth } from "../../components/login/auth";
 import { user_agent } from "../../hooks/BrowserDependant";
 import { AppDispatch } from "../../store";
 import { Appointment } from "./Appointments";
@@ -17,6 +18,7 @@ import { PortalContext } from "./PopOver";
 import { Submission, useValidation } from "./SubmissionButton";
 
 const useMetadata = (): IFormMetaData => {
+	const ctx = useAuth();
 	const source = useContext(PortalContext)?.source || useHref("");
 	const form_identifier: IFormMetaData["form_identifier"] =
 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
@@ -25,7 +27,7 @@ const useMetadata = (): IFormMetaData => {
 		form_identifier,
 		user_agent,
 		client_ip: "0.0.0.0",
-		account_id: undefined,
+		account_id: ctx.user?.id,
 		submission_datetime: getDefaultDateTimeLocal(),
 	};
 	return MetaData;
@@ -98,7 +100,14 @@ const OutReachForm: React.FC<{
 
 				<FormContainer />
 				{form_type && <Appointment />}
-				<Submission includeMetaData={includeMetaData} />
+				{/* const TestAuth = () => {
+	const ctx = useAuth();
+	const a = ctx.user?.id;
+	return <p>{a}</p>;
+}; */}
+				<AuthGuard>
+					<Submission includeMetaData={includeMetaData} />
+				</AuthGuard>
 			</div>
 		</FormContext>
 	);

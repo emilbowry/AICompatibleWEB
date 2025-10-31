@@ -1,5 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
+require("dotenv").config(); // This loads the .env fil
 
 // Convert module.exports to a function that accepts env and argv
 module.exports = (env, argv) => {
@@ -109,6 +111,11 @@ module.exports = (env, argv) => {
 			new HtmlWebpackPlugin({
 				template: "public/index.html",
 				favicon: "public/favicon.ico",
+			}),
+			new webpack.DefinePlugin({
+				"process.env.GOOGLE_CLIENT_ID": JSON.stringify(
+					process.env.GOOGLE_CLIENT_ID
+				),
 			}),
 		],
 	};

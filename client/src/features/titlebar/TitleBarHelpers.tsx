@@ -4,7 +4,9 @@ import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { AuthGuard, SocialLoginButtons } from "../../components/login/auth";
 import { useDynamicLink } from "../../hooks/DynamicLink";
+import { ModalBody } from "../outreach-form/PopOver";
 import {
 	DropdownImageContainerStyles,
 	DropdownImageStyles,
@@ -39,16 +41,48 @@ const TitleBarLogo: React.FC = () => (
 	</div>
 );
 
-const TitleBarMenu: React.FC = () => (
-	<div style={RightHandContainerStyles}>
-		<button
-			style={HamburgerStyle}
-			aria-label="Menu"
-		>
-			<Menu size={24} />
-		</button>
+const MenuStyle: React.CSSProperties = {
+	height: "500px",
+	width: "100px",
+	background: "white",
+	overflow: "visible",
+	zIndex: 1500,
+};
+const TempMenu = () => (
+	<div style={MenuStyle}>
+		<AuthGuard>
+			<SocialLoginButtons />
+		</AuthGuard>
 	</div>
 );
+
+const TitleBarMenu: React.FC = () => {
+	const [isOpen, setIsOpen] = useState(false);
+
+	return (
+		<>
+			{" "}
+			<div style={RightHandContainerStyles}>
+				<button
+					style={HamburgerStyle}
+					aria-label="Menu"
+					onClick={() => setIsOpen(!isOpen)} // Added onclick hook here
+				>
+					<Menu size={24} />
+				</button>
+			</div>
+			{isOpen && (
+				<ModalBody
+					closeModal={() => {
+						setIsOpen(false);
+					}}
+					node={<TempMenu />}
+				/>
+			)}
+			{/* <TestAuth /> */}
+		</>
+	);
+};
 
 const TitleBarUILinks: React.FC<ITitleBarUILinksProps> = ({
 	active_link_alias,

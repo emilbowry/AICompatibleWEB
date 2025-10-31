@@ -154,4 +154,4 @@ const ToggleablePortal: React.FC<ToggleablePortalProps> = ({
 	);
 };
 
-export { PortalContext, ToggleablePortal };
+export { ModalBody, PortalContext, ToggleablePortal };
