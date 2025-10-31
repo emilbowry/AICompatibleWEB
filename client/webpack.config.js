@@ -38,7 +38,7 @@ module.exports = (env, argv) => {
 					proxy: [
 						{
 							context: ["/api"], // Specify the path to proxy
-							target: "http://localhost:5001",
+							target: "http://localhost:7878",
 							changeOrigin: true,
 						},
 					],
