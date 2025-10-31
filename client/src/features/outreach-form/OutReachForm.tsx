@@ -48,34 +48,34 @@ const useMetadata = (): IFormMetaData => {
 	});
 
 	// 2. Use useEffect to fetch the IP address once on component mount
-	// useEffect(() => {
-	// 	const fetchIp = async () => {
-	// 		try {
-	// 			const response = await fetch("/api/ip");
-	// 			if (response.ok) {
-	// 				const data = await response.json();
-	// 				// 3. Update the state with the fetched IP, triggering a re-render
-	// 				setMetaData((prevData) => ({
-	// 					...prevData,
-	// 					client_ip: data.ip || "not_found",
-	// 				}));
-	// 			} else {
-	// 				setMetaData((prevData) => ({
-	// 					...prevData,
-	// 					client_ip: "error_response",
-	// 				}));
-	// 			}
-	// 		} catch (error) {
-	// 			console.error("Failed to fetch client IP:", error);
-	// 			setMetaData((prevData) => ({
-	// 				...prevData,
-	// 				client_ip: "error_fetching",
-	// 			}));
-	// 		}
-	// 	};
+	useEffect(() => {
+		const fetchIp = async () => {
+			try {
+				const response = await fetch("/api/ip");
+				if (response.ok) {
+					const data = await response.json();
+					// 3. Update the state with the fetched IP, triggering a re-render
+					setMetaData((prevData) => ({
+						...prevData,
+						client_ip: data.ip || "not_found",
+					}));
+				} else {
+					setMetaData((prevData) => ({
+						...prevData,
+						client_ip: "error_response",
+					}));
+				}
+			} catch (error) {
+				console.error("Failed to fetch client IP:", error);
+				setMetaData((prevData) => ({
+					...prevData,
+					client_ip: "error_fetching",
+				}));
+			}
+		};
 
-	// 	fetchIp();
-	// }, [source, form_identifier]); // Dependencies ensure this runs if the source changes
+		fetchIp();
+	}, [source, form_identifier]); // Dependencies ensure this runs if the source changes
 
 	// 4. Return the stateful metadata object
 	return metaData;
