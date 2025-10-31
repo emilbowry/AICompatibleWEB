@@ -1,0 +1,33 @@
+// src/components/hexagons/Hexagons.consts.ts
+
+import { IHexObjState } from "./Hexagons.types";
+const FLATTOP_HEX_PATH =
+	"M 50 86.6025 l 100 0 l 50 -86.6025 l -50 -86.6025 l -100 0 l -50 86.6025 Z";
+const POINTEDTOP_HEX_PATH =
+	"M 13.3975 -50 l 0 100 l 86.6025 50 l 86.6025 -50 l -0 -100 l -86.6025 -50 Z";
+
+const LOGO_CHEV_CUTOUT =
+	"M 25 86.6025 l 50 -86.6025 l -50 -86.6025 h 25 l 50 86.6025 l -50 86.6025 Z";
+const LOGO_CHEV_COLOUR_MASK =
+	"M 37.8305 -96.7441 L 93.4715 -0.224 L 37.0735 100.4596 L 185.8279 111.8149 L 233.1417 -14.9859 L 191.8841 -96.7441 Z";
+const LOGO_CHEV_DIAMOND =
+	"M -21.0101 0.0202 L 15.8088 -105.7362 L 89.4466 -0.3715 L 25.2093 85.8005 L -21.2164 0.1027 Z";
+const LOGO_CHEV_SPLIT = "M 95 0 v 5 h120 v -10 h-120 v5";
+const HEX_STARTING_STATE: IHexObjState = {
+	content_height: undefined,
+	container_height: 0,
+	font_size: 2.5,
+};
+const MAX_OSCILLATIONS = 10;
+const USE_POINTED_TOP = false;
+export {
+	FLATTOP_HEX_PATH,
+	HEX_STARTING_STATE,
+	LOGO_CHEV_COLOUR_MASK,
+	LOGO_CHEV_CUTOUT,
+	LOGO_CHEV_DIAMOND,
+	LOGO_CHEV_SPLIT,
+	MAX_OSCILLATIONS,
+	POINTEDTOP_HEX_PATH,
+	USE_POINTED_TOP,
+};

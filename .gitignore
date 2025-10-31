@@ -1,0 +1,14 @@
+testing.ipynb
+prelimtest.md
+client/node_modules
+server/node_modules
+node_modules
+.DS_Store
+anthropic.md
+gemini.md
+openai.md
+src/.DS_Store
+*.zip
+src\ copy/
+src_partial
+src_partial.zip

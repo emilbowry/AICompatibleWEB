@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                // Use a modern target like ES2022
+    "module": "NodeNext",              // Use NodeNext for proper ES Module resolution in Node
+    "moduleResolution": "NodeNext",    // Use NodeNext for proper ES Module resolution in Node
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "src"
+  ]
+}

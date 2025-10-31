@@ -1,0 +1,4 @@
+const FOOTER_HEIGHT = "70vh";
+const FOOTER_OFFSET = "60px";
+
+export { FOOTER_HEIGHT, FOOTER_OFFSET };

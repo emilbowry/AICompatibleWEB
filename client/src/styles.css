@@ -1,0 +1,62 @@
+
+body {
+  margin: 0;     
+  font-family: system-ui, sans-serif;
+  background: #fafafa;
+  color: #333;
+  font-weight: 300;
+  font-size: 16px;
+
+}
+.title {
+  font-family: system-ui, sans-serif;
+  font-size: 4rem;
+  line-height: 1.1;
+  margin: 0 0 1.5rem;
+  color: #2c2c3c;
+}
+:root {
+  --aos-unit-delay: 100ms;
+}
+
+.aos {
+  opacity: 0.9;
+}
+.aos .is-visible {
+  opacity: revert;
+  transform:  translateX(0);
+  animation: fadeInUpAnimation 1s ease forwards; 
+  animation-delay: calc((var(--aos-base-depth, 0)+var(--aos-sibling-index, 0)) * var(--aos-unit-delay));
+  animation-composition:  replace;
+  will-change: transform, opacity;
+}
+.is-visible {
+  opacity: revert;
+}
+@keyframes fadeInUpAnimation {
+  from {
+    opacity: 0.9;
+    transform: translateX(calc(((0.05vw)*(var(--aos-base-depth)))* cos((var(--aos-sibling-index, 0) + var(--aos-base-depth, 0)) * pi)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :global(.aos),
+  :global(.is-visible),
+  .animated {
+    animation: none !important;
+    transition: none !important;
+    opacity: initial !important;
+  }
+}
+.no-aos {
+  isolation: isolate;
+  contain: paint;
+  transform: none
+}
+
+.aos-ignore {
+  isolation: isolate;
+} 
