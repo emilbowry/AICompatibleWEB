@@ -16,7 +16,6 @@ const TheJourneyPage = lazy(
 const DemoPage = lazy(() => import("./pages/demo/DemoPage"));
 
 import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
-import { AuthProvider } from "./components/login/auth";
 import { useScrollToTop } from "./hooks/ScrollToTop";
 import { dark_midnight_green, lighter_logo_blue } from "./utils/defaultColours";
 
@@ -99,46 +98,46 @@ const App: React.FC = () => {
 		<>
 			{/* <ApiStatusChecker /> */}
 			<Suspense fallback={<LoadingFC />}>
-				<AuthProvider>
-					<CursorContext
-						value={{
-							hasCustomCursor,
-							setHasCustomCursor,
-							global_position,
-							setGlobalMousePosition,
-							loc,
-							setLoc,
-						}}
-					>
-						<CustomCursor />
-						<Routes>
-							<Route
-								path="/"
-								element={<HomePage />}
-							/>
-							<Route
-								path="/thejourney"
-								element={<TheJourneyPage />}
-							/>
-							<Route
-								path="/ourservices"
-								element={<OurServices />}
-							/>
-							<Route
-								path="/contact"
-								element={<ContactPage />}
-							/>
-							<Route
-								path="/dpotool"
-								element={<ToolPage />}
-							/>
-							<Route
-								path="/demo_and_testing"
-								element={<DemoPage />}
-							/>
-						</Routes>
-					</CursorContext>
-				</AuthProvider>
+				{/* <AuthProvider> */}
+				<CursorContext
+					value={{
+						hasCustomCursor,
+						setHasCustomCursor,
+						global_position,
+						setGlobalMousePosition,
+						loc,
+						setLoc,
+					}}
+				>
+					<CustomCursor />
+					<Routes>
+						<Route
+							path="/"
+							element={<HomePage />}
+						/>
+						<Route
+							path="/thejourney"
+							element={<TheJourneyPage />}
+						/>
+						<Route
+							path="/ourservices"
+							element={<OurServices />}
+						/>
+						<Route
+							path="/contact"
+							element={<ContactPage />}
+						/>
+						<Route
+							path="/dpotool"
+							element={<ToolPage />}
+						/>
+						<Route
+							path="/demo_and_testing"
+							element={<DemoPage />}
+						/>
+					</Routes>
+				</CursorContext>
+				{/* </AuthProvider> */}
 			</Suspense>
 		</>
 	);

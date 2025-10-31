@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHref } from "react-router-dom";
-import { AuthGuard, useAuth } from "../../components/login/auth";
 import { user_agent } from "../../hooks/BrowserDependant";
 import { AppDispatch } from "../../store";
 import { Appointment } from "./Appointments";
@@ -33,7 +32,7 @@ import { Submission, useValidation } from "./SubmissionButton";
 // 	return MetaData;
 // };
 const useMetadata = (): IFormMetaData => {
-	const ctx = useAuth(); // Assuming useAuth() is defined
+	// const ctx = useAuth(); // Assuming useAuth() is defined
 	const source = useContext(PortalContext)?.source || useHref("");
 	const form_identifier: IFormMetaData["form_identifier"] =
 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
@@ -44,39 +43,39 @@ const useMetadata = (): IFormMetaData => {
 		form_identifier,
 		user_agent,
 		client_ip: "fetching...", // Placeholder IP
-		account_id: ctx.user?.id,
+		account_id: "0.0.0.0",
 		submission_datetime: getDefaultDateTimeLocal(),
 	});
 
 	// 2. Use useEffect to fetch the IP address once on component mount
-	useEffect(() => {
-		const fetchIp = async () => {
-			try {
-				const response = await fetch("/api/ip");
-				if (response.ok) {
-					const data = await response.json();
-					// 3. Update the state with the fetched IP, triggering a re-render
-					setMetaData((prevData) => ({
-						...prevData,
-						client_ip: data.ip || "not_found",
-					}));
-				} else {
-					setMetaData((prevData) => ({
-						...prevData,
-						client_ip: "error_response",
-					}));
-				}
-			} catch (error) {
-				console.error("Failed to fetch client IP:", error);
-				setMetaData((prevData) => ({
-					...prevData,
-					client_ip: "error_fetching",
-				}));
-			}
-		};
+	// useEffect(() => {
+	// 	const fetchIp = async () => {
+	// 		try {
+	// 			const response = await fetch("/api/ip");
+	// 			if (response.ok) {
+	// 				const data = await response.json();
+	// 				// 3. Update the state with the fetched IP, triggering a re-render
+	// 				setMetaData((prevData) => ({
+	// 					...prevData,
+	// 					client_ip: data.ip || "not_found",
+	// 				}));
+	// 			} else {
+	// 				setMetaData((prevData) => ({
+	// 					...prevData,
+	// 					client_ip: "error_response",
+	// 				}));
+	// 			}
+	// 		} catch (error) {
+	// 			console.error("Failed to fetch client IP:", error);
+	// 			setMetaData((prevData) => ({
+	// 				...prevData,
+	// 				client_ip: "error_fetching",
+	// 			}));
+	// 		}
+	// 	};
 
-		fetchIp();
-	}, [source, form_identifier]); // Dependencies ensure this runs if the source changes
+	// 	fetchIp();
+	// }, [source, form_identifier]); // Dependencies ensure this runs if the source changes
 
 	// 4. Return the stateful metadata object
 	return metaData;
@@ -153,9 +152,9 @@ const OutReachForm: React.FC<{
 	const a = ctx.user?.id;
 	return <p>{a}</p>;
 }; */}
-				<AuthGuard>
-					<Submission includeMetaData={includeMetaData} />
-				</AuthGuard>
+				{/* <AuthGuard> */}
+				<Submission includeMetaData={includeMetaData} />
+				{/* </AuthGuard> */}
 			</div>
 		</FormContext>
 	);

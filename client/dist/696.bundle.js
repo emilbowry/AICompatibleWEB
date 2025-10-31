@@ -1,2 +1,2 @@
-"use strict";(self.webpackChunksimpleapp=self.webpackChunksimpleapp||[]).push([[696],{1696:(p,s,e)=>{e.r(s),e.d(s,{default:()=>c}),e(6540);var a=e(5791),l=e(4848),u=()=>(0,l.jsx)("div",{});const c=()=>(0,l.jsx)(a.Y,{page:u,bg:!0})}}]);
+"use strict";(self.webpackChunksimpleapp=self.webpackChunksimpleapp||[]).push([[696],{1696:(p,s,e)=>{e.r(s),e.d(s,{default:()=>c}),e(6540);var a=e(6887),l=e(4848),u=()=>(0,l.jsx)("div",{});const c=()=>(0,l.jsx)(a.Y,{page:u,bg:!0})}}]);
 //# sourceMappingURL=696.bundle.js.map
