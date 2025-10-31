@@ -36,7 +36,11 @@ if (!isProduction) {
 app.get("/api/status", (_req: Request, res: Response) => {
 	res.json({ message: "Backend is running!", timestamp: new Date() });
 });
-
+app.get("/api/ip", (req: Request, res: Response) => {
+	const ip = req.ip;
+	console.log(`IP address request from: ${ip}`);
+	res.json({ ip });
+});
 // --- Production Serving Setup ---
 if (isProduction) {
 	const __filename = fileURLToPath(import.meta.url);

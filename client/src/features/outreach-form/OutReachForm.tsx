@@ -17,22 +17,70 @@ import type { IFormMetaData } from "./OutReachForm.types";
 import { PortalContext } from "./PopOver";
 import { Submission, useValidation } from "./SubmissionButton";
 
+// const useMetadata = (): IFormMetaData => {
+// 	const ctx = useAuth();
+// 	const source = useContext(PortalContext)?.source || useHref("");
+// 	const form_identifier: IFormMetaData["form_identifier"] =
+// 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
+// 	const MetaData = {
+// 		source,
+// 		form_identifier,
+// 		user_agent,
+// 		client_ip: "0.0.0.0",
+// 		account_id: ctx.user?.id,
+// 		submission_datetime: getDefaultDateTimeLocal(),
+// 	};
+// 	return MetaData;
+// };
 const useMetadata = (): IFormMetaData => {
-	const ctx = useAuth();
+	const ctx = useAuth(); // Assuming useAuth() is defined
 	const source = useContext(PortalContext)?.source || useHref("");
 	const form_identifier: IFormMetaData["form_identifier"] =
 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
-	const MetaData = {
+
+	// 1. Initialize state with a placeholder for the IP
+	const [metaData, setMetaData] = useState<IFormMetaData>({
 		source,
 		form_identifier,
 		user_agent,
-		client_ip: "0.0.0.0",
+		client_ip: "fetching...", // Placeholder IP
 		account_id: ctx.user?.id,
 		submission_datetime: getDefaultDateTimeLocal(),
-	};
-	return MetaData;
-};
+	});
 
+	// 2. Use useEffect to fetch the IP address once on component mount
+	useEffect(() => {
+		const fetchIp = async () => {
+			try {
+				const response = await fetch("/api/ip");
+				if (response.ok) {
+					const data = await response.json();
+					// 3. Update the state with the fetched IP, triggering a re-render
+					setMetaData((prevData) => ({
+						...prevData,
+						client_ip: data.ip || "not_found",
+					}));
+				} else {
+					setMetaData((prevData) => ({
+						...prevData,
+						client_ip: "error_response",
+					}));
+				}
+			} catch (error) {
+				console.error("Failed to fetch client IP:", error);
+				setMetaData((prevData) => ({
+					...prevData,
+					client_ip: "error_fetching",
+				}));
+			}
+		};
+
+		fetchIp();
+	}, [source, form_identifier]); // Dependencies ensure this runs if the source changes
+
+	// 4. Return the stateful metadata object
+	return metaData;
+};
 const useInitializeFormMetadata = (MetaData: IFormMetaData) => {
 	const dispatch = useDispatch<AppDispatch>();
 
