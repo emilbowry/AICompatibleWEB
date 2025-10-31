@@ -4,7 +4,7 @@ import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { SocialLoginButtons } from "../../components/login/auth";
+import { AuthGuard, SocialLoginButtons } from "../../components/login/auth";
 import { useDynamicLink } from "../../hooks/DynamicLink";
 import { ModalBody } from "../outreach-form/PopOver";
 import {
@@ -50,9 +50,9 @@ const MenuStyle: React.CSSProperties = {
 };
 const TempMenu = () => (
 	<div style={MenuStyle}>
-		{/* <AuthGuard> */}
-		<SocialLoginButtons />
-		{/* </AuthGuard> */}
+		<AuthGuard>
+			<SocialLoginButtons />
+		</AuthGuard>
 	</div>
 );
 

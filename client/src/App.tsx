@@ -17,6 +17,7 @@ const DemoPage = lazy(() => import("./pages/demo/DemoPage"));
 
 import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
 import {
+	AuthProvider,
 	OAuthCallbackRoute,
 	SocialLoginButtons,
 } from "./components/login/auth";
@@ -102,54 +103,54 @@ const App: React.FC = () => {
 		<>
 			{/* <ApiStatusChecker /> */}
 			<Suspense fallback={<LoadingFC />}>
-				{/* <AuthProvider> */}
-				<CursorContext
-					value={{
-						hasCustomCursor,
-						setHasCustomCursor,
-						global_position,
-						setGlobalMousePosition,
-						loc,
-						setLoc,
-					}}
-				>
-					<CustomCursor />
-					<Routes>
-						<Route
-							path="/"
-							element={<HomePage />}
-						/>
-						<Route
-							path="/thejourney"
-							element={<TheJourneyPage />}
-						/>
-						<Route
-							path="/ourservices"
-							element={<OurServices />}
-						/>
-						<Route
-							path="/contact"
-							element={<ContactPage />}
-						/>
-						<Route
-							path="/dpotool"
-							element={<ToolPage />}
-						/>
-						<Route
-							path="/demo_and_testing"
-							element={<DemoPage />}
-						/>
-						<Route
-							path="/login"
-							element={<SocialLoginButtons />}
-						/>
-						<Route
-							path="/auth/callback"
-							element={<OAuthCallbackRoute />}
-						/>
-					</Routes>
-				</CursorContext>
-				{/* </AuthProvider> */}
+				<AuthProvider>
+					<CursorContext
+						value={{
+							hasCustomCursor,
+							setHasCustomCursor,
+							global_position,
+							setGlobalMousePosition,
+							loc,
+							setLoc,
+						}}
+					>
+						<CustomCursor />
+						<Routes>
+							<Route
+								path="/"
+								element={<HomePage />}
+							/>
+							<Route
+								path="/thejourney"
+								element={<TheJourneyPage />}
+							/>
+							<Route
+								path="/ourservices"
+								element={<OurServices />}
+							/>
+							<Route
+								path="/contact"
+								element={<ContactPage />}
+							/>
+							<Route
+								path="/dpotool"
+								element={<ToolPage />}
+							/>
+							<Route
+								path="/demo_and_testing"
+								element={<DemoPage />}
+							/>
+							<Route
+								path="/login"
+								element={<SocialLoginButtons />}
+							/>
+							<Route
+								path="/auth/callback"
+								element={<OAuthCallbackRoute />}
+							/>
+						</Routes>
+					</CursorContext>
+				</AuthProvider>
 			</Suspense>
 		</>
 	);
