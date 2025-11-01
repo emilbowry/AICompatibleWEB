@@ -4,7 +4,6 @@ import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { AuthGuard, SocialLoginButtons } from "../../components/login/auth";
 import { useDynamicLink } from "../../hooks/DynamicLink";
 import { ModalBody } from "../outreach-form/PopOver";
 import {
@@ -48,25 +47,18 @@ const MenuStyle: React.CSSProperties = {
 	overflow: "visible",
 	zIndex: 1500,
 };
-const TempMenu = () => (
-	<div style={MenuStyle}>
-		<AuthGuard>
-			<SocialLoginButtons />
-		</AuthGuard>
-	</div>
-);
+const TempMenu = () => <div style={MenuStyle}>Temp</div>;
 
 const TitleBarMenu: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	return (
 		<>
-			{" "}
 			<div style={RightHandContainerStyles}>
 				<button
 					style={HamburgerStyle}
 					aria-label="Menu"
-					onClick={() => setIsOpen(!isOpen)} // Added onclick hook here
+					onClick={() => setIsOpen(!isOpen)}
 				>
 					<Menu size={24} />
 				</button>
@@ -79,7 +71,6 @@ const TitleBarMenu: React.FC = () => {
 					node={<TempMenu />}
 				/>
 			)}
-			{/* <TestAuth /> */}
 		</>
 	);
 };

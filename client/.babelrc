@@ -1,24 +1,15 @@
 {
   "presets": [
-    // [
-    //   "@babel/preset-env",
-    //   {
-    //     "modules": false, // <-- CRITICAL: Prevents Babel from breaking tree shaking
-    //     "useBuiltIns": "usage", // <-- RECOMMENDED: Only includes necessary polyfills
-    //     "corejs": 3 // <-- REQUIRED if using useBuiltIns: "usage"
-    //   }
-    // ],
+
    [
       "@babel/preset-env",
       {
-        "modules": false, // CRITICAL: ENABLE TREE SHAKING
-        // Removing useBuiltIns and corejs to avoid the 0.5 MiB bloat
+        "modules": false, 
         "targets": {
-          "esmodules": true // Target environments that support ES Modules
+          "esmodules": true 
         }
       }
     ],
-    // "@babel/preset-env",
     "@babel/preset-typescript",
     [
       "@babel/preset-react",

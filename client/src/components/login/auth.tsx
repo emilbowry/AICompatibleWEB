@@ -1,5 +1,7 @@
 // client/src/components/login/auth.tsx
 
+/**  @ignore this file */
+
 /*
 Auth Module – React + TypeScript (arrow‑function, fixed provider nesting)
 -----------------------------------------------------------------------
@@ -161,19 +163,11 @@ const AuthProviderInner: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 	);
 };
 
-// ---------------------------------------------------------------------------
-// Hook – shortcut consumer
-// ---------------------------------------------------------------------------
-
 export const useAuth = (): AuthContextValue => {
 	const ctx = useContext(AuthContext);
 	if (!ctx) throw new Error("useAuth must be used within AuthProvider");
 	return ctx;
 };
-
-// ---------------------------------------------------------------------------
-// SocialLoginButtons
-// ---------------------------------------------------------------------------
 
 export const SocialLoginButtons: React.FC = () => {
 	const { loginWithGoogle /* loginWithApple */ } = useAuth();
@@ -209,10 +203,6 @@ export const SocialLoginButtons: React.FC = () => {
 		</div>
 	);
 };
-
-// ---------------------------------------------------------------------------
-// OAuthCallbackRoute
-// ---------------------------------------------------------------------------
 
 export const OAuthCallbackRoute: React.FC = () => {
 	const { search } = useLocation();

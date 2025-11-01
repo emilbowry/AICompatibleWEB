@@ -1,41 +1,21 @@
-// {
-//   "compilerOptions": {
-//     "allowSyntheticDefaultImports": true,
-//     "allowUnreachableCode": false,
-//     "alwaysStrict": true,
-//     "esModuleInterop": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "jsx": "react-jsx",
-//     "module": "ESNext",
-//     "moduleResolution": "node",
-//     "noImplicitOverride": true,
-//     "resolveJsonModule": true,
-//     "skipLibCheck": true,
-//     "strict": true,
-//     "target": "es2022",
-// "noImplicitReturns":true,
-// "noUnusedParameters":true,
-// "noUnusedLocals":true,
-//   },
-//   "include": [
-//     "src"
-//   ]
-// }
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",             // Changed to commonjs for Node environment
-    "rootDir": "./src",
-    "outDir": "./dist",               // Specify output directory for compiled JS
+    "allowSyntheticDefaultImports": true,
+    "allowUnreachableCode": false,
+    "alwaysStrict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noImplicitOverride": true,
     "resolveJsonModule": true,
-    "noImplicitReturns": true,
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
-    "jsx": "react-jsx"             // Removed this, generally not needed for backend TS
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2022",
+"noImplicitReturns":true,
+"noUnusedParameters":true,
+"noUnusedLocals":true,
   },
   "include": [
     "src"

@@ -104,17 +104,13 @@ const ModalBody: React.FC<{
 			onClick={handleBackdropClick}
 			className="no-aos"
 		>
-			{/* NEW WRAPPER HERE */}
 			<div style={modalWrapperStyle}>
-				{/* BUTTON IS NOW CHILD OF THE WRAPPER */}
 				<button
 					onClick={closeModal}
 					style={closeButtonStyle}
 				>
 					&times;
 				</button>
-
-				{/* CONTENT IS ALSO CHILD OF THE WRAPPER */}
 				<div style={modalContentStyle}>{node}</div>
 			</div>
 		</div>,
