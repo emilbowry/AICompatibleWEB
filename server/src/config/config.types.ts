@@ -12,5 +12,6 @@ interface IAppConfig {
 	clientURL: string;
 	google: IGoogleConfig;
 	serverURL: string;
+	stripeSecretKey: string;
 }
 export type { IAppConfig, IGoogleConfig };

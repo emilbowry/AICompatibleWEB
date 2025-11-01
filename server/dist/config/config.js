@@ -13,5 +13,6 @@ const config = {
     clientURL: process.env.CLIENT_URL || "http://localhost:3000",
     serverURL,
     google: google_config,
+    stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
 };
 export { config };

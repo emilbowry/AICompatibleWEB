@@ -65,10 +65,36 @@ const AddToCalender: React.FC<{ date_key?: string }> = ({ date_key }) => {
 		</>
 	);
 };
-const TEST_CHECKOUT_URL = "https://buy.stripe.com/test_dRm14m7i5b2b0XgdOz0VO00";
 
-const CheckoutButton: React.FC = () => {
+const useBookServiceCheckout = () => {
+	const { initiateCheckout, isProcessing, error } = useStripeCheckout();
+
+	const formFields = useSelector(
+		(state: RootState) => state.outreachForm.fields
+	);
 	const { submitted } = useContext(FormContext);
+
+	// 3. Define the final action handler
+	const handleInitiateCheckout = async (e: React.MouseEvent) => {
+		e.preventDefault();
+
+		// Validation check before proceeding
+		if (!submitted || isProcessing) return;
+
+		const payload = {
+			serviceType: formFields.service_type || "consulting", // Fallback value
+			participants: formFields.participants,
+		};
+
+		initiateCheckout(payload);
+	};
+
+	return { handleInitiateCheckout, isProcessing, error, submitted };
+};
+const CheckoutButton: React.FC = () => {
+	const { handleInitiateCheckout, isProcessing, submitted } =
+		useBookServiceCheckout();
+
 	const link_props = useDynamicLink({
 		useDefaultDecoration: true,
 		style_args: ["3px"],
@@ -76,16 +102,40 @@ const CheckoutButton: React.FC = () => {
 			color: dark_midnight_green,
 		},
 	});
-	const props = !submitted
-		? { onClick: (e: React.MouseEvent) => e.preventDefault() }
-		: { href: TEST_CHECKOUT_URL, ...link_props };
+
+	const isDisabled = !submitted || isProcessing;
 
 	return (
-		<button disabled={!submitted}>
-			<a {...props}>Buy Now</a>
+		<button
+			disabled={isDisabled}
+			onClick={handleInitiateCheckout}
+		>
+			<a {...link_props}>{isProcessing ? "Processing..." : "Buy Now"}</a>
 		</button>
 	);
 };
+
+// const TEST_CHECKOUT_URL = "https://buy.stripe.com/test_dRm14m7i5b2b0XgdOz0VO00";
+
+// const CheckoutButton: React.FC = () => {
+// 	const { submitted } = useContext(FormContext);
+// 	const link_props = useDynamicLink({
+// 		useDefaultDecoration: true,
+// 		style_args: ["3px"],
+// 		StyleOverrides: {
+// 			color: dark_midnight_green,
+// 		},
+// 	});
+// 	const props = !submitted
+// 		? { onClick: (e: React.MouseEvent) => e.preventDefault() }
+// 		: { href: TEST_CHECKOUT_URL, ...link_props };
+
+// 	return (
+// 		<button disabled={!submitted}>
+// 			<a {...props}>Buy Now</a>
+// 		</button>
+// 	);
+// };
 
 const useRequiredFields = (
 	form_type?: string,
@@ -117,6 +167,7 @@ const validateEmail = (email: string) => {
 const validateNumber = (maybeNum: string) => !isNaN(+maybeNum);
 
 import { useEffect, useState } from "react";
+import { useStripeCheckout } from "../../services/api/stripe/stripe";
 
 const useDirtyFields = (
 	form_type?: string,

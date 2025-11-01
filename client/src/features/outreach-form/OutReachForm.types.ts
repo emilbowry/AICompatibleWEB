@@ -1,10 +1,10 @@
 // client/src/features/outreach-form/OutReachForm.types.ts
-
-/* type TStatus = "Paid" | "Unpaid" | "Free";
 type TConsultancyService = "1_to_1_consulting" | "group_consulting";
 type TTrainingService = "1_to_1_training" | "group_training";
 type TOutreachService = "Inquiry_Call" | "Email_Request";
 type TService = TConsultancyService | TTrainingService | TOutreachService;
+/* type TStatus = "Paid" | "Unpaid" | "Free";
+
 type TAppointment<T extends TService, S extends TStatus = TStatus> = {
 	appointment_type: T;
 	appointment_date: Date | null;
@@ -39,24 +39,33 @@ type TOutreachFormRequiredFields =
 	| TOutreachFormBoolInputs;
 
 type TOtherDateInputs = "call_time" | "preliminary_date";
+type TOtherSelectOptions = "service_type";
 type TOtherTextArea = "request_email";
 type TOtherNumerical = "participants";
 
 type TRequiredAppointments =
 	| TOtherDateInputs
 	| TOtherTextArea
-	| TOtherNumerical;
+	| TOtherNumerical
+	| TOtherSelectOptions;
 type TTextAreas = TOtherTextArea | TOutreachFormTextAreas;
 type TCheckbox = TOutreachFormBoolInputs;
 type TDateTime = TOtherDateInputs;
+type TSelect = TOtherSelectOptions;
 type TNumerical = TOtherNumerical;
+// type TSelectOption = Record<TSelect,string>
+
+type TSelectOption = {
+	value: string;
+	label: string;
+};
 type TInputs =
 	| TOptionalFormInputs
 	| TOutreachFormStrInputs
 	| TDateTime
 	| TCheckbox
 	| TNumerical;
-type TAllFields = TInputs | TTextAreas;
+type TAllFields = TInputs | TTextAreas | TOtherSelectOptions;
 type TOutreachFormGeneralFields =
 	| TOutreachFormRequiredFields
 	| TOptionalFormInputs;
@@ -82,6 +91,8 @@ type TFormConfigProps<T extends TAllFields> = {
 	: { required: false }) &
 	(T extends TCheckbox /* | TOtherBoolInputs */
 		? { type: "checkbox" }
+		: T extends TSelect
+		? { type: "select"; options: TSelectOption[] }
 		: T extends TTextAreas
 		? { type: undefined }
 		: T extends TNumerical
@@ -162,7 +173,9 @@ interface IOutreachFormFields
 	extends IOutreachFormInputs,
 		IOutreachFormTextAreas,
 		IOptionalFormFields,
-		Partial<TFormInput<TRequiredAppointments, any>> {}
+		Partial<TFormInput<TRequiredAppointments, any>> {
+	service_type?: TService;
+}
 /* 
 interface IOutreachForm<S extends TService, T extends TStatus>
 	extends IOptionalFormFields {
@@ -205,4 +218,5 @@ export {
 	TFormConfigProps,
 	TFormInput,
 	TOutreachFormGeneralFields,
+	TSelectOption,
 };

@@ -62,14 +62,28 @@ const _FormField: React.FC<TFormConfigProps<TAllFields>> = (config) => {
 				{...FieldProps}
 				style={CheckboxInputStyle}
 			/>
+		) : type === "select" ? (
+			<select
+				{...FieldProps}
+				style={InputBaseStyle}
+			>
+				{props.options.map((option) => (
+					<option
+						key={option.value}
+						value={option.value}
+					>
+						{option.label}
+					</option>
+				))}
+			</select>
 		) : required === true ? (
 			<input
-				{...(FieldProps as any)}
+				{...FieldProps}
 				style={InputBaseStyle}
 			/>
 		) : (
 			<input
-				{...(FieldProps as any)}
+				{...FieldProps}
 				style={OptionalInputStyle}
 			/>
 		);
