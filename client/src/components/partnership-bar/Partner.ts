@@ -1,3 +1,5 @@
+// client/src/components/partnership-bar/Partner.ts
+
 import AS from "../../assets/AS.png";
 import AZ from "../../assets/AZ.png";
 import bm from "../../assets/BenchMark.png";

@@ -16,10 +16,6 @@ const TheJourneyPage = lazy(
 const DemoPage = lazy(() => import("./pages/demo/DemoPage"));
 
 import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
-import {
-	OAuthCallbackRoute,
-	SocialLoginButtons,
-} from "./components/login/auth";
 import { useScrollToTop } from "./hooks/ScrollToTop";
 import { dark_midnight_green, lighter_logo_blue } from "./utils/defaultColours";
 
@@ -102,7 +98,6 @@ const App: React.FC = () => {
 		<>
 			{/* <ApiStatusChecker /> */}
 			<Suspense fallback={<LoadingFC />}>
-				{/* <AuthProvider> */}
 				<CursorContext
 					value={{
 						hasCustomCursor,
@@ -139,17 +134,8 @@ const App: React.FC = () => {
 							path="/demo_and_testing"
 							element={<DemoPage />}
 						/>
-						<Route
-							path="/login"
-							element={<SocialLoginButtons />}
-						/>
-						<Route
-							path="/auth/callback"
-							element={<OAuthCallbackRoute />}
-						/>
 					</Routes>
 				</CursorContext>
-				{/* </AuthProvider> */}
 			</Suspense>
 		</>
 	);

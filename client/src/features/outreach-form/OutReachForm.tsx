@@ -19,48 +19,6 @@ import type { IFormContext, IFormMetaData } from "./OutReachForm.types";
 import { PortalContext } from "./PopOver";
 import { Submission, useValidation } from "./SubmissionButton";
 
-// const useMetadata = () => {
-// 	const source = useContext(PortalContext)?.source || useHref("");
-// 	const form_identifier: IFormMetaData["form_identifier"] =
-// 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
-
-// 	const [metaData, setMetaData] = useState<IFormMetaData>({
-// 		source,
-// 		form_identifier,
-// 		user_agent,
-// 		client_ip: "fetching...",
-// 		account_id: "n/a",
-// 		submission_datetime: getDefaultDateTimeLocal(),
-// 	});
-
-// 	useEffect(() => {
-// 		const fetchIp = async () => {
-// 			try {
-// 				const response = await fetch("/api/ip");
-// 				if (response.ok) {
-// 					const data = await response.json();
-// 					setMetaData((prevData) => ({
-// 						...prevData,
-// 						client_ip: data.ip || "not_found",
-// 					}));
-// 				} else {
-// 					setMetaData((prevData) => ({
-// 						...prevData,
-// 						client_ip: "error_response",
-// 					}));
-// 				}
-// 			} catch (error) {
-// 				setMetaData((prevData) => ({
-// 					...prevData,
-// 					client_ip: "error_fetching",
-// 				}));
-// 			}
-// 		};
-
-// 		fetchIp();
-// 	}, [source, form_identifier]);
-// 	return metaData;
-// };
 const useMetadata = (): IFormMetaData => {
 	const source = useContext(PortalContext)?.source || useHref("");
 	const ip = useIP();

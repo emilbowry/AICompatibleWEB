@@ -1,3 +1,5 @@
+// client/src/features/outreach-form/PopOver.tsx
+
 import React, {
 	createContext,
 	ReactNode,
@@ -16,9 +18,7 @@ const modalBackdropStyle: React.CSSProperties = {
 	left: 0,
 	right: 0,
 	bottom: 0,
-	// backgroundColor: "transparent",
 	background: "transparent",
-	// maxHeight: "90vh",
 	maxHeight: "100vh",
 
 	display: "flex",

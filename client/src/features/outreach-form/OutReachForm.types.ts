@@ -1,3 +1,5 @@
+// client/src/features/outreach-form/OutReachForm.types.ts
+
 /* type TStatus = "Paid" | "Unpaid" | "Free";
 type TConsultancyService = "1_to_1_consulting" | "group_consulting";
 type TTrainingService = "1_to_1_training" | "group_training";

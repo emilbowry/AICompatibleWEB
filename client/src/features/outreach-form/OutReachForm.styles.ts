@@ -1,4 +1,4 @@
-// src/features/outreach-form/OutReachForm.styles.ts
+// client/src/features/outreach-form/OutReachForm.styles.ts
 
 import React from "react";
 const InputBaseStyle: React.CSSProperties = {
