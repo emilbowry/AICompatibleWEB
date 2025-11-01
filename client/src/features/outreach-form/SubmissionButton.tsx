@@ -1,3 +1,5 @@
+// client/src/features/outreach-form/SubmissionButton.tsx
+
 import { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDynamicLink } from "../../hooks/DynamicLink";
@@ -276,10 +278,6 @@ const SubmitButton: React.FC<{
 	);
 };
 
-// const TestAuth = () => {
-
-// 	// return <p>{a}</p>;
-// };
 const Submission: React.FC<{
 	includeMetaData?: boolean;
 }> = ({ includeMetaData }) => {

@@ -181,7 +181,19 @@ type TInferredFormData<OF extends TOutreachForm<any, any>> = {
 	>;
 };
  */
+
+interface IFormContext {
+	submit_disabled: boolean;
+	isFormError: boolean | undefined;
+	validationErr: string | undefined;
+	form_type: string | undefined;
+	setDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsValidated: React.Dispatch<React.SetStateAction<boolean>>;
+	submitted: boolean;
+	setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
+}
 export {
+	IFormContext,
 	IFormMetaData,
 	// TFormFieldProps,
 	// TOptionalFormInputs,
