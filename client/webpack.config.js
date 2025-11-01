@@ -112,11 +112,11 @@ module.exports = (env, argv) => {
 				template: "public/index.html",
 				favicon: "public/favicon.ico",
 			}),
-			new webpack.DefinePlugin({
-				"process.env.GOOGLE_CLIENT_ID": JSON.stringify(
-					process.env.GOOGLE_CLIENT_ID
-				),
-			}),
+			// new webpack.DefinePlugin({
+			// 	"process.env.GOOGLE_CLIENT_ID": JSON.stringify(
+			// 		process.env.GOOGLE_CLIENT_ID
+			// 	),
+			// }),
 		],
 	};
 };

@@ -11,5 +11,6 @@ interface IAppConfig {
 	isProduction: boolean;
 	clientURL: string;
 	google: IGoogleConfig;
+	serverURL: string;
 }
 export type { IAppConfig, IGoogleConfig };
