@@ -100,7 +100,7 @@ const App: React.FC = () => {
 	useScrollToTop();
 	return (
 		<>
-			{/* <ApiStatusChecker /> */}
+			<ApiStatusChecker />
 			<Suspense fallback={<LoadingFC />}>
 				{/* <AuthProvider> */}
 				<CursorContext
