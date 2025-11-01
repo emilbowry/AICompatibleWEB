@@ -20,15 +20,15 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },
+  "imports": {
+    "#prisma/client": "./dist/generated/prisma/index.js"
+  },
   "keywords": [],
   "license": "ISC",
   "main": "server.js",
   "name": "server",
-  "imports": {
-    "#prisma/client": "./src/generated/prisma/index.js"
-  },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r src/generated dist/",
     "dev": "nodemon --exec node --loader ts-node/esm src/server.ts",
     "prisma": "dotenv -- npx prisma",
     "start": "node dist/server.js",

@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+//generator client {
+//  provider = "prisma-client"
+//  output   = "../src/generated/prisma"
+//}
+
+//datasource db {
+//  provider = "postgresql"
+//  url      = env("DATABASE_URL")
+//}
+// This is your Prisma schema file.
+// It's the single source of truth for your database structure.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // This tells Prisma to read the connection string from your .env file
+  url      = env("DATABASE_URL")
+}
+
+// Defines an Enum for the user roles. Prisma will create a corresponding
+// TypeScript enum that you can use in your code.
+enum Role {
+  USER
+  ADMIN
+}
+
+// Defines the User model, which will become the "User" table in your database.
+model User {
+  id    String @id @default(uuid()) // The primary key, a UUID.
+  email String @unique // A unique constraint ensures no two users have the same email.
+  name  String
+  role  Role   @default(USER) // New users will default to the 'USER' role.
+
+  createdAt DateTime @default(now()) // Prisma handles setting this on creation.
+  updatedAt DateTime @updatedAt // Prisma handles updating this on any change.
+
+  // This is a "relation field". It doesn't exist in the database table
+  // but tells Prisma that a User can be related to many LinkedAccount records.
+  accounts LinkedAccount[]
+}
+
+// Defines the LinkedAccount model for different login methods (Google, Apple, etc.).
+model LinkedAccount {
+  id             String @id @default(cuid()) // A unique ID for this specific record.
+  provider       String // e.g., "google"
+  providerUserId String // The unique ID from the external provider.
+
+  // This defines the many-to-one relationship back to the User model.
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String // This is the actual foreign key column in the database.
+
+  createdAt DateTime @default(now())
+
+  // This is a composite unique key. It ensures you can't have two rows
+  // with the exact same provider and providerUserId (e.g., you can't link
+  // the same Google account to two different users).
+  @@unique([provider, providerUserId])
+}
