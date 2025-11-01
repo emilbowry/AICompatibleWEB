@@ -1,32 +1,39 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "type": "module",
-  "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon --exec node --loader ts-node/esm src/server.ts",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.18.0",
     "@react-oauth/google": "^0.12.2",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-session": "^1.18.2"
   },
+  "description": "",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.2",
     "@types/node": "^20.14.9",
+    "dotenv-cli": "^11.0.0",
     "nodemon": "^3.1.4",
+    "prisma": "^6.18.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
-  }
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "server.js",
+  "name": "server",
+  "imports": {
+    "#prisma/client": "./src/generated/prisma/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "nodemon --exec node --loader ts-node/esm src/server.ts",
+    "prisma": "dotenv -- npx prisma",
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "version": "1.0.0"
 }

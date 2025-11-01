@@ -15,4 +15,5 @@ interface IUserProfile {
 interface UserSessionData extends SessionData {
 	user?: IUserProfile;
 }
+
 export { IUserProfile, UserSessionData };
