@@ -151,7 +151,8 @@ const useRequiredFields = (
 				remove_text_areas &&
 				config.type !== "checkbox" &&
 				remove_bools &&
-				config.type
+				config.type &&
+				config.type !== "select"
 		)
 		.map((config) => config.name);
 	return requiredFieldNames;
