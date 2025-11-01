@@ -16,7 +16,6 @@ const TheJourneyPage = lazy(
 const DemoPage = lazy(() => import("./pages/demo/DemoPage"));
 
 import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
-import { LoginStatus } from "./components/login/LoginStatus";
 import { useScrollToTop } from "./hooks/ScrollToTop";
 import { useAuthInit } from "./services/api/auth/auth";
 import { dark_midnight_green, lighter_logo_blue } from "./utils/defaultColours";
@@ -100,7 +99,6 @@ const App: React.FC = () => {
 	return (
 		<>
 			{/* <ApiStatusChecker /> */}
-			<LoginStatus />
 
 			<Suspense fallback={<LoadingFC />}>
 				<CursorContext

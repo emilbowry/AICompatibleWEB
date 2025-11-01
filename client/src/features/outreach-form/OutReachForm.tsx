@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHref } from "react-router-dom";
 import { user_agent } from "../../hooks/BrowserDependant";
+import { useAccountId } from "../../services/api/auth/auth";
 import { useIP } from "../../services/api/ip";
 import { AppDispatch } from "../../store";
 import { Appointment } from "./Appointments";
@@ -22,6 +23,7 @@ import { Submission, useValidation } from "./SubmissionButton";
 const useMetadata = (): IFormMetaData => {
 	const source = useContext(PortalContext)?.source || useHref("");
 	const ip = useIP();
+	const account_id = useAccountId() ?? "n/a";
 	const form_identifier: IFormMetaData["form_identifier"] =
 		source === "/demo_and_testing" ? "ContactUs" : "Footer";
 
@@ -30,7 +32,7 @@ const useMetadata = (): IFormMetaData => {
 		form_identifier,
 		user_agent,
 		client_ip: ip,
-		account_id: "n/a",
+		account_id,
 		submission_datetime: getDefaultDateTimeLocal(),
 	};
 

@@ -4,6 +4,7 @@ import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import { AuthMenu } from "../../components/login/AuthMenu";
 import { useDynamicLink } from "../../hooks/DynamicLink";
 import { ModalBody } from "../outreach-form/PopOver";
 import {
@@ -40,30 +41,32 @@ const TitleBarLogo: React.FC = () => (
 	</div>
 );
 
-const MenuStyle: React.CSSProperties = {
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-	padding: "10px 20px",
-	fontSize: "16px",
-	cursor: "pointer",
-	border: "1px solid #ccc",
-	borderRadius: "4px",
-	backgroundColor: "#f8f8f8",
-	color: "#333",
-	width: "200px",
-	textAlign: "center",
-};
-const TempMenu = () => (
-	<div style={{ padding: "20px", backgroundColor: "white" }}>
-		<a
-			href="/api/auth/google/login"
-			style={{ textDecoration: "none" }}
-		>
-			<div style={MenuStyle}>Sign in with Google</div>
-		</a>
-	</div>
-);
+// const MenuStyle: React.CSSProperties = {
+// 	display: "flex",
+// 	alignItems: "center",
+// 	justifyContent: "center",
+// 	padding: "10px 20px",
+// 	fontSize: "16px",
+// 	cursor: "pointer",
+// 	border: "1px solid #ccc",
+// 	borderRadius: "4px",
+// 	backgroundColor: "#f8f8f8",
+// 	color: "#333",
+// 	width: "200px",
+// 	textAlign: "center",
+// };
+// const TempMenu = () => (
+// 	<div style={{ padding: "20px", backgroundColor: "white" }}>
+// 		<LoginStatus />
+
+// 		<a
+// 			href="/api/auth/google/login"
+// 			style={{ textDecoration: "none" }}
+// 		>
+// 			<div style={MenuStyle}>Sign in with Google</div>
+// 		</a>
+// 	</div>
+// );
 
 const TitleBarMenu: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false);
@@ -84,7 +87,7 @@ const TitleBarMenu: React.FC = () => {
 					closeModal={() => {
 						setIsOpen(false);
 					}}
-					node={<TempMenu />}
+					node={<AuthMenu />}
 				/>
 			)}
 		</>

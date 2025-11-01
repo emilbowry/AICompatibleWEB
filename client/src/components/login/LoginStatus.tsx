@@ -10,10 +10,6 @@ const LoginStatus: React.FC = () => {
 	const status = useSelector(selectAuthStatus);
 
 	const style: React.CSSProperties = {
-		position: "fixed",
-		top: "10px",
-		right: "10px",
-		padding: "10px 20px",
 		backgroundColor: user ? "#d4edda" : "#f8d7da", // Green if logged in, red if not
 		color: user ? "#155724" : "#721c24",
 		border: `1px solid ${user ? "#c3e6cb" : "#f5c6cb"}`,
