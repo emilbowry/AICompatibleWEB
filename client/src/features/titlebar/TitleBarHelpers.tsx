@@ -41,13 +41,29 @@ const TitleBarLogo: React.FC = () => (
 );
 
 const MenuStyle: React.CSSProperties = {
-	height: "500px",
-	width: "100px",
-	background: "white",
-	overflow: "visible",
-	zIndex: 1500,
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+	padding: "10px 20px",
+	fontSize: "16px",
+	cursor: "pointer",
+	border: "1px solid #ccc",
+	borderRadius: "4px",
+	backgroundColor: "#f8f8f8",
+	color: "#333",
+	width: "200px",
+	textAlign: "center",
 };
-const TempMenu = () => <div style={MenuStyle}>Temp</div>;
+const TempMenu = () => (
+	<div style={{ padding: "20px", backgroundColor: "white" }}>
+		<a
+			href="/api/auth/google/login"
+			style={{ textDecoration: "none" }}
+		>
+			<div style={MenuStyle}>Sign in with Google</div>
+		</a>
+	</div>
+);
 
 const TitleBarMenu: React.FC = () => {
 	const [isOpen, setIsOpen] = useState(false);
