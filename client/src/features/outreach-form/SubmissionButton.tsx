@@ -208,7 +208,7 @@ const SubmitButton: React.FC<{
 			onClick={handleSubmit}
 			style={ButtonStyle}
 		>
-			<div {...linkprops}>{buttonText}</div>
+			<div {...(!isDisabled && linkprops)}>{buttonText}</div>
 		</button>
 	);
 };
