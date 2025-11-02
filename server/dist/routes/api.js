@@ -7,6 +7,6 @@ import utilRoutes from "./util.js";
 const router = Router();
 router.get("/status", getStatus);
 router.use("/auth", authRoutes);
-router.use("/ip", utilRoutes);
-router.use("/stripe/create-checkout-session", stripeRoutes);
+router.use("/", utilRoutes);
+router.use("/", stripeRoutes);
 export default router;
