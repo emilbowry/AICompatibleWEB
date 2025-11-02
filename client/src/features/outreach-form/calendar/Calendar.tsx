@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { useDynamicLink } from "../../../hooks/DynamicLink";
 import { RootState } from "../../../store";
 import { dark_midnight_green } from "../../../utils/defaultColours";
+import { ButtonStyle } from "../OutReachForm.styles";
 import { IOutreachFormFields } from "../OutReachForm.types";
 import { DEFAULT_EVENT_CONFIG } from "./Calendar.consts";
 import {
@@ -146,23 +147,32 @@ const _AddToCalender: React.FC<{ date_key: keyof IOutreachFormFields }> = ({
 	});
 	const { blobUrl } = useCalendarLink(icsContent);
 	const link_props = useDynamicLink({
-		useDefaultDecoration: true,
-		style_args: ["3px"],
+		useDefaultDecoration: false,
+		style_args: ["2px"],
 		StyleOverrides: {
 			color: dark_midnight_green,
+			// paddingTop: "3px",
+
+			paddingBottom: "1px",
 		},
 	});
 	return (
 		<>
 			{date && (
-				<button>
+				<button style={ButtonStyle}>
+					{/* <div {...link_props}> */}
 					<a
 						href={blobUrl}
-						target="_blank"
-						{...link_props}
+						style={{
+							color: "none",
+
+							textDecorationColor: "none",
+							textDecorationLine: "none",
+						}}
 					>
-						Add booked slot to calender
+						<div {...link_props}>Add booked slot to calender</div>
 					</a>
+					{/* </div> */}
 				</button>
 			)}
 		</>

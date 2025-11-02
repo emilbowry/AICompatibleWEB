@@ -89,14 +89,16 @@ const OutReachForm: React.FC<{
 				setSubmitted,
 			}}
 		>
-			<div style={FormContainerStyle}>
-				<h2 style={TitleStyle}>Contact Us</h2>
-				<FormStatus />
+			<div style={{ minWidth: "50vw" }}>
+				<div style={FormContainerStyle}>
+					<h2 style={TitleStyle}>Contact Us</h2>
+					<FormStatus />
 
-				<FormContainer />
-				{form_type && <Appointment />}
+					<FormContainer />
+					{form_type && <Appointment />}
 
-				<Submission includeMetaData={includeMetaData} />
+					<Submission includeMetaData={includeMetaData} />
+				</div>
 			</div>
 		</FormContext>
 	);

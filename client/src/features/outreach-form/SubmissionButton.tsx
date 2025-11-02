@@ -14,7 +14,7 @@ import {
 	useMetadata,
 } from "./OutReachForm";
 import { initialState, submitFormAndGeneratePdf } from "./OutReachForm.slice";
-import { SubmitContainerStyle } from "./OutReachForm.styles";
+import { ButtonStyle, SubmitContainerStyle } from "./OutReachForm.styles";
 import { IOutreachFormFields } from "./OutReachForm.types";
 /**
  * @improvement - fix filter logic
@@ -180,9 +180,7 @@ const SubmitButton: React.FC<{
 	includeMetaData?: boolean;
 }> = ({ isDisabled, includeMetaData = false }) => {
 	const dispatch = useDispatch<AppDispatch>();
-	const { status, pdfDownloadUrl } = useSelector(
-		(state: RootState) => state.outreachForm
-	);
+	const { status } = useSelector((state: RootState) => state.outreachForm);
 
 	const isLoading = status === "loading";
 	const _setSubmitted = useContext(FormContext).setSubmitted;
@@ -195,36 +193,69 @@ const SubmitButton: React.FC<{
 	};
 
 	const buttonText = isLoading ? "Submitting..." : "Submit";
-
-	const pdfLinkProps = useDynamicLink({
+	const linkprops = useDynamicLink({
 		useDefaultDecoration: true,
-		style_args: ["3px"],
+		// style_args: ["2px"],
 		StyleOverrides: {
 			color: dark_midnight_green,
-			marginLeft: "10px",
+			// marginLeft: "10px",
 		},
 	});
 
 	return (
-		<div style={{ display: "flex", alignItems: "center" }}>
-			<button
-				type="submit"
-				disabled={isDisabled || isLoading}
-				onClick={handleSubmit}
-			>
-				{buttonText}
-			</button>
+		<button
+			type="submit"
+			disabled={isDisabled || isLoading}
+			onClick={handleSubmit}
+			style={ButtonStyle}
+		>
+			<div {...linkprops}>{buttonText}</div>
+			{/* {buttonText} */}
+		</button>
+	);
+};
 
-			{status === "succeeded" && pdfDownloadUrl && (
+const DownloadButton = () => {
+	const { status, pdfDownloadUrl } = useSelector(
+		(state: RootState) => state.outreachForm
+	);
+	const pdfLinkProps = useDynamicLink({
+		// useDefaultDecoration: true,
+		// style_args: ["2px"],
+		StyleOverrides: {
+			color: dark_midnight_green,
+			// marginLeft: "10px",
+		},
+	});
+
+	return (
+		status === "succeeded" &&
+		pdfDownloadUrl && (
+			// <a
+			// 	href={pdfDownloadUrl}
+			// 	download="outreach_form_submission.pdf"
+			// 	{...pdfLinkProps}
+			// >
+			// 	Download PDF
+			// </a>
+
+			<button style={ButtonStyle}>
+				{/* <div {...link_props}> */}
 				<a
 					href={pdfDownloadUrl}
 					download="outreach_form_submission.pdf"
-					{...pdfLinkProps}
+					style={{
+						color: "none",
+
+						textDecorationColor: "none",
+						textDecorationLine: "none",
+					}}
 				>
-					Download PDF
+					<div {...pdfLinkProps}> Download PDF</div>
 				</a>
-			)}
-		</div>
+				{/* </div> */}
+			</button>
+		)
 	);
 };
 const AddToCalender: React.FC<{ date_key?: string }> = ({ date_key }) => {
@@ -258,6 +289,7 @@ const Submission: React.FC<{
 				isDisabled={isFormError}
 				includeMetaData={includeMetaData}
 			/>
+			<DownloadButton />
 			{form_type === "BookCall" || form_type === "BookService" ? (
 				<AddToCalender date_key={data_val_key} />
 			) : null}

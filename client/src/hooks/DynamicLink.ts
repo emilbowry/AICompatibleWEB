@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { interactiveLinkStyle } from "../styles";
 
 interface IDynamicLinkParams {
-	useDefaultDecoration: boolean;
+	useDefaultDecoration?: boolean;
 	style_args?: any[];
 	StyleOverrides?: React.CSSProperties;
 	condition_function?: (isOver: boolean, ...condition_args: any[]) => boolean;
@@ -52,7 +52,7 @@ const useDynamicLink = ({
 				);
 			}
 		};
-	}, []);
+	}, [elementRef.current]);
 	const linkStyle = {
 		...interactiveLinkStyle(
 			condition_function

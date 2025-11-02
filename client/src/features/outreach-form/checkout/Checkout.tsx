@@ -5,6 +5,7 @@ import { useStripeCheckout } from "../../../services/api/stripe/stripe";
 import { RootState } from "../../../store";
 import { dark_midnight_green } from "../../../utils/defaultColours";
 import { FormContext } from "../OutReachForm";
+import { ButtonStyle } from "../OutReachForm.styles";
 
 const useBookServiceCheckout = () => {
 	const { initiateCheckout, isProcessing, error } = useStripeCheckout();
@@ -46,11 +47,27 @@ const CheckoutButton: React.FC = () => {
 	return (
 		<button
 			disabled={isDisabled}
+			style={ButtonStyle}
 			onClick={handleInitiateCheckout}
 		>
-			<a {...(!isDisabled && link_props)}>
+			{/* <a {...(!isDisabled && link_props)}>
 				{isProcessing ? "Processing..." : "Buy Now"}
-			</a>
+			</a> */}
+			<div {...(!isDisabled && link_props)}>
+				{/* <a
+							href={blobUrl}
+							style={{
+								color: "inherit",
+
+								textDecorationColor: "inherit",
+								textDecorationLine: "inherit",
+							}}
+						> */}
+				{/* Add booked slot to calender
+				 */}
+				{isProcessing ? "Processing..." : "Buy Now"}
+				{/* </a> */}
+			</div>
 		</button>
 	);
 };
