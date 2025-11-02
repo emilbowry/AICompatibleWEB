@@ -47,11 +47,89 @@ const logout = (req: Request, res: Response) => {
 
 import { PrismaClient } from "#prisma/client";
 import type { IPrismaUserData, TUserProfile } from "./google_auth.types.js";
-/**
- * @improvement - make less monolithic
- */
-const prisma = new PrismaClient();
 
+const prisma = new PrismaClient();
+const getGoogleOAuthTokens = async (code: string) => {
+	const tokenUrl = "https://oauth2.googleapis.com/token";
+	const tokenParams = new URLSearchParams({
+		code,
+		client_id: config.google.clientId,
+		client_secret: config.google.clientSecret,
+		redirect_uri: config.google.redirectUri,
+		grant_type: "authorization_code",
+	});
+	const tokenRes = await fetch(tokenUrl, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: tokenParams.toString(),
+	});
+	const tokens = await tokenRes.json();
+	if (!tokenRes.ok)
+		throw new Error(tokens.error_description || "Failed to fetch tokens");
+	return tokens;
+};
+
+const getGoogleUser = async (access_token: string) => {
+	const userinfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
+	const userinfoRes = await fetch(userinfoUrl, {
+		headers: { Authorization: `Bearer ${access_token}` },
+	});
+	const googleUser = await userinfoRes.json();
+	if (!userinfoRes.ok) throw new Error("Failed to fetch user info");
+
+	return googleUser;
+};
+
+const findOrCreateUser = async (
+	provider: string,
+	providerUserId: any,
+	email: string,
+	name: string
+) => {
+	let internalUser: TUserProfile;
+
+	const linkedAccount = await prisma.linkedAccount.findUnique({
+		where: {
+			provider_providerUserId: {
+				provider,
+				providerUserId,
+			},
+		},
+		include: { user: true },
+	});
+	if (linkedAccount) {
+		internalUser = linkedAccount.user;
+	} else {
+		const existingUser = await prisma.user.findUnique({
+			where: { email },
+		});
+		if (existingUser) {
+			await prisma.linkedAccount.create({
+				data: {
+					provider: "google",
+					providerUserId,
+					userId: existingUser.id,
+				},
+			});
+			internalUser = existingUser;
+		} else {
+			const newUser = await prisma.user.create({
+				data: {
+					email,
+					name,
+					accounts: {
+						create: {
+							provider,
+							providerUserId,
+						},
+					},
+				},
+			});
+			internalUser = newUser;
+		}
+	}
+	return internalUser;
+};
 const googleCallback = async (req: Request, res: Response) => {
 	const code = req.query.code as string;
 	if (!code) {
@@ -59,75 +137,15 @@ const googleCallback = async (req: Request, res: Response) => {
 	}
 
 	try {
-		const tokenUrl = "https://oauth2.googleapis.com/token";
-		const tokenParams = new URLSearchParams({
-			code,
-			client_id: config.google.clientId,
-			client_secret: config.google.clientSecret,
-			redirect_uri: config.google.redirectUri,
-			grant_type: "authorization_code",
-		});
-		const tokenRes = await fetch(tokenUrl, {
-			method: "POST",
-			headers: { "Content-Type": "application/x-www-form-urlencoded" },
-			body: tokenParams.toString(),
-		});
-		const tokens = await tokenRes.json();
-		if (!tokenRes.ok)
-			throw new Error(
-				tokens.error_description || "Failed to fetch tokens"
-			);
+		const tokens = await getGoogleOAuthTokens(code);
 
-		const userinfoUrl = "https://www.googleapis.com/oauth2/v2/userinfo";
-		const userinfoRes = await fetch(userinfoUrl, {
-			headers: { Authorization: `Bearer ${tokens.access_token}` },
-		});
-		const googleUser = await userinfoRes.json();
-		if (!userinfoRes.ok) throw new Error("Failed to fetch user info");
-
-		let internalUser: TUserProfile;
-
-		const linkedAccount = await prisma.linkedAccount.findUnique({
-			where: {
-				provider_providerUserId: {
-					provider: "google",
-					providerUserId: googleUser.id,
-				},
-			},
-			include: { user: true },
-		});
-
-		if (linkedAccount) {
-			internalUser = linkedAccount.user;
-		} else {
-			const existingUser = await prisma.user.findUnique({
-				where: { email: googleUser.email },
-			});
-			if (existingUser) {
-				await prisma.linkedAccount.create({
-					data: {
-						provider: "google",
-						providerUserId: googleUser.id,
-						userId: existingUser.id,
-					},
-				});
-				internalUser = existingUser;
-			} else {
-				const newUser = await prisma.user.create({
-					data: {
-						email: googleUser.email,
-						name: googleUser.name,
-						accounts: {
-							create: {
-								provider: "google",
-								providerUserId: googleUser.id,
-							},
-						},
-					},
-				});
-				internalUser = newUser;
-			}
-		}
+		const googleUser = await getGoogleUser(tokens.access_token);
+		const internalUser: TUserProfile = await findOrCreateUser(
+			"google",
+			googleUser.id,
+			googleUser.email,
+			googleUser.name
+		);
 
 		(req.session as IPrismaUserData).user = internalUser;
 		res.redirect(`${config.clientURL}?login_success=true`);
