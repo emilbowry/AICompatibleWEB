@@ -9,7 +9,7 @@ const router = Router();
 
 router.get("/status", getStatus);
 router.use("/auth", authRoutes);
-router.use("/auth", utilRoutes);
-router.use("/auth", stripeRoutes);
+router.use("/ip", utilRoutes);
+router.use("/stripe/create-checkout-session", stripeRoutes);
 
 export default router;

@@ -9,6 +9,7 @@ import {
 	CANCEL_URL_PATH,
 	SUCCESS_URL_PATH,
 } from "./checkout.consts.js";
+import { ICheckoutRequestBody } from "./checkout.types.js";
 
 const calculatePrice = (serviceType: string, participants: number): number => {
 	const basePrice = BASE_PRICES_CENTS[serviceType] || 0;
@@ -18,11 +19,6 @@ const calculatePrice = (serviceType: string, participants: number): number => {
 
 const stripe = new Stripe(config.stripeSecretKey);
 
-interface CheckoutRequestBody {
-	serviceType: string;
-	participants: number;
-}
-
 const createCheckoutSession = async (req: Request, res: Response) => {
 	const sessionUser = (req.session as IPrismaUserData).user;
 
@@ -30,7 +26,7 @@ const createCheckoutSession = async (req: Request, res: Response) => {
 
 	const sessionId = req.session.id;
 
-	const { serviceType, participants } = req.body as CheckoutRequestBody;
+	const { serviceType, participants } = req.body as ICheckoutRequestBody;
 	const participantsNum = Number(participants);
 
 	try {
