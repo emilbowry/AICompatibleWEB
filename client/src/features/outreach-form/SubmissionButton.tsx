@@ -194,11 +194,11 @@ const SubmitButton: React.FC<{
 
 	const buttonText = isLoading ? "Submitting..." : "Submit";
 	const linkprops = useDynamicLink({
+		style_args: ["2px"],
+
 		useDefaultDecoration: true,
-		// style_args: ["2px"],
 		StyleOverrides: {
 			color: dark_midnight_green,
-			// marginLeft: "10px",
 		},
 	});
 
@@ -210,7 +210,6 @@ const SubmitButton: React.FC<{
 			style={ButtonStyle}
 		>
 			<div {...linkprops}>{buttonText}</div>
-			{/* {buttonText} */}
 		</button>
 	);
 };
@@ -220,27 +219,17 @@ const DownloadButton = () => {
 		(state: RootState) => state.outreachForm
 	);
 	const pdfLinkProps = useDynamicLink({
-		// useDefaultDecoration: true,
-		// style_args: ["2px"],
+		style_args: ["2px"],
+
 		StyleOverrides: {
 			color: dark_midnight_green,
-			// marginLeft: "10px",
 		},
 	});
 
 	return (
 		status === "succeeded" &&
 		pdfDownloadUrl && (
-			// <a
-			// 	href={pdfDownloadUrl}
-			// 	download="outreach_form_submission.pdf"
-			// 	{...pdfLinkProps}
-			// >
-			// 	Download PDF
-			// </a>
-
 			<button style={ButtonStyle}>
-				{/* <div {...link_props}> */}
 				<a
 					href={pdfDownloadUrl}
 					download="outreach_form_submission.pdf"
@@ -253,7 +242,6 @@ const DownloadButton = () => {
 				>
 					<div {...pdfLinkProps}> Download PDF</div>
 				</a>
-				{/* </div> */}
 			</button>
 		)
 	);

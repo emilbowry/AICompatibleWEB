@@ -35,8 +35,8 @@ const CheckoutButton: React.FC = () => {
 		useBookServiceCheckout();
 
 	const link_props = useDynamicLink({
-		useDefaultDecoration: true,
-		style_args: ["3px"],
+		style_args: ["2px"],
+
 		StyleOverrides: {
 			color: dark_midnight_green,
 		},
@@ -50,23 +50,8 @@ const CheckoutButton: React.FC = () => {
 			style={ButtonStyle}
 			onClick={handleInitiateCheckout}
 		>
-			{/* <a {...(!isDisabled && link_props)}>
-				{isProcessing ? "Processing..." : "Buy Now"}
-			</a> */}
 			<div {...(!isDisabled && link_props)}>
-				{/* <a
-							href={blobUrl}
-							style={{
-								color: "inherit",
-
-								textDecorationColor: "inherit",
-								textDecorationLine: "inherit",
-							}}
-						> */}
-				{/* Add booked slot to calender
-				 */}
 				{isProcessing ? "Processing..." : "Buy Now"}
-				{/* </a> */}
 			</div>
 		</button>
 	);

@@ -147,11 +147,9 @@ const _AddToCalender: React.FC<{ date_key: keyof IOutreachFormFields }> = ({
 	});
 	const { blobUrl } = useCalendarLink(icsContent);
 	const link_props = useDynamicLink({
-		useDefaultDecoration: false,
 		style_args: ["2px"],
 		StyleOverrides: {
 			color: dark_midnight_green,
-			// paddingTop: "3px",
 
 			paddingBottom: "1px",
 		},
@@ -160,7 +158,6 @@ const _AddToCalender: React.FC<{ date_key: keyof IOutreachFormFields }> = ({
 		<>
 			{date && (
 				<button style={ButtonStyle}>
-					{/* <div {...link_props}> */}
 					<a
 						href={blobUrl}
 						style={{
@@ -172,7 +169,6 @@ const _AddToCalender: React.FC<{ date_key: keyof IOutreachFormFields }> = ({
 					>
 						<div {...link_props}>Add booked slot to calender</div>
 					</a>
-					{/* </div> */}
 				</button>
 			)}
 		</>
