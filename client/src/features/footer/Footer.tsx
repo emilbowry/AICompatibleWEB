@@ -5,10 +5,10 @@ import logo from "../../assets/logo.png";
 import { linkedin_svg } from "../../components/callingcard/graphics";
 import { partners } from "../../components/partnership-bar/Partner";
 import { PartnershipMarquee } from "../../components/partnership-bar/PartnershipMarquee";
+import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { linkStyle } from "../../styles";
 import { BoxedImage } from "../../utils/reactUtils";
 import { OutReachForm } from "../outreach-form/OutReachForm";
-import { ToggleablePortal } from "../outreach-form/PopOver";
 import { CenterableStyle } from "./Footer.styles";
 import { FooterLayoutHandler } from "./FooterLayoutHandler";
 import { GridFooter, GridFooterRows } from "./GridFooter";
@@ -128,15 +128,6 @@ const FooterBottomLeftSideBar: React.FC = () => (
 		/>
 		<ScrollVisibilityDependent
 			element={
-				// <NavLink
-				// 	to={"/demo_and_testing"}
-				// style={{
-				// 	...linkStyle(),
-				// 	color: "white",
-				// }}
-				// >
-				// 	Inquiries
-				// </NavLink>
 				<ToggleablePortal
 					node={<OutReachForm includeMetaData={true} />}
 					styling={{

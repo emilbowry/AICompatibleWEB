@@ -23,33 +23,7 @@ const useDynamicLink = ({
 	const handleMouseOut = () => {
 		setIsOver(false);
 	};
-	// useEffect(() => {
-	// 	const element = elementRef.current;
 
-	// 	if (element) {
-	// 		element.addEventListener(
-	// 			"mouseover",
-	// 			handleMouseOver as EventListener
-	// 		);
-	// 		element.addEventListener(
-	// 			"mouseout",
-	// 			handleMouseOut as EventListener
-	// 		);
-	// 	}
-	// 	return (
-	// 		element &&
-	// 		(() => {
-	// 			element.removeEventListener(
-	// 				"mouseover",
-	// 				handleMouseOver as EventListener
-	// 			);
-	// 			element.removeEventListener(
-	// 				"mouseout",
-	// 				handleMouseOut as EventListener
-	// 			);
-	// 		})
-	// 	);
-	// }, []);
 	useEffect(() => {
 		const element = elementRef.current;
 

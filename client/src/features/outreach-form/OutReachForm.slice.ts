@@ -2,16 +2,13 @@
 
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
-import type { IFormMetaData, IOutreachFormFields } from "./OutReachForm.types";
-import { generatePdf, TContent, TData } from "./createPdf";
-
-interface ContactFormState {
-	fields: IOutreachFormFields;
-	metadata: IFormMetaData;
-	status: "idle" | "loading" | "succeeded" | "failed"; // Added status for thunk
-	error: string | null;
-	pdfDownloadUrl: string | null;
-}
+import type {
+	IContactFormState,
+	IFormMetaData,
+	IOutreachFormFields,
+} from "./OutReachForm.types";
+import { generatePdf } from "./PDFcreator/createPdf";
+import { TContent, TData } from "./PDFcreator/pdf.types";
 const isMeaningfulValue = (value: any): boolean => {
 	if (typeof value === "boolean") {
 		return true;
@@ -24,7 +21,7 @@ const isMeaningfulValue = (value: any): boolean => {
 };
 
 const formatStateForPdf = (
-	state: ContactFormState,
+	state: IContactFormState,
 	includeMetadata: boolean = true
 ): TData => {
 	const filterAndMapContent = (obj: Record<string, any>) => {
@@ -55,7 +52,7 @@ const formatStateForPdf = (
 		content: content,
 	};
 };
-export const submitFormAndGeneratePdf = createAsyncThunk<
+const submitFormAndGeneratePdf = createAsyncThunk<
 	{ downloadUrl: string; message: string },
 	boolean,
 	{ state: RootState; rejectValue: string }
@@ -63,7 +60,7 @@ export const submitFormAndGeneratePdf = createAsyncThunk<
 	"outreachForm/submitAndGeneratePdf",
 	async (includeMetadata: boolean, { getState, rejectWithValue }) => {
 		try {
-			const rootState = getState() as { outreachForm: ContactFormState };
+			const rootState = getState() as { outreachForm: IContactFormState };
 			const formState = rootState.outreachForm;
 
 			const pdfData = formatStateForPdf(formState, includeMetadata);
@@ -80,7 +77,7 @@ export const submitFormAndGeneratePdf = createAsyncThunk<
 		}
 	}
 );
-const initialState: ContactFormState = {
+const initialState: IContactFormState = {
 	fields: {
 		name: "",
 		email: "",
@@ -103,7 +100,7 @@ const initialState: ContactFormState = {
 	pdfDownloadUrl: null,
 };
 
-export const outreachFormSlice = createSlice({
+const outreachFormSlice = createSlice({
 	name: "outreachForm",
 	initialState,
 	reducers: {
@@ -152,5 +149,5 @@ export const outreachFormSlice = createSlice({
 
 export const { updateField, initializeMetadata, resetForm } =
 	outreachFormSlice.actions;
-export { initialState };
+export { initialState, outreachFormSlice, submitFormAndGeneratePdf };
 export default outreachFormSlice.reducer;

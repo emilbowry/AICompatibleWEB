@@ -2,7 +2,11 @@
 
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+/** 
+* @improvement - make less monolithic
 
+
+*/
 const isHTMLElement = (el: Element): el is HTMLElement =>
 	el instanceof HTMLElement;
 const isInSVG = (el: Element) =>

@@ -14,7 +14,7 @@ import {
 	largeCursorStyle,
 	smallCursorStyle,
 } from "./Cursor.styles";
-import { IPosition } from "./Cursor.types";
+import { ICustomCursorProps, IPosition } from "./Cursor.types";
 
 const useMousePosition = (_position?: IPosition): IPosition => {
 	const [mouse_position, setMousePosition] = useState(
@@ -119,27 +119,17 @@ const useMouseClick = () => {
 	return isClicked;
 };
 
-interface ICustomCursorProps {
-	isMouseClicked: boolean;
-	mouse_position: IPosition;
-	isHoveringLink: boolean;
-
-	trailing_position: IPosition;
-	scale_factor?: number;
-}
 const LogoCursor: React.FC<ICustomCursorProps> = (props) => {
 	const { isMouseClicked, mouse_position, trailing_position, scale_factor } =
 		props;
 	return (
 		<>
-			{/* <div style={chevStyle(mouse_position)} /> */}
 			{!isMouseClicked ? (
 				<CutChevron {...props} />
 			) : (
 				<div style={chevStyle(mouse_position, scale_factor)} />
 			)}
 			<div style={diamondStyle(trailing_position, scale_factor)} />
-			{/* {isMouseClicked && <div style={clickInsertStyle(mouse_position)} />} */}
 		</>
 	);
 };

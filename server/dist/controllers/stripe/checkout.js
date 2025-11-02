@@ -1,8 +1,12 @@
 import Stripe from "stripe";
 import { config } from "../../config/config.js";
-import { calculatePrice, CANCEL_URL_PATH, SUCCESS_URL_PATH, } from "../../utils/pricing.js";
+import { BASE_PRICES_CENTS, CANCEL_URL_PATH, SUCCESS_URL_PATH, } from "./checkout.consts.js";
+const calculatePrice = (serviceType, participants) => {
+    const basePrice = BASE_PRICES_CENTS[serviceType] || 0;
+    return basePrice * participants;
+};
 const stripe = new Stripe(config.stripeSecretKey);
-export const createCheckoutSession = async (req, res) => {
+const createCheckoutSession = async (req, res) => {
     const sessionUser = req.session.user;
     const clientRefId = sessionUser?.id ?? "ANONYMOUS";
     const sessionId = req.session.id;
@@ -54,3 +58,4 @@ export const createCheckoutSession = async (req, res) => {
         });
     }
 };
+export { createCheckoutSession };

@@ -1,6 +1,12 @@
 // client/src/features/outreach-form/OutReachForm.styles.ts
 
 import React from "react";
+
+/**
+ * @improvement * need better styling
+
+ */
+
 const InputBaseStyle: React.CSSProperties = {
 	width: "100%",
 	padding: "1rem",

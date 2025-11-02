@@ -1,63 +1,17 @@
 // client/src/features/outreach-form/PopOver.tsx
 
-import React, {
-	createContext,
-	ReactNode,
-	useEffect,
-	useRef,
-	useState,
-} from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { useHref } from "react-router-dom";
+import {
+	CloseButtonStyle,
+	ModalBackdropStyle,
+	ModalContentStyle,
+	ModalWrapperStyle,
+} from "./PopOver.styles";
+import { IToggleablePortalProps } from "./PopOver.types";
 
 const modalRoot = document.getElementById("modal-root");
-
-const modalBackdropStyle: React.CSSProperties = {
-	position: "fixed",
-	top: 0,
-	left: 0,
-	right: 0,
-	bottom: 0,
-	background: "transparent",
-	maxHeight: "100vh",
-
-	display: "flex",
-	justifyContent: "center",
-	alignItems: "center",
-	zIndex: 1000,
-};
-
-const modalWrapperStyle: React.CSSProperties = {
-	position: "relative",
-	display: "inline-block",
-};
-
-const modalContentStyle: React.CSSProperties = {
-	background: "transparent",
-	backdropFilter: "blur(16px)",
-
-	boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-	overflowY: "scroll",
-};
-
-const closeButtonStyle: React.CSSProperties = {
-	position: "absolute",
-	top: "0",
-	right: "0",
-	marginTop: "-24px",
-	marginRight: "-24px",
-	fontWeight: "bold",
-	backgroundColor: "#CCC",
-	zIndex: 1001,
-	color: "black",
-};
-
-interface ToggleablePortalProps {
-	node?: ReactNode;
-	text?: string;
-	styling?: React.CSSProperties;
-	default_open?: boolean;
-}
 
 const PortalContext = createContext<undefined | { source: string }>(undefined);
 
@@ -100,25 +54,25 @@ const ModalBody: React.FC<{
 
 	return ReactDOM.createPortal(
 		<div
-			style={modalBackdropStyle}
+			style={ModalBackdropStyle}
 			onClick={handleBackdropClick}
 			className="no-aos"
 		>
-			<div style={modalWrapperStyle}>
+			<div style={ModalWrapperStyle}>
 				<button
 					onClick={closeModal}
-					style={closeButtonStyle}
+					style={CloseButtonStyle}
 				>
 					&times;
 				</button>
-				<div style={modalContentStyle}>{node}</div>
+				<div style={ModalContentStyle}>{node}</div>
 			</div>
 		</div>,
 		elRef.current
 	);
 };
 
-const ToggleablePortal: React.FC<ToggleablePortalProps> = ({
+const ToggleablePortal: React.FC<IToggleablePortalProps> = ({
 	node,
 	text = "open",
 	styling = {},

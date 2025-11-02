@@ -1,4 +1,9 @@
 // client/src/features/outreach-form/OutReachForm.types.ts
+/**
+ * @improvement - implement Appointment strict typing
+
+
+ */
 type TConsultancyService = "1_to_1_consulting" | "group_consulting";
 type TTrainingService = "1_to_1_training" | "group_training";
 type TOutreachService = "Inquiry_Call" | "Email_Request";
@@ -207,7 +212,15 @@ interface IFormContext {
 	submitted: boolean;
 	setSubmitted: React.Dispatch<React.SetStateAction<boolean>>;
 }
+interface IContactFormState {
+	fields: IOutreachFormFields;
+	metadata: IFormMetaData;
+	status: "idle" | "loading" | "succeeded" | "failed"; // Added status for thunk
+	error: string | null;
+	pdfDownloadUrl: string | null;
+}
 export {
+	IContactFormState,
 	IFormContext,
 	IFormMetaData,
 	// TFormFieldProps,

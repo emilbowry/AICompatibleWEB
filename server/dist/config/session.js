@@ -10,5 +10,4 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
 };
-// const a: session.SessionData
 export { sessionConfig };

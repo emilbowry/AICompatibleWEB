@@ -8,8 +8,8 @@ import { Page } from "../../features/page/Page";
 import { PointedtopHexagonFeatureGrid } from "../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
 import { bgwhite } from "../../utils/defaultColours";
 
+import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
-import { ToggleablePortal } from "../../features/outreach-form/PopOver";
 import { getTheme, linkStyle } from "../../styles";
 import { formatComponent, ValidComponent } from "../../utils/reactUtils";
 import { titleStyle } from "./ContactPage.styles";

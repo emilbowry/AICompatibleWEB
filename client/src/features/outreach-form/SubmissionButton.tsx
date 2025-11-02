@@ -16,7 +16,12 @@ import {
 import { initialState, submitFormAndGeneratePdf } from "./OutReachForm.slice";
 import { SubmitContainerStyle } from "./OutReachForm.styles";
 import { IOutreachFormFields } from "./OutReachForm.types";
+/**
+ * @improvement - fix filter logic
+				- add post checkout/submit behaviour, i.e adding invoice id etc
 
+
+ */
 const useRequiredFields = (
 	form_type?: string,
 	remove_bools: boolean = false,

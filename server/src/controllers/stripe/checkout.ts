@@ -2,12 +2,19 @@
 import type { Request, Response } from "express";
 import Stripe from "stripe";
 import { config } from "../../config/config.js";
+
+import { IPrismaUserData } from "../auth/google_auth.types.js";
 import {
-	calculatePrice,
+	BASE_PRICES_CENTS,
 	CANCEL_URL_PATH,
 	SUCCESS_URL_PATH,
-} from "../../utils/pricing.js";
-import { IPrismaUserData } from "../auth/google_auth.types.js";
+} from "./checkout.consts.js";
+
+const calculatePrice = (serviceType: string, participants: number): number => {
+	const basePrice = BASE_PRICES_CENTS[serviceType] || 0;
+
+	return basePrice * participants;
+};
 
 const stripe = new Stripe(config.stripeSecretKey);
 
@@ -16,7 +23,7 @@ interface CheckoutRequestBody {
 	participants: number;
 }
 
-export const createCheckoutSession = async (req: Request, res: Response) => {
+const createCheckoutSession = async (req: Request, res: Response) => {
 	const sessionUser = (req.session as IPrismaUserData).user;
 
 	const clientRefId = sessionUser?.id ?? "ANONYMOUS";
@@ -79,3 +86,4 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
 		});
 	}
 };
+export { createCheckoutSession };

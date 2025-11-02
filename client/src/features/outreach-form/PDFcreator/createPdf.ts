@@ -1,6 +1,13 @@
 // client/src/features/outreach-form/createPdf.ts
 
-const MAX_CHARS_PER_LINE = 85;
+import { BODY_SIZE, MAX_CHARS_PER_LINE, TAB, TITLE_SIZE } from "./pdf.consts";
+import { TContent, TData } from "./pdf.types";
+
+/**
+ * @improvement * make less monolithic
+
+
+ */
 
 const wrapText = (text: string, maxLen: number, tab_idx: number): string[] => {
 	if (text.length <= maxLen) {
@@ -13,16 +20,15 @@ const wrapText = (text: string, maxLen: number, tab_idx: number): string[] => {
 
 	for (const word of words) {
 		if (currentLine.length + word.length + 1 > maxLen) {
-			lines.push(tab.repeat(tab_idx) + currentLine.trim());
+			lines.push(TAB.repeat(tab_idx) + currentLine.trim());
 			currentLine = word + " ";
 		} else {
 			currentLine += word + " ";
 		}
 	}
 
-	// Push the last line
 	if (currentLine.trim().length > 0) {
-		lines.push(tab.repeat(tab_idx) + currentLine.trim());
+		lines.push(TAB.repeat(tab_idx) + currentLine.trim());
 	}
 
 	return lines;
@@ -33,25 +39,19 @@ const escapePdfString = (text: string): string => {
 		.replaceAll("(", "\\(")
 		.replaceAll(")", "\\)");
 };
-const tab = "   ";
-type TContent = { [k: string]: string | TContent } | string;
-type TData = { title: string; content: TContent };
 
-const titleSize = 24;
-const bodySize = 12;
-
-const processBody = (content: TContent, tab_idx = 0, fontSize = bodySize) => {
+const processBody = (content: TContent, tab_idx = 0, fontSize = BODY_SIZE) => {
 	let body: string[] = [];
 
-	const _fontSize = fontSize > bodySize ? fontSize : bodySize;
+	const _fontSize = fontSize > BODY_SIZE ? fontSize : BODY_SIZE;
 	if (typeof content === "string") {
-		body.push(`${_fontSize === bodySize ? `/F1` : `/F2`} ${_fontSize} Tf`);
+		body.push(`${_fontSize === BODY_SIZE ? `/F1` : `/F2`} ${_fontSize} Tf`);
 		body.push(`${_fontSize + 2} TL`);
-		const indentedContent = tab.repeat(tab_idx) + content;
+		const indentedContent = TAB.repeat(tab_idx) + content;
 
 		const linesToDraw = wrapText(
 			indentedContent,
-			MAX_CHARS_PER_LINE - tab_idx * tab.length,
+			MAX_CHARS_PER_LINE - tab_idx * TAB.length,
 			tab_idx
 		);
 		for (const line of linesToDraw) {
@@ -65,7 +65,7 @@ const processBody = (content: TContent, tab_idx = 0, fontSize = bodySize) => {
 					key + ":",
 					tab_idx,
 					Math.round(
-						bodySize + (titleSize - bodySize) / (tab_idx + 1)
+						BODY_SIZE + (TITLE_SIZE - BODY_SIZE) / (tab_idx + 1)
 					)
 				)
 			);
@@ -88,9 +88,6 @@ const generatePdf = (data: TData): string => {
 	pdfObjects.push(
 		"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj"
 	);
-	// pdfObjects.push(
-	// 	"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj"
-	// );
 	pdfObjects.push(
 		"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>\nendobj"
 	);
@@ -155,4 +152,4 @@ const generatePdf = (data: TData): string => {
 	return url;
 };
 
-export { generatePdf, TContent, TData };
+export { generatePdf };

@@ -12,7 +12,14 @@ import {
 } from "./Login.styles";
 import { LoginStatus } from "./LoginStatus";
 import { LogOutButton } from "./LogOutButton";
-
+const SignInButtons: React.FC = () => (
+	<a
+		href="/api/auth/google/login"
+		style={GoogleSignInStyle}
+	>
+		<div style={GoogleSignInContentStyle}>Sign in with Google</div>
+	</a>
+);
 const AuthMenu: React.FC = () => {
 	const user = useSelector(selectUser);
 	const status = useSelector(selectAuthStatus);
@@ -27,14 +34,7 @@ const AuthMenu: React.FC = () => {
 					<LogOutButton />
 				</>
 			) : (
-				<a
-					href="/api/auth/google/login"
-					style={GoogleSignInStyle}
-				>
-					<div style={GoogleSignInContentStyle}>
-						Sign in with Google
-					</div>
-				</a>
+				<SignInButtons />
 			)}
 		</div>
 	);
