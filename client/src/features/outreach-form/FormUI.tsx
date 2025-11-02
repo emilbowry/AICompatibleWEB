@@ -67,6 +67,13 @@ const _FormField: React.FC<TFormConfigProps<TAllFields>> = (config) => {
 				{...FieldProps}
 				style={InputBaseStyle}
 			>
+				<option
+					value=""
+					disabled
+					selected
+				>
+					Please select an option
+				</option>
 				{props.options.map((option) => (
 					<option
 						key={option.value}

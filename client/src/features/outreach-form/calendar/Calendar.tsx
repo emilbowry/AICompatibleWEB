@@ -1,29 +1,17 @@
 // client/src/features/outreach-form/CalanderHooks.ts
 
 import { useEffect, useState } from "react";
-
-type IcsDateTime = string;
-type IcsUid = string;
-
-interface IcsVEvent {
-	uid: IcsUid;
-	dtStamp: IcsDateTime;
-	summary: string;
-	dtStart: IcsDateTime;
-	dtEnd: IcsDateTime;
-	description?: string;
-	location?: string;
-	status?: "CONFIRMED" | "TENTATIVE" | "CANCELLED";
-	class?: "PUBLIC" | "PRIVATE" | "CONFIDENTIAL";
-	tzid?: string;
-}
-
-interface IcsConfig {
-	title: string;
-	description: string;
-	location: string;
-	durationMinutes: number;
-}
+import { useSelector } from "react-redux";
+import { useDynamicLink } from "../../../hooks/DynamicLink";
+import { RootState } from "../../../store";
+import { dark_midnight_green } from "../../../utils/defaultColours";
+import { IOutreachFormFields } from "../OutReachForm.types";
+import { DEFAULT_EVENT_CONFIG } from "./Calendar.consts";
+import {
+	ICalendarFormHookResult,
+	IcsConfig,
+	IcsVEvent,
+} from "./Calendar.types";
 
 const pad = (num: number): string => num.toString().padStart(2, "0");
 const escapeIcsText = (text: string): string =>
@@ -81,15 +69,6 @@ const getDefaultDateTimeLocal = (): string => {
 	return `${datePart}T${timePart}`;
 };
 
-interface CalendarFormHookResult {
-	blobUrl: string; // Stores the generated, revocable Object URL
-}
-const DEFAULT_EVENT_CONFIG: IcsConfig = {
-	title: "N/A EVENT CONFIG",
-	description: "N/A",
-	location: "N/A",
-	durationMinutes: 60,
-};
 const useCalanderEvent = ({
 	date_string,
 	config = DEFAULT_EVENT_CONFIG,
@@ -129,7 +108,7 @@ const useCalanderEvent = ({
 
 	return generateContent({ date_string, config });
 };
-const useCalendarLink = (config: IcsVEvent): CalendarFormHookResult => {
+const useCalendarLink = (config: IcsVEvent): ICalendarFormHookResult => {
 	const [blobUrl, setBlobUrl] = useState<string>("#");
 
 	useEffect(() => {
@@ -154,9 +133,39 @@ const useCalendarLink = (config: IcsVEvent): CalendarFormHookResult => {
 		blobUrl,
 	};
 };
-export {
-	DEFAULT_EVENT_CONFIG,
-	getDefaultDateTimeLocal,
-	useCalanderEvent,
-	useCalendarLink,
+
+const _AddToCalender: React.FC<{ date_key: keyof IOutreachFormFields }> = ({
+	date_key,
+}) => {
+	const date = useSelector(
+		(state: RootState) => state.outreachForm.fields[date_key]
+	);
+	const icsContent = useCalanderEvent({
+		date_string: date,
+		config: DEFAULT_EVENT_CONFIG,
+	});
+	const { blobUrl } = useCalendarLink(icsContent);
+	const link_props = useDynamicLink({
+		useDefaultDecoration: true,
+		style_args: ["3px"],
+		StyleOverrides: {
+			color: dark_midnight_green,
+		},
+	});
+	return (
+		<>
+			{date && (
+				<button>
+					<a
+						href={blobUrl}
+						target="_blank"
+						{...link_props}
+					>
+						Add booked slot to calender
+					</a>
+				</button>
+			)}
+		</>
+	);
 };
+export { _AddToCalender, getDefaultDateTimeLocal };

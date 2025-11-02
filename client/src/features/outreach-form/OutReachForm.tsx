@@ -8,7 +8,7 @@ import { useAccountId } from "../../services/api/auth/auth";
 import { useIP } from "../../services/api/ip";
 import { AppDispatch } from "../../store";
 import { Appointment } from "./Appointments";
-import { getDefaultDateTimeLocal } from "./CalanderHooks";
+import { getDefaultDateTimeLocal } from "./calendar/Calendar";
 import { FormContainer } from "./FormUI";
 import { initializeMetadata } from "./OutReachForm.slice";
 import {

@@ -89,7 +89,6 @@ const initialState: ContactFormState = {
 		job_title: undefined,
 		organisation: undefined,
 		raw_phone_number: undefined,
-		call_time: "",
 	},
 	metadata: {
 		source: "",
@@ -126,7 +125,7 @@ export const outreachFormSlice = createSlice({
 			state.metadata = initialState.metadata;
 			state.status = "idle";
 			state.error = null;
-			state.pdfDownloadUrl = null; // <-- Reset the URL
+			state.pdfDownloadUrl = null;
 		},
 	},
 	extraReducers: (builder) => {
@@ -134,11 +133,10 @@ export const outreachFormSlice = createSlice({
 			.addCase(submitFormAndGeneratePdf.pending, (state) => {
 				state.status = "loading";
 				state.error = null;
-				state.pdfDownloadUrl = null; // Clear previous URL
+				state.pdfDownloadUrl = null;
 			})
 			.addCase(submitFormAndGeneratePdf.fulfilled, (state, action) => {
 				state.status = "succeeded";
-				// Store the URL returned by the thunk
 				state.pdfDownloadUrl = action.payload.downloadUrl;
 			})
 			.addCase(submitFormAndGeneratePdf.rejected, (state, action) => {
