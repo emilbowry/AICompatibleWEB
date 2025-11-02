@@ -84,7 +84,6 @@ const useDirtyFields = (
 	const defaultFields = initialState.fields;
 
 	const dirtyFieldNames: any[] = [];
-	console.log(currentFields);
 
 	iterable.forEach((fieldName) => {
 		const currentValue = (currentFields as any)[fieldName];

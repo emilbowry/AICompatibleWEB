@@ -11,7 +11,7 @@ import { bgwhite } from "../../utils/defaultColours";
 import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
 import { useDynamicLink } from "../../hooks/DynamicLink";
-import { getTheme, linkStyle } from "../../styles";
+import { getTheme, linkStyle, VOLUME_CONSTANT_SIZE } from "../../styles";
 import { formatComponent, ValidComponent } from "../../utils/reactUtils";
 import { titleStyle } from "./ContactPage.styles";
 const theme = getTheme(0);
@@ -58,10 +58,12 @@ const StyledLinkToggle: React.FC<{
 	return (
 		<div
 			style={{
-				flex: 2,
+				paddingTop: "50%",
+
+				flex: 1,
 				display: "flex",
 				justifyContent: "center",
-				gap: "15px",
+				// gap: "15px",
 			}}
 		>
 			<div
@@ -153,52 +155,46 @@ const CUBody = (
 	</div>
 );
 const LinkStyle: React.CSSProperties = {
-	fontSize: "2rem",
+	fontSize: `calc(4*${VOLUME_CONSTANT_SIZE})`,
 	color: theme.primaryColor,
+	textWrap: "nowrap",
 };
 const FooterPStyle: React.CSSProperties = {
 	textAlign: "center",
 	color: theme.secondaryColor,
+	fontSize: `calc(2*${VOLUME_CONSTANT_SIZE})`,
 };
 const contactFeatureCallouts = [
 	[
-		<>
-			<StyledLinkToggle
-				content={`
-							Say Hello!
-						`}
-				form_type="EmailInquiry"
-				StyleOverrides={LinkStyle}
-			/>
+		<StyledLinkToggle
+			content="Say Hello!"
+			form_type="EmailInquiry"
+			StyleOverrides={LinkStyle}
+		/>,
 
-			<p style={FooterPStyle}>
-				Request an email of our services and offering and keep up to
-				date with AI Comaptible’s mailing list
-			</p>
-		</>,
+		<p style={FooterPStyle}>
+			Request an email of our services and offering and keep up to date
+			with AI Comaptible’s mailing list
+		</p>,
 	],
 	[
-		<>
-			<StyledLinkToggle
-				content={`Meet Us!`}
-				form_type="BookCall"
-				StyleOverrides={LinkStyle}
-			/>
-			<p style={FooterPStyle}>
-				Book a free 20 minute chat to find out how we could help you or
-				your business
-			</p>
-		</>,
+		<StyledLinkToggle
+			content="Meet Us!"
+			form_type="BookCall"
+			StyleOverrides={LinkStyle}
+		/>,
+		<p style={FooterPStyle}>
+			Book a free 20 minute chat to find out how we could help you or your
+			business
+		</p>,
 	],
 	[
-		<>
-			<StyledLinkToggle
-				content={`Book Us!`}
-				form_type="BookService"
-				StyleOverrides={LinkStyle}
-			/>
-			<p style={FooterPStyle}>Buy 1-1 consultancy and training</p>
-		</>,
+		<StyledLinkToggle
+			content="Book Us!"
+			form_type="BookService"
+			StyleOverrides={LinkStyle}
+		/>,
+		<p style={FooterPStyle}>Buy 1-1 consultancy and training</p>,
 	],
 ];
 
@@ -217,7 +213,7 @@ const contactPage: React.FC = () => (
 					hexagon_args={{
 						colour: theme.backgroundColor,
 					}}
-					useVerticalAlignment={true}
+					// useVerticalAlignment={true}
 				/>
 			}
 			styleOverrides={{
