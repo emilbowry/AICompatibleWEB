@@ -90,9 +90,13 @@ const ErrMessageStyle: React.CSSProperties = {
 const ButtonStyle: React.CSSProperties = {
 	height: "5vh",
 	borderRadius: "5%",
-	backgroundColor: "transparent",
+	border: "1px solid rgb(255,255,255,0.4)",
+	backgroundColor: "rgb(255,255,255,0.3)",
+
+	// backgroundColor: "transparent",
 	padding: "0 3%",
 	margin: "0 2px",
+	boxShadow: "none",
 	textWrap: "nowrap",
 };
 export {
