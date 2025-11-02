@@ -80,7 +80,7 @@ const F2 = () => (
 		<p>
 			Mindstone is the largest Practical AI Community for non-technical
 			people in the world, with over 25,000 active members. Joe hosts
-			their online meetups, co- organises their Cambridge Meetups,
+			their online meetups, co-organises their Cambridge Meetups,
 			frequents the london events
 		</p>
 	</div>

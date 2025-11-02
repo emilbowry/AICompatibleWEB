@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "target": "ES2022",                // Use a modern target like ES2022
-    "module": "NodeNext",              // Use NodeNext for proper ES Module resolution in Node
-    "moduleResolution": "NodeNext",    // Use NodeNext for proper ES Module resolution in Node
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,

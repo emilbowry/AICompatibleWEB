@@ -67,7 +67,7 @@ const linkStyle = (
 ): React.CSSProperties => ({
 	textDecorationLine:
 		isUnderlined || useDefaultDecoration ? `underline` : "none",
-	textDecorationColor: `${logo_blue}`,
+	textDecorationColor: logo_blue,
 	backgroundOrigin: "content-box",
 	backgroundImage: `${logo_gradient}`,
 	backgroundPosition: "bottom left",

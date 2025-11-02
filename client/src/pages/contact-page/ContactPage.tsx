@@ -10,27 +10,38 @@ import { bgwhite } from "../../utils/defaultColours";
 
 import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
+import { useDynamicLink } from "../../hooks/DynamicLink";
 import { getTheme, linkStyle } from "../../styles";
 import { formatComponent, ValidComponent } from "../../utils/reactUtils";
 import { titleStyle } from "./ContactPage.styles";
-
+const theme = getTheme(0);
 const StyledLink: React.FC<{
 	href?: string;
 	content?: ValidComponent;
 	isUnderlined?: boolean;
-}> = ({ href = "#", content = "", isUnderlined = true }) => (
+	ignore_style?: boolean;
+}> = ({
+	href = "#",
+	content = "",
+	isUnderlined = true,
+	ignore_style = false,
+}) => (
 	<div
 		style={{
 			flex: 2,
 			display: "flex",
-			justifyContent: "center",
+			// justifyContent: "center",
 			gap: "15px",
 		}}
 	>
 		<div>
 			<a
 				href={href}
-				style={{ ...linkStyle(isUnderlined), ...titleStyle }}
+				style={
+					ignore_style
+						? {}
+						: { ...linkStyle(isUnderlined), ...titleStyle }
+				}
 			>
 				{formatComponent(content)}
 			</a>
@@ -42,7 +53,8 @@ const StyledLinkToggle: React.FC<{
 	href?: string;
 	content?: string;
 	form_type?: string;
-}> = ({ content = "", form_type = "" }) => {
+	StyleOverrides?: React.CSSProperties;
+}> = ({ content = "", form_type = "", StyleOverrides = {} }) => {
 	return (
 		<div
 			style={{
@@ -52,12 +64,21 @@ const StyledLinkToggle: React.FC<{
 				gap: "15px",
 			}}
 		>
-			<div>
+			<div
+				{...useDynamicLink({
+					useDefaultDecoration: false,
+
+					style_args: ["2px"],
+					StyleOverrides: {
+						...titleStyle,
+						...StyleOverrides,
+					},
+				})}
+			>
 				<ToggleablePortal
 					node={<OutReachForm form_type={form_type} />}
 					styling={{
-						...linkStyle(),
-						...titleStyle,
+						textDecorationColor: "inherit",
 					}}
 					text={content}
 				/>
@@ -80,6 +101,37 @@ const sidebar_body = (
 	</p>
 );
 
+const sideb = (
+	<>
+		<ul>
+			<li>
+				<StyledLink
+					href="https://community.mindstone.com/events"
+					content="Join the Mindstone online events"
+				/>
+			</li>
+			<li>
+				<StyledLink
+					href="https://controlai.com/take-action/uk"
+					content="Take Action"
+				/>
+			</li>
+			<li>
+				<StyledLink
+					href="https://www.linkedin.com/in/joe-fennell-379466170"
+					content="Hear more from Joe on LinkedIn"
+				/>
+			</li>
+			<li>
+				<StyledLink
+					href="#"
+					content="Podcast COMING SOON"
+				/>
+			</li>
+		</ul>
+	</>
+);
+
 const CUBody = (
 	<div>
 		<StyledLink
@@ -100,45 +152,70 @@ const CUBody = (
 		/>
 	</div>
 );
-
+const LinkStyle: React.CSSProperties = {
+	fontSize: "2rem",
+	color: theme.primaryColor,
+};
+const FooterPStyle: React.CSSProperties = {
+	textAlign: "center",
+	color: theme.secondaryColor,
+};
 const contactFeatureCallouts = [
 	[
-		<StyledLinkToggle
-			content={`Book a free 20 minute chat to find out how we could
-							help you or your business`}
-			form_type="BookCall"
-		/>,
-	],
-	[
-		<StyledLinkToggle
-			content={`
-							Request an email of our services and offering and
-							keep up to date with AI Comaptible’s mailing list
+		<>
+			<StyledLinkToggle
+				content={`
+							Say Hello!
 						`}
-			form_type="EmailInquiry"
-		/>,
+				form_type="EmailInquiry"
+				StyleOverrides={LinkStyle}
+			/>
+
+			<p style={FooterPStyle}>
+				Request an email of our services and offering and keep up to
+				date with AI Comaptible’s mailing list
+			</p>
+		</>,
 	],
 	[
-		<StyledLinkToggle
-			content={`Buy 1-1 consultancy and training`}
-			form_type="BookService"
-		/>,
+		<>
+			<StyledLinkToggle
+				content={`Meet Us!`}
+				form_type="BookCall"
+				StyleOverrides={LinkStyle}
+			/>
+			<p style={FooterPStyle}>
+				Book a free 20 minute chat to find out how we could help you or
+				your business
+			</p>
+		</>,
+	],
+	[
+		<>
+			<StyledLinkToggle
+				content={`Book Us!`}
+				form_type="BookService"
+				StyleOverrides={LinkStyle}
+			/>
+			<p style={FooterPStyle}>Buy 1-1 consultancy and training</p>
+		</>,
 	],
 ];
 
 const contactPage: React.FC = () => (
 	<>
 		<SideBarCallingCard
-			components={[CUBody]}
+			components={[sidebar_body]}
+			header={<h2>Join The Conversation</h2>}
 			sideBar={{
-				components: [sidebar_body],
-				header: <h2>Join The Conversation</h2>,
+				components: [sideb],
+				header: <h2>Find Out More</h2>,
 			}}
 			footer={
 				<PointedtopHexagonFeatureGrid
 					FeatureCallouts={contactFeatureCallouts}
 					hexagon_args={{
-						colour: getTheme(0).backgroundColor,
+						colour: theme.backgroundColor,
 					}}
 					useVerticalAlignment={true}
 				/>

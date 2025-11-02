@@ -30,7 +30,7 @@
   "main": "server.js",
   "name": "server",
   "scripts": {
-    "build": "tsc && cp -r src/generated dist/",
+    "build": "rm -rf dist && tsc && cp -r src/generated dist/",
     "dev": "nodemon --exec node --loader ts-node/esm src/server.ts",
     "prisma": "dotenv -- npx prisma",
     "start": "node dist/server.js",
