@@ -83,7 +83,10 @@ const LoadingFC = () => (
 				background: dark_midnight_green,
 			}}
 		>
-			<img src={logo} />
+			<img
+				src={logo}
+				style={{ width: "200px" }}
+			/>
 		</div>
 	</>
 );

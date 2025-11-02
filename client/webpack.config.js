@@ -3,15 +3,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const webpack = require("webpack");
 require("dotenv").config(); // This loads the .env fil
 
-// Convert module.exports to a function that accepts env and argv
 module.exports = (env, argv) => {
-	// 1. Determine the mode and if it's a production build
 	const isProduction = argv.mode === "production";
 	const faviconRegex = /favicon|apple-touch-icon|android-chrome|manifest/i;
 
-	// 2. Return the configuration object
 	return {
-		// Use the mode passed from the CLI
 		mode: isProduction ? "production" : "development",
 
 		entry: path.resolve(__dirname, "src/index.tsx"),
@@ -34,15 +30,13 @@ module.exports = (env, argv) => {
 					open: true,
 					historyApiFallback: true,
 
-					// --- CRITICAL CHANGE HERE ---
 					proxy: [
 						{
-							context: ["/api"], // Specify the path to proxy
+							context: ["/api"],
 							target: "http://localhost:7878",
 							changeOrigin: true,
 						},
 					],
-					// --------------------------
 			  },
 		resolve: {
 			extensions: [".ts", ".tsx", ".js", ".jsx"],
@@ -112,11 +106,6 @@ module.exports = (env, argv) => {
 				template: "public/index.html",
 				favicon: "public/favicon.ico",
 			}),
-			// new webpack.DefinePlugin({
-			// 	"process.env.GOOGLE_CLIENT_ID": JSON.stringify(
-			// 		process.env.GOOGLE_CLIENT_ID
-			// 	),
-			// }),
 		],
 	};
 };
