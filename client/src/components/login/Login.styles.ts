@@ -35,7 +35,8 @@ const MenuStyle: React.CSSProperties = {
 const GoogleSignInContentStyle: React.CSSProperties = {
 	display: "flex",
 	alignItems: "center",
-	justifyContent: "center",
+	// justifyContent: "center",
+	justifyContent: "space-between",
 	padding: "10px 20px",
 	fontSize: "16px",
 	cursor: "pointer",

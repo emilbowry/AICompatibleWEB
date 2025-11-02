@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import googleSVG from "../../assets/googleNeutral.svg";
 import {
 	selectAuthStatus,
 	selectUser,
@@ -12,12 +13,17 @@ import {
 } from "./Login.styles";
 import { LoginStatus } from "./LoginStatus";
 import { LogOutButton } from "./LogOutButton";
-const SignInButtons: React.FC = () => (
+const SignInButtons: React.FC<{ provider?: string }> = ({
+	provider = "google",
+}) => (
 	<a
 		href="/api/auth/google/login"
 		style={GoogleSignInStyle}
 	>
-		<div style={GoogleSignInContentStyle}>Sign in with Google</div>
+		<div style={GoogleSignInContentStyle}>
+			{provider === "google" && <img src={googleSVG} />}Sign in with
+			Google
+		</div>
 	</a>
 );
 const AuthMenu: React.FC = () => {
