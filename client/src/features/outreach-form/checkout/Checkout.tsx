@@ -48,7 +48,9 @@ const CheckoutButton: React.FC = () => {
 			disabled={isDisabled}
 			onClick={handleInitiateCheckout}
 		>
-			<a {...link_props}>{isProcessing ? "Processing..." : "Buy Now"}</a>
+			<a {...(!isDisabled && link_props)}>
+				{isProcessing ? "Processing..." : "Buy Now"}
+			</a>
 		</button>
 	);
 };

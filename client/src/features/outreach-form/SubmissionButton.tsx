@@ -20,8 +20,8 @@ import { IOutreachFormFields } from "./OutReachForm.types";
 const useRequiredFields = (
 	form_type?: string,
 	remove_bools: boolean = false,
-	remove_text_areas: boolean = false,
-	remove_select: boolean = false
+	remove_text_areas: boolean = false
+	// remove_select: boolean = false
 ) => {
 	const currentInputs = [...getFields(), ...getFields(form_type)];
 
@@ -32,9 +32,9 @@ const useRequiredFields = (
 				remove_text_areas &&
 				config.type !== "checkbox" &&
 				remove_bools &&
-				config.type &&
-				remove_select &&
-				config.type !== "select"
+				config.type
+			// && remove_select &&
+			// config.type !== "select"
 		)
 		.map((config) => config.name);
 	return requiredFieldNames;
@@ -53,7 +53,7 @@ const useDirtyFields = (
 	form_type?: string,
 	remove_bools: boolean = false,
 	remove_text_areas: boolean = false,
-	remove_select: boolean = false,
+	// remove_select: boolean = false,
 	use_required_filter = true
 ) => {
 	const currentInputs = [...getFields(), ...getFields(form_type)];
@@ -69,9 +69,9 @@ const useDirtyFields = (
 						remove_text_areas &&
 						config.type !== "checkbox" &&
 						remove_bools &&
-						config.type &&
-						remove_select &&
-						config.type !== "select"
+						config.type
+					//  && remove_select &&
+					// config.type !== "select"
 				)
 				.map((config) => config.name)
 		: Object.keys(currentFields);
@@ -100,12 +100,17 @@ const useDirtyFields = (
 const useValidation = (form_type?: string) => {
 	const [err_state, setErrorState] = useState<string | undefined>(undefined);
 	const [selectorCheckResult, setSelectorCheckResult] = useState(false);
-	const requiredFieldNames = useRequiredFields(form_type, true, true, true);
+	const requiredFieldNames = useRequiredFields(
+		form_type,
+		true,
+		/* true, */
+		true
+	);
 	const allDirtyFieldNames = useDirtyFields(
 		form_type,
 		true,
 		true,
-		true,
+		// true,
 		true
 	);
 	const fields = useSelector((state: RootState) => state.outreachForm.fields);
