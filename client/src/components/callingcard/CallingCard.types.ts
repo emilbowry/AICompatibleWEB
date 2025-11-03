@@ -19,6 +19,7 @@ interface IContainerProps {
 }
 interface IGridBodyProps extends IContainerProps {
 	columnOverrides?: string;
+	styleOverrides?: React.CSSProperties;
 }
 interface ICallingCardProps {
 	components: ValidComponent[];

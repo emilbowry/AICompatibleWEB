@@ -49,6 +49,7 @@ type THexFCProps = {
 	useVerticalAlignment: boolean;
 	children?: React.ReactNode;
 	styles?: any;
+	_background?: string;
 };
 
 interface IHexObjState {

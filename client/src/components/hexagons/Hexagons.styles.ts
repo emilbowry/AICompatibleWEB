@@ -30,16 +30,32 @@ const FLATTOP_LEFT_CUTOUT =
 	"polygon(0 0,0 100%,100% 100%,50% 100%,0% 50%,50% 0%)";
 const FLATTOP_RIGHT_CUTOUT =
 	"polygon(100% 50%,100% 100%,50% 100%,100% 50%,50% 0%, 100% 0%)";
+
+const inner_point_left_cutout = "polygon(100% 0%, 100% 100%, 0% 75%, 0% 25%)";
+const inner_flat_left_cutout =
+	"polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 50%)";
+const inner_flat_right_cutout =
+	// "polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 50%)";
+	"polygon(0% 0%, 50% 0%, 100% 50%, 50% 100%, 0% 100%)";
+
+const inner_point_right_cutout = "polygon(0% 0%, 100% 25%, 100% 75%, 0% 100%)";
+
 const leftCutout = (usePointedTop: boolean) =>
 	usePointedTop ? POINTED_LEFT_CUTOUT : FLATTOP_LEFT_CUTOUT;
 const rightCutout = (usePointedTop: boolean) =>
 	usePointedTop ? POINTED_RIGHT_CUTOUT : FLATTOP_RIGHT_CUTOUT;
 
+const leftBoundingBG = (usePointedTop: boolean) =>
+	usePointedTop ? inner_point_left_cutout : inner_flat_left_cutout;
+const rightBoundingBG = (usePointedTop: boolean) =>
+	usePointedTop ? inner_point_right_cutout : inner_flat_right_cutout;
+
 const polyCutoutStyle = (
 	usePointedTop: boolean,
 	isLeft: boolean,
 	hex_shape_height_override: boolean | string | undefined,
-	hex_shape_width_override: boolean | string | undefined
+	hex_shape_width_override: boolean | string | undefined,
+	background?: string
 ): React.CSSProperties => {
 	const height = hex_shape_height_override
 		? typeof hex_shape_height_override === "string"
@@ -58,10 +74,17 @@ const polyCutoutStyle = (
 		shapeOutside: isLeft
 			? leftCutout(usePointedTop)
 			: rightCutout(usePointedTop),
+		// clipPath: inner_left_cutout,
+		clipPath: isLeft
+			? background && leftBoundingBG(usePointedTop)
+			: background && rightBoundingBG(usePointedTop),
 		shapeMargin: "5%",
 		float: isLeft ? "left" : "right",
 		height,
 		width,
+		// background: background,
+
+		// background: `linear-gradient(to right, #79C2D0, #C9E59F) fixed`,
 	};
 };
 

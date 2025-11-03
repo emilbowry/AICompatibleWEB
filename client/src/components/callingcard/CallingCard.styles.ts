@@ -5,6 +5,7 @@ import { border_gradient } from "../../styles";
 const GridBodyStyle: React.CSSProperties = {
 	borderImage: border_gradient,
 	display: "grid",
+	// background: "red",
 };
 
 const GridItemStyle: React.CSSProperties = {
@@ -12,6 +13,7 @@ const GridItemStyle: React.CSSProperties = {
 	width: "100%",
 	margin: 0,
 	padding: 0,
+	// background: "red",
 };
 const containerStyle: React.CSSProperties = {
 	position: "relative",
@@ -25,11 +27,13 @@ const SideBarBottomOverlapStyle: React.CSSProperties = {
 	paddingBottom: "20%",
 	marginBottom: "-20%",
 	zIndex: 10,
+	// background: "red",
 };
 const SideBarTopOverlapStyle: React.CSSProperties = {
 	paddingTop: "66%",
 	marginTop: "-66%",
-	zIndex: 5,
+	// zIndex: 5,
+	// background: "red",
 };
 const SideBarFullOverlapStyle: React.CSSProperties = {
 	...SideBarBottomOverlapStyle,

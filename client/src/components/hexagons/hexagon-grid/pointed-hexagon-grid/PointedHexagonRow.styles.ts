@@ -8,10 +8,12 @@ const WideLayoutContainerStyle: React.CSSProperties = {
 	width: "102%",
 	marginLeft: `-1.6%`,
 	alignItems: "center",
+	// background: "red",
 };
 
 const NarrowLayoutContainerStyle: React.CSSProperties = {
 	width: "100%",
+	// background: "red",
 };
 
 const NarrowTopRowStyle: React.CSSProperties = {

@@ -20,7 +20,7 @@ import {
 
 const CompWrapper: React.FC<ICallOutProps> = ({
 	content,
-	wrapper_style = {},
+	wrapper_style = { background: "red" },
 	noAos,
 }) =>
 	content ? (
@@ -44,44 +44,53 @@ const GridItem = ({
 	content ? (
 		<CompWrapper
 			content={content}
-			wrapper_style={GridItemStyle}
+			wrapper_style={{
+				...GridItemStyle,
+			}}
 			key={item_key}
 			noAos={noAos}
 		/>
 	) : (
 		<div
-			style={GridItemStyle}
+			style={{ ...GridItemStyle }}
 			key={item_key}
 		/>
 	);
 const GridBody: React.FC<IGridBodyProps> = ({
 	components,
-	styleOverrides = {},
 	columnOverrides = undefined,
 	noAos,
-}) => (
-	<div
-		className={"aos-ignore"}
-		style={{
-			...GridBodyStyle,
-			...{
-				gridTemplateColumns:
-					columnOverrides ?? `repeat(${components.length}, 1fr)`,
-			},
-			...styleOverrides,
-		}}
-	>
-		{components.map((item, index) => (
-			<React.Fragment key={index}>
-				<GridItem
-					content={item}
-					item_key={index}
-					noAos={noAos}
-				/>
-			</React.Fragment>
-		))}
-	</div>
-);
+}) => {
+	return (
+		<div
+			className={"aos-ignore"}
+			style={{
+				...GridBodyStyle,
+				...{
+					gridTemplateColumns:
+						columnOverrides ?? `repeat(${components.length}, 1fr)`,
+				},
+				// ...styleOverrides,
+				// background: "red",
+			}}
+		>
+			{components.map((item, index) => (
+				<React.Fragment key={index}>
+					<GridItem
+						content={item}
+						item_key={index}
+						noAos={noAos}
+						styleOverrides={
+							{
+								// background: "red",
+							}
+						}
+					/>
+				</React.Fragment>
+			))}
+		</div>
+	);
+};
 
 const CallingCard: React.FC<
 	ICallingCardProps & {
@@ -110,39 +119,48 @@ const CallingCard: React.FC<
 					...containerStyle,
 					color: theme.secondaryColor,
 					backgroundColor: theme.backgroundColor,
-					padding: !fullSpread ? "2%" : "0",
+					// padding: !fullSpread ? "2%" : "0",
 					borderTopLeftRadius: isPageElement ? "80px 60px" : "",
 					...styleOverrides,
 				}}
 			>
-				<Header
-					content={header}
-					wrapper_style={{ color: theme.primaryColor }}
-				/>
+				<div style={{ margin: !fullSpread ? "2%" : "0%" }}>
+					<Header
+						content={header}
+						wrapper_style={{
+							color: theme.primaryColor,
+							// background: styleOverrides.background,
+						}}
+					/>
 
-				<GridBody
-					components={components}
-					columnOverrides={
-						isPageElement ? `${100 / 3}% ${200 / 3}%` : undefined
-					}
-					noAos={noAos}
-					styleOverrides={
-						isPageElement || narrowPageEl
-							? {
-									marginTop: "1%",
-									paddingTop: "2%",
-									borderTop: header ? `4px solid` : "",
-									...gridOverriders,
-							  }
-							: {
-									padding: !fullSpread ? "2%" : "0",
-									borderRadius: !fullSpread
-										? "50px 10px"
-										: "",
-									...gridOverriders,
-							  }
-					}
-				/>
+					<GridBody
+						components={components}
+						columnOverrides={
+							isPageElement
+								? `${100 / 3}% ${200 / 3}%`
+								: undefined
+						}
+						noAos={noAos}
+						styleOverrides={
+							isPageElement || narrowPageEl
+								? {
+										marginTop: "1%",
+										paddingTop: "2%",
+										borderTop: header ? `4px solid` : "",
+										...gridOverriders,
+										// background: styleOverrides.background,
+								  }
+								: {
+										// padding: !fullSpread ? "2%" : "0",
+										borderRadius: !fullSpread
+											? "50px 10px"
+											: "",
+										...gridOverriders,
+										// background: styleOverrides.background,
+								  }
+						}
+					/>
+				</div>
 				{children}
 			</div>
 			<Footer content={footer} />
@@ -158,17 +176,30 @@ const CallingCard: React.FC<
 */
 
 const SideBarCallingCard: React.FC<
-	ICallingCardProps & { sideBar?: ICallingCardProps }
+	ICallingCardProps & {
+		sideBar?: ICallingCardProps;
+		fullSpreadSideBarNarrow?: boolean;
+	}
 > = (props) => {
-	const { components, isPageElement = true, sideBar } = props;
+	const {
+		components,
+		isPageElement = true,
+		sideBar,
+		fullSpreadSideBarNarrow = false,
+	} = props;
 	const isNarrow = useNarrowLayout();
 
 	const Child = () =>
 		sideBar ? (
 			<CallingCard
 				{...sideBar}
+				fullSpread={fullSpreadSideBarNarrow}
 				index={props.index}
 				noAos={true}
+				styleOverrides={{
+					// background: props.styleOverrides?.background,
+					background: "transparent",
+				}}
 			/>
 		) : (
 			<></>
@@ -187,7 +218,13 @@ const SideBarCallingCard: React.FC<
 			{...props}
 			components={
 				sideBar
-					? [<Child />, <GridBody components={components} />]
+					? [
+							<Child />,
+							<GridBody
+								components={components}
+								// styleOverrides={}
+							/>,
+					  ]
 					: components
 			}
 			isPageElement={isPageElement}

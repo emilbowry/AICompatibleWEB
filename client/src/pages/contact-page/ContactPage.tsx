@@ -1,6 +1,6 @@
 // src/pages/contactpage/ContactPage.tsx
 
-import React from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 import { SideBarCallingCard } from "../../components/callingcard/CallingCard";
 import { Page } from "../../features/page/Page";
@@ -8,6 +8,7 @@ import { Page } from "../../features/page/Page";
 import { PointedtopHexagonFeatureGrid } from "../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
 import { bgwhite } from "../../utils/defaultColours";
 
+import ReactDOM from "react-dom";
 import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
 import { useDynamicLink } from "../../hooks/DynamicLink";
@@ -40,7 +41,11 @@ const StyledLink: React.FC<{
 				style={
 					ignore_style
 						? {}
-						: { ...linkStyle(isUnderlined), ...titleStyle }
+						: {
+								...linkStyle(isUnderlined),
+								...titleStyle,
+								color: theme.secondaryColor,
+						  }
 				}
 			>
 				{formatComponent(content)}
@@ -134,6 +139,110 @@ const sideb = (
 	</>
 );
 
+import bgs from "../../assets/bgsquiggle.png";
+const useFullWidthBackground = (
+	contentRef: React.RefObject<HTMLElement | null>,
+	isVisible: boolean,
+	background: string = "red",
+	backgroundZIndex: number = 1000,
+	container_id?: string
+) => {
+	const sidebarContentEl = (
+		container_id ? document.getElementById(container_id) : document.body
+	) as HTMLElement;
+	// const a =document!.getElementById(container_id)
+	const [rect, setRect] = useState<DOMRect | null>(null); //
+
+	useLayoutEffect(() => {
+		if (contentRef.current && isVisible) {
+			const currentRect = contentRef.current.getBoundingClientRect();
+			setRect(currentRect);
+		}
+	}, [contentRef, isVisible]);
+
+	if (!isVisible || !rect) return null;
+
+	return ReactDOM.createPortal(
+		<div
+			style={{
+				position: "absolute",
+				top: "0",
+				// left: 0,
+				width: "50%",
+				height: "50%",
+				// height: rect.height,
+				// height: "100px",
+				backgroundSize: "cover",
+				// backgroundSize: "100%",
+				background: background,
+				zIndex: backgroundZIndex,
+				opacity: 1,
+			}}
+		/>,
+		sidebarContentEl // Portal destination
+	);
+};
+const Sideb2: React.FC = () => {
+	const contentRef = useRef<HTMLDivElement>(null);
+
+	// Use the hook to render the full-width background
+	const backgroundPortal = useFullWidthBackground(
+		contentRef,
+		true, // isVisible
+		// "red" // color
+		`url(${bgs})`
+	);
+
+	return (
+		<div
+			ref={contentRef}
+			style={{
+				position: "relative",
+
+				// background: `linear-gradient(to right, #79C2D0, #C9E59F)`,
+
+				padding: "0 2% 2%",
+			}}
+		>
+			<h2 style={{ padding: "2%", color: theme.primaryColor }}>
+				Find Out More
+			</h2>
+			{backgroundPortal}
+			<ul
+				style={{
+					position: "relative",
+					// color:,
+				}}
+			>
+				<li>
+					<StyledLink
+						href="https://community.mindstone.com/events"
+						content="Join the Mindstone online events"
+					/>
+				</li>
+				<li>
+					<StyledLink
+						href="https://controlai.com/take-action/uk"
+						content="Take Action"
+					/>
+				</li>
+				<li>
+					<StyledLink
+						href="https://www.linkedin.com/in/joe-fennell-379466170"
+						content="Hear more from Joe on LinkedIn"
+					/>
+				</li>
+				<li>
+					<StyledLink
+						href="#"
+						content="Podcast COMING SOON"
+					/>
+				</li>
+			</ul>
+		</div>
+		// </div>
+	);
+};
 const CUBody = (
 	<div>
 		<StyledLink
@@ -204,23 +313,28 @@ const contactPage: React.FC = () => (
 			components={[sidebar_body]}
 			header={<h2>Join The Conversation</h2>}
 			sideBar={{
-				components: [sideb],
-				header: <h2>Find Out More</h2>,
+				components: [<Sideb2 />],
+				// header: <h2 style={{ padding: "2%" }}>Find Out More</h2>,
 			}}
 			footer={
 				<PointedtopHexagonFeatureGrid
 					FeatureCallouts={contactFeatureCallouts}
 					hexagon_args={{
 						colour: theme.backgroundColor,
+						// colour: "transparent",
 					}}
+					_background="linear-gradient(to right bottom, #79C2D0, #C9E59F) fixed"
 					// useVerticalAlignment={true}
 				/>
 			}
+			fullSpreadSideBarNarrow={true}
 			styleOverrides={{
 				backgroundColor: bgwhite,
+				background: `linear-gradient(to right bottom, #79C2D0, #C9E59F) fixed`,
 				paddingBottom: "20%",
 				marginBottom: "-20%",
 				zIndex: 0,
+				overflow: "visible",
 			}}
 		/>
 	</>

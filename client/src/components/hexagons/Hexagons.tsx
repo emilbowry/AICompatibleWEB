@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from "react";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
 	formatComponent,
@@ -50,6 +51,9 @@ const HexSVG: React.FC<{
 	return (
 		<svg
 			style={svgStyle(styles)}
+			// style={{
+			// 	// background: `linear-gradient(to right, #79C2D0, #C9E59F) fixed`,
+			// }}
 			viewBox={
 				isPointedTop
 					? `${100 - (200 * Math.sqrt(3)) / 4} -100 ${
@@ -72,7 +76,11 @@ const ComposedHexSVG: THexFC = ({ styles }) => {
 	const { defs, paths } = construct();
 
 	return (
-		<HexSVG styles={styles}>
+		<HexSVG
+			styles={{
+				...styles,
+			}}
+		>
 			<defs>
 				<Map elements={defs} />
 			</defs>
@@ -87,7 +95,10 @@ const ContentWrapper: React.FC<{
 	const { setContentRef } = useContext(HexagonContext);
 
 	return (
-		<div ref={setContentRef}>
+		<div
+			ref={setContentRef}
+			// style={{}}
+		>
 			<div style={ELWrapperStyle}>{children}</div>
 		</div>
 	);
@@ -152,8 +163,62 @@ const BoundingShape: React.FC<{
 	);
 };
 
+const FixedBackgroundClipper: React.FC<{
+	background: string;
+	backgroundSize?: string;
+	backgroundPosition?: string;
+	left?: number;
+	top?: number;
+}> = ({ background, backgroundSize = "100vw 100vh", left = 0, top = 0 }) => {
+	const ref = useRef<HTMLDivElement>(null);
+	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
+	const { usePointedTop } = useContext(HexagonContext);
+	useLayoutEffect(() => {
+		const updateBackgroundPosition = () => {
+			if (ref.current) {
+				const rect = ref.current.getBoundingClientRect();
+				const newPosition = `${-rect.left + left}px ${
+					-rect.top + top
+				}px`;
+				setBgPosition(newPosition);
+			}
+		};
+
+		updateBackgroundPosition();
+
+		window.addEventListener("scroll", updateBackgroundPosition);
+		window.addEventListener("resize", updateBackgroundPosition);
+
+		return () => {
+			window.removeEventListener("scroll", updateBackgroundPosition);
+			window.removeEventListener("resize", updateBackgroundPosition);
+		};
+	}, []);
+
+	return (
+		<div
+			ref={ref}
+			style={{
+				position: "absolute",
+				height: "100%",
+				clipPath: usePointedTop ? point_path : flat_path,
+				background,
+				// background: "transparent",
+				backgroundSize,
+				backgroundPosition: bgPosition,
+				width: "100%",
+			}}
+		/>
+	);
+};
+const flat_path =
+	"polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%,75% 100%, 25% 100% )";
+const point_path =
+	"polygon(0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75% )";
+
 const CenterAlignedElement: THexFC = ({
 	element,
+	_background,
 	useVerticalAlignment,
 	hex_shape_height_override,
 	hex_shape_width_override,
@@ -163,10 +228,19 @@ const CenterAlignedElement: THexFC = ({
 	return (
 		element && (
 			<div
-				style={HexagonalContentStyle}
+				style={{
+					...HexagonalContentStyle,
+				}}
 				ref={setContainerRef}
 			>
-				<div style={ElementWrapperStyle}>
+				{_background && (
+					<FixedBackgroundClipper background={_background} />
+				)}
+				<div
+					style={{
+						...ElementWrapperStyle,
+					}}
+				>
 					<BoundingShape
 						hex_shape_height_override={hex_shape_height_override}
 						hex_shape_width_override={hex_shape_width_override}
@@ -174,6 +248,7 @@ const CenterAlignedElement: THexFC = ({
 					<div
 						style={{
 							...ElementSectionStyle,
+
 							paddingTop: useVerticalAlignment
 								? `calc(${
 										(container_height - content_height) / 2
@@ -325,6 +400,8 @@ class Hexagon
 	construct() {
 		const { color, borderColor, borderWidth } =
 			this.santiseOptionalParameters();
+		const _reformed_color =
+			this.props._background === undefined ? color : "transparent";
 		return {
 			defs: !IS_CHROME
 				? [
@@ -340,7 +417,7 @@ class Hexagon
 				<path
 					d={this.hex_path}
 					mask={!IS_CHROME ? "url(#hexagon)" : ""}
-					fill={color}
+					fill={_reformed_color}
 					stroke={borderColor}
 					strokeWidth={borderWidth}
 				/>,
@@ -356,6 +433,7 @@ class Hexagon
 			useVerticalAlignment = false,
 			hex_shape_height_override = undefined,
 			hex_shape_width_override = undefined,
+			_background = undefined,
 			...styleProps
 		} = this.props;
 		return (
@@ -365,6 +443,7 @@ class Hexagon
 
 					<CenterAlignedElement
 						element={element}
+						_background={_background}
 						useVerticalAlignment={useVerticalAlignment}
 						hex_shape_height_override={hex_shape_height_override}
 						hex_shape_width_override={hex_shape_width_override}
