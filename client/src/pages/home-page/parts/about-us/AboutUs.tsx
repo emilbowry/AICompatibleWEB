@@ -16,7 +16,7 @@ import { partners } from "../../../../components/partnership-bar/Partner";
 import { PartnershipWall } from "../../../../components/partnership-bar/PartnershipWall";
 import { IS_CHROME } from "../../../../hooks/BrowserDependant";
 import { VOLUME_CONSTANT_SIZE } from "../../../../styles";
-import { bgwhite } from "../../../../utils/defaultColours";
+import { bgwhite, white } from "../../../../utils/defaultColours";
 import { BoxedImage, getImageEl } from "../../../../utils/reactUtils";
 import {
 	footerStyle,
@@ -112,6 +112,9 @@ const aboutUsFeatureCallouts = [
 	],
 ];
 
+// const bg = `linear-gradient(to right, ${white}  0%, ${alt_bgwhite} 100%) fixed`;
+const bg2 = `linear-gradient(to right, rgb(12 192 223 / 10%), rgb(255 222 89 / 10%)),
+		 ${white} fixed`;
 const AboutUsCallingCard: React.FC = () => {
 	return (
 		<>
@@ -142,11 +145,13 @@ const AboutUsCallingCard: React.FC = () => {
 						hexagon_args={hStyle}
 						theme={-1}
 						hex_shape_height_override={IS_CHROME && "10%"}
+						_background={bg2}
 					/>
 				}
 				styleOverrides={{
 					backgroundColor: bgwhite,
 					...SideBarBottomOverlapStyle,
+					background: bg2,
 				}}
 			/>
 		</>

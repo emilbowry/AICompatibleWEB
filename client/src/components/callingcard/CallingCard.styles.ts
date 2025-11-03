@@ -32,7 +32,7 @@ const SideBarBottomOverlapStyle: React.CSSProperties = {
 const SideBarTopOverlapStyle: React.CSSProperties = {
 	paddingTop: "66%",
 	marginTop: "-66%",
-	// zIndex: 5,
+	zIndex: 5,
 	// background: "red",
 };
 const SideBarFullOverlapStyle: React.CSSProperties = {

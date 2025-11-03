@@ -124,7 +124,10 @@ const CallingCard: React.FC<
 					...styleOverrides,
 				}}
 			>
-				<div style={{ margin: !fullSpread ? "2%" : "0%" }}>
+				<div
+					style={{ margin: !fullSpread ? "2%" : "0%" }}
+					className={"aos-ignore"}
+				>
 					<Header
 						content={header}
 						wrapper_style={{

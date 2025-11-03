@@ -10,7 +10,7 @@ import { CallingCard } from "../../../../components/callingcard/CallingCard";
 import { SideBarTopOverlapStyle } from "../../../../components/callingcard/CallingCard.styles";
 import { useDynamicLink } from "../../../../hooks/DynamicLink";
 import { VOLUME_CONSTANT_SIZE } from "../../../../styles";
-import { bgwhite } from "../../../../utils/defaultColours";
+import { bgwhite, white } from "../../../../utils/defaultColours";
 import { BoxedImage } from "../../../../utils/reactUtils";
 
 const F1 = () => (
@@ -123,7 +123,8 @@ const F3 = () => (
 		</p>
 	</div>
 );
-
+const bg2 = `linear-gradient(to right, rgb(255 222 89 / 10%), rgb(12 192 223 / 10%)),
+		 ${white} fixed`;
 const KeyPartnersCallingCard: React.FC = () => {
 	return (
 		<>
@@ -134,6 +135,7 @@ const KeyPartnersCallingCard: React.FC = () => {
 					backgroundColor: bgwhite,
 					...SideBarTopOverlapStyle,
 					zIndex: 0,
+					background: bg2,
 				}}
 				footer={
 					<div
@@ -142,7 +144,7 @@ const KeyPartnersCallingCard: React.FC = () => {
 							{
 								width: "100%",
 								height: "50px",
-								background: bgwhite,
+								background: bg2,
 								zIndex: "100",
 								["--borderrad"]: `calc(4*${VOLUME_CONSTANT_SIZE})`,
 

@@ -10,7 +10,10 @@ import { SideBarCallingCard } from "../../../../components/callingcard/CallingCa
 import { SideBarFullOverlapStyle } from "../../../../components/callingcard/CallingCard.styles";
 import { PointedtopHexagonFeatureGrid } from "../../../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
 import { getTheme, VOLUME_CONSTANT_SIZE } from "../../../../styles";
-import { midnight_green } from "../../../../utils/defaultColours";
+import {
+	dark_midnight_green,
+	midnight_green,
+} from "../../../../utils/defaultColours";
 import { BoxedImage } from "../../../../utils/reactUtils";
 import {
 	FounderLetterWrapperStyle,
@@ -172,6 +175,13 @@ const FounderLetter: React.FC<{ index?: number }> = ({ index = 0 }) => {
 	return letter;
 };
 
+// maskImage: "",
+
+const bg = `linear-gradient(to right, ${dark_midnight_green}  0%, ${midnight_green} 100%) fixed`;
+
+// const bg2 = `${
+// 	getTheme(1).backgroundColor
+// } linear-gradient(to bottom right,transparent 10%, rgb(255,255,255,0.1) 50%, transparent 90%) 100vw 300vh`;
 const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 	<>
 		<SideBarCallingCard
@@ -184,11 +194,17 @@ const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 			footer={
 				<PointedtopHexagonFeatureGrid
 					FeatureCallouts={impactFeatureCallouts}
-					hexagon_args={{ colour: getTheme(index).backgroundColor }}
+					hexagon_args={{ colour: "white" }}
+					// _background={getTheme(index).backgroundColor}
+					_background={bg}
 				/>
 			}
 			index={1}
-			styleOverrides={SideBarFullOverlapStyle}
+			styleOverrides={{
+				...SideBarFullOverlapStyle,
+				// background: getTheme(index).backgroundColor,
+				background: bg,
+			}}
 		/>
 	</>
 );

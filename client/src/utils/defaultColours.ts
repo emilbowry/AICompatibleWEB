@@ -1,5 +1,5 @@
 // src/utils/defaultColours.ts
-
+const white = "#FFFFFF";
 /* const black = "#000000";
 const white = "#FFFFFF"; */
 const logo_yellow = "#FFDE59";
@@ -21,10 +21,13 @@ const orange = "#FF6F2D";
 const grey = " #81989C";
 const light_grey = " #C0CCCE"; */
 const bgwhite = "#F0FCFD";
+const alt_bgwhite = "#ffffffff";
+
 const title_font_colour = midnight_green;
 /* const body_font_colour = l_midnight_green;
 const subtitle_colour = logo_blue; */
 export {
+	alt_bgwhite,
 	bgwhite,
 	dark_midnight_green,
 	dark_mix_green,
@@ -37,4 +40,5 @@ export {
 	o_mix_green,
 	purple,
 	title_font_colour,
+	white,
 };

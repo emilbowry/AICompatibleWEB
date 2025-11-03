@@ -163,23 +163,49 @@ const BoundingShape: React.FC<{
 	);
 };
 
+const ActualDocHeight = "-70vh"; // i have a footer that extands about this much
 const FixedBackgroundClipper: React.FC<{
 	background: string;
 	backgroundSize?: string;
 	backgroundPosition?: string;
 	left?: number;
 	top?: number;
-}> = ({ background, backgroundSize = "100vw 100vh", left = 0, top = 0 }) => {
+	isBackgroundFixed?: boolean;
+}> = ({
+	background,
+	backgroundSize = "100vw 100vh",
+	left = 0,
+	top = 0,
+	isBackgroundFixed = true,
+}) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
 	const { usePointedTop } = useContext(HexagonContext);
+
 	useLayoutEffect(() => {
 		const updateBackgroundPosition = () => {
+			let finalOffsetX: number;
+			let finalOffsetY: number;
+
 			if (ref.current) {
+				// if (isBackgroundFixed) {
 				const rect = ref.current.getBoundingClientRect();
-				const newPosition = `${-rect.left + left}px ${
-					-rect.top + top
-				}px`;
+
+				const baseOffsetX = -rect.left;
+				const baseOffsetY = -rect.top;
+
+				finalOffsetX = baseOffsetX + left;
+				finalOffsetY = baseOffsetY + top;
+				if (!isBackgroundFixed) {
+					/* currently broken */
+					const docOffsetX = ref.current.offsetLeft;
+					// const docOffsetY = ref.current.offsetTop;
+					const sy = window.scrollY;
+					finalOffsetX = docOffsetX + finalOffsetX;
+					finalOffsetY = -sy + -rect.top;
+				}
+
+				const newPosition = `${finalOffsetX}px calc(${finalOffsetY}px)`;
 				setBgPosition(newPosition);
 			}
 		};
@@ -193,8 +219,7 @@ const FixedBackgroundClipper: React.FC<{
 			window.removeEventListener("scroll", updateBackgroundPosition);
 			window.removeEventListener("resize", updateBackgroundPosition);
 		};
-	}, []);
-
+	}, [isBackgroundFixed, left, top]);
 	return (
 		<div
 			ref={ref}
@@ -205,7 +230,9 @@ const FixedBackgroundClipper: React.FC<{
 				background,
 				// background: "transparent",
 				backgroundSize,
+				// backgroundPosition: bgPosition,
 				backgroundPosition: bgPosition,
+
 				width: "100%",
 			}}
 		/>
