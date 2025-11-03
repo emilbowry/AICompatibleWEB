@@ -1,6 +1,6 @@
 // src/pages/contactpage/ContactPage.tsx
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 
 import { SideBarCallingCard } from "../../components/callingcard/CallingCard";
 import { Page } from "../../features/page/Page";
@@ -8,7 +8,6 @@ import { Page } from "../../features/page/Page";
 import { PointedtopHexagonFeatureGrid } from "../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
 import { bgwhite } from "../../utils/defaultColours";
 
-import ReactDOM from "react-dom";
 import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
 import { useDynamicLink } from "../../hooks/DynamicLink";
@@ -139,59 +138,58 @@ const sideb = (
 	</>
 );
 
-import bgs from "../../assets/bgsquiggle.png";
-const useFullWidthBackground = (
-	contentRef: React.RefObject<HTMLElement | null>,
-	isVisible: boolean,
-	background: string = "red",
-	backgroundZIndex: number = 1000,
-	container_id?: string
-) => {
-	const sidebarContentEl = (
-		container_id ? document.getElementById(container_id) : document.body
-	) as HTMLElement;
-	// const a =document!.getElementById(container_id)
-	const [rect, setRect] = useState<DOMRect | null>(null); //
+// const useFullWidthBackground = (
+// 	contentRef: React.RefObject<HTMLElement | null>,
+// 	isVisible: boolean,
+// 	background: string = "red",
+// 	backgroundZIndex: number = 1000,
+// 	container_id?: string
+// ) => {
+// 	const sidebarContentEl = (
+// 		container_id ? document.getElementById(container_id) : document.body
+// 	) as HTMLElement;
+// 	// const a =document!.getElementById(container_id)
+// 	const [rect, setRect] = useState<DOMRect | null>(null); //
 
-	useLayoutEffect(() => {
-		if (contentRef.current && isVisible) {
-			const currentRect = contentRef.current.getBoundingClientRect();
-			setRect(currentRect);
-		}
-	}, [contentRef, isVisible]);
+// 	useLayoutEffect(() => {
+// 		if (contentRef.current && isVisible) {
+// 			const currentRect = contentRef.current.getBoundingClientRect();
+// 			setRect(currentRect);
+// 		}
+// 	}, [contentRef, isVisible]);
 
-	if (!isVisible || !rect) return null;
+// 	if (!isVisible || !rect) return null;
 
-	return ReactDOM.createPortal(
-		<div
-			style={{
-				position: "absolute",
-				top: "0",
-				// left: 0,
-				width: "50%",
-				height: "50%",
-				// height: rect.height,
-				// height: "100px",
-				backgroundSize: "cover",
-				// backgroundSize: "100%",
-				background: background,
-				zIndex: backgroundZIndex,
-				opacity: 1,
-			}}
-		/>,
-		sidebarContentEl // Portal destination
-	);
-};
+// 	return ReactDOM.createPortal(
+// 		<div
+// 			style={{
+// 				position: "absolute",
+// 				top: "0",
+// 				// left: 0,
+// 				width: "50%",
+// 				height: "50%",
+// 				// height: rect.height,
+// 				// height: "100px",
+// 				backgroundSize: "cover",
+// 				// backgroundSize: "100%",
+// 				background: background,
+// 				zIndex: backgroundZIndex,
+// 				opacity: 1,
+// 			}}
+// 		/>,
+// 		sidebarContentEl // Portal destination
+// 	);
+// };
 const Sideb2: React.FC = () => {
 	const contentRef = useRef<HTMLDivElement>(null);
 
-	// Use the hook to render the full-width background
-	const backgroundPortal = useFullWidthBackground(
-		contentRef,
-		true, // isVisible
-		// "red" // color
-		`url(${bgs})`
-	);
+	// // Use the hook to render the full-width background
+	// const backgroundPortal = useFullWidthBackground(
+	// 	contentRef,
+	// 	true, // isVisible
+	// 	// "red" // color
+	// 	`url(${bgs})`
+	// );
 
 	return (
 		<div
@@ -207,7 +205,7 @@ const Sideb2: React.FC = () => {
 			<h2 style={{ padding: "2%", color: theme.primaryColor }}>
 				Find Out More
 			</h2>
-			{backgroundPortal}
+			{/* {backgroundPortal} */}
 			<ul
 				style={{
 					position: "relative",
