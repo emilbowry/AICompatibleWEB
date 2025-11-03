@@ -321,7 +321,10 @@ const contactPage: React.FC = () => (
 						colour: theme.backgroundColor,
 						// colour: "transparent",
 					}}
-					_background="linear-gradient(to right bottom, #79C2D0, #C9E59F) fixed"
+					_background="linear-gradient(to right bottom, #79C2D0, #C9E59F)"
+					// _background={`linear-gradient(to bottom right, black, white)`}
+					_background_attached={false}
+					_background_size={`100vw 150vh`}
 					// useVerticalAlignment={true}
 				/>
 			}
@@ -329,6 +332,8 @@ const contactPage: React.FC = () => (
 			styleOverrides={{
 				backgroundColor: bgwhite,
 				background: `linear-gradient(to right bottom, #79C2D0, #C9E59F) fixed`,
+				// background: `linear-gradient(to bottom right, black, white) fixed`,
+				backgroundSize: `100vw 150vh`,
 				paddingBottom: "20%",
 				marginBottom: "-20%",
 				zIndex: 0,

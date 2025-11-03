@@ -13,7 +13,7 @@ import { bulb, bullseye, pencil } from "../../components/callingcard/graphics";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { generateGradient } from "../../styles";
-import { bgwhite } from "../../utils/defaultColours";
+import { bgwhite, white } from "../../utils/defaultColours";
 import { BoxedImage } from "../../utils/reactUtils";
 import {
 	BlurBackgroundStyle,
@@ -126,7 +126,8 @@ const RowHeader: React.FC<{
 const RowContent: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 	<p style={RowContentStyle}>{children}</p>
 );
-
+const bg2 = `linear-gradient(to bottom, rgb(255 222 89 / 20%) 30%, rgb(12 192 223 / 20%) 30%),
+		 ${white} fixed`;
 const getRows = (isNarrow = false) => {
 	const colours = generateGradient(TimelineData.length).reverse();
 

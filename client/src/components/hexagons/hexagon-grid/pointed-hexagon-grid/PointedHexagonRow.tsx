@@ -66,12 +66,16 @@ const PointedtopHexagonFeatureGrid: React.FC<
 	PointedtopHexagonFeatureGridProps & {
 		hex_shape_height_override?: boolean | string;
 		_background?: string;
+		_background_attached?: boolean;
+		_background_size?: string;
 	}
 > = ({
 	FeatureCallouts,
 	hexagon_args,
 	useVerticalAlignment = false,
 	_background,
+	_background_attached = false,
+	_background_size = "100vw 150vh",
 
 	hex_shape_height_override = undefined,
 }) => {
@@ -81,6 +85,8 @@ const PointedtopHexagonFeatureGrid: React.FC<
 				key={index}
 				args={hexagon_args}
 				_background={_background}
+				_background_attached={_background_attached}
+				_background_size={_background_size}
 				element={calloutProps}
 				opacity={1}
 				useVerticalAlignment={useVerticalAlignment}

@@ -1,6 +1,12 @@
-import React, { createContext, useContext } from "react";
+import React, {
+	createContext,
+	useContext,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { VISIBLE_TITLEBAR_HEIGHT } from "../../features/titlebar/TitleBar.consts";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
 	formatComponent,
@@ -163,49 +169,39 @@ const BoundingShape: React.FC<{
 	);
 };
 
-const ActualDocHeight = "-70vh"; // i have a footer that extands about this much
 const FixedBackgroundClipper: React.FC<{
 	background: string;
-	backgroundSize?: string;
+	// backgroundSize?: string;
 	backgroundPosition?: string;
 	left?: number;
 	top?: number;
-	isBackgroundFixed?: boolean;
+	top_offset_str?: string;
+	isContained?: boolean;
+	_background_size?: string;
 }> = ({
 	background,
-	backgroundSize = "100vw 100vh",
+	_background_size: backgroundSize = "100vw 200vh",
 	left = 0,
 	top = 0,
-	isBackgroundFixed = true,
+	isContained = false,
+	// top_offset_str = `${VISIBLE_TITLEBAR_HEIGHT}vh`,
 }) => {
+	// const isContained = false;
 	const ref = useRef<HTMLDivElement>(null);
 	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
 	const { usePointedTop } = useContext(HexagonContext);
-
 	useLayoutEffect(() => {
 		const updateBackgroundPosition = () => {
-			let finalOffsetX: number;
-			let finalOffsetY: number;
-
 			if (ref.current) {
-				// if (isBackgroundFixed) {
 				const rect = ref.current.getBoundingClientRect();
 
-				const baseOffsetX = -rect.left;
-				const baseOffsetY = -rect.top;
-
-				finalOffsetX = baseOffsetX + left;
-				finalOffsetY = baseOffsetY + top;
-				if (!isBackgroundFixed) {
-					/* currently broken */
-					const docOffsetX = ref.current.offsetLeft;
-					// const docOffsetY = ref.current.offsetTop;
-					const sy = window.scrollY;
-					finalOffsetX = docOffsetX + finalOffsetX;
-					finalOffsetY = -sy + -rect.top;
-				}
-
-				const newPosition = `${finalOffsetX}px calc(${finalOffsetY}px)`;
+				const top_offset =
+					-rect.top + top - +isContained * window.scrollY;
+				const left_offset =
+					-rect.left + left - +isContained * window.scrollX;
+				const newPosition = `calc(${left_offset}px) calc(${top_offset}px + ${
+					isContained ? VISIBLE_TITLEBAR_HEIGHT : 0
+				}vh)`;
 				setBgPosition(newPosition);
 			}
 		};
@@ -219,7 +215,8 @@ const FixedBackgroundClipper: React.FC<{
 			window.removeEventListener("scroll", updateBackgroundPosition);
 			window.removeEventListener("resize", updateBackgroundPosition);
 		};
-	}, [isBackgroundFixed, left, top]);
+	}, [isContained]);
+
 	return (
 		<div
 			ref={ref}
@@ -232,12 +229,82 @@ const FixedBackgroundClipper: React.FC<{
 				backgroundSize,
 				// backgroundPosition: bgPosition,
 				backgroundPosition: bgPosition,
+				backgroundAttachment: "fixed",
 
 				width: "100%",
 			}}
 		/>
 	);
 };
+
+// const FixedBackgroundClipper: React.FC<{
+// 	background: string;
+// 	backgroundSize?: string;
+// 	backgroundPosition?: string;
+// 	left?: number;
+// 	top?: number;
+// 	isBackgroundFixed?: boolean;
+// }> = ({
+// 	background,
+// 	backgroundSize = "100vw 150vh",
+// 	left = 0,
+// 	top = 0,
+// 	isBackgroundFixed = false,
+// }) => {
+// 	const ref = useRef<HTMLDivElement>(null);
+// 	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
+// 	const { usePointedTop } = useContext(HexagonContext);
+// 	// const _docheight = window.innerHeight;
+
+// 	useLayoutEffect(() => {
+// 		const updateBackgroundPosition = () => {
+// 			// const docheight = window.innerHeight;
+// 			if (ref.current) {
+// 				// if (isBackgroundFixed) {
+// 				console.log(ref.current.offsetTop);
+
+// 				const rect = ref.current.getBoundingClientRect();
+
+// 				const offsetX =
+// 					-rect.left +
+// 					left +
+// 					+!isBackgroundFixed * window.scrollX +
+// 					0 * ref.current.offsetLeft;
+// 				const offsetY =
+// 					-rect.top - +!isBackgroundFixed * window.scrollY + top;
+
+// 				const newPosition = `${offsetX}px calc(${VISIBLE_TITLEBAR_HEIGHT}vh + ${offsetY}px`;
+// 				setBgPosition(newPosition);
+// 			}
+// 		};
+
+// 		updateBackgroundPosition();
+
+// 		window.addEventListener("scroll", updateBackgroundPosition);
+// 		window.addEventListener("resize", updateBackgroundPosition);
+
+// 		return () => {
+// 			window.removeEventListener("scroll", updateBackgroundPosition);
+// 			window.removeEventListener("resize", updateBackgroundPosition);
+// 		};
+// 	}, [isBackgroundFixed, left, top]);
+// 	return (
+// 		<div
+// 			ref={ref}
+// 			style={{
+// 				position: "absolute",
+// 				height: "100%",
+// 				clipPath: usePointedTop ? point_path : flat_path,
+// 				background,
+// 				backgroundSize,
+// 				backgroundPosition: bgPosition,
+
+// 				width: "100%",
+// 			}}
+// 		/>
+// 	);
+// };
+
 const flat_path =
 	"polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%,75% 100%, 25% 100% )";
 const point_path =
@@ -249,6 +316,8 @@ const CenterAlignedElement: THexFC = ({
 	useVerticalAlignment,
 	hex_shape_height_override,
 	hex_shape_width_override,
+	_background_attached,
+	_background_size,
 }) => {
 	const { container_height, content_height, setContainerRef } =
 		useContext(HexagonContext);
@@ -261,7 +330,11 @@ const CenterAlignedElement: THexFC = ({
 				ref={setContainerRef}
 			>
 				{_background && (
-					<FixedBackgroundClipper background={_background} />
+					<FixedBackgroundClipper
+						background={_background}
+						isContained={_background_attached}
+						_background_size={_background_size}
+					/>
 				)}
 				<div
 					style={{
@@ -461,6 +534,8 @@ class Hexagon
 			hex_shape_height_override = undefined,
 			hex_shape_width_override = undefined,
 			_background = undefined,
+			_background_attached = false,
+			_background_size = "100vw 150vh",
 			...styleProps
 		} = this.props;
 		return (
@@ -471,6 +546,8 @@ class Hexagon
 					<CenterAlignedElement
 						element={element}
 						_background={_background}
+						_background_attached={_background_attached}
+						_background_size={_background_size}
 						useVerticalAlignment={useVerticalAlignment}
 						hex_shape_height_override={hex_shape_height_override}
 						hex_shape_width_override={hex_shape_width_override}

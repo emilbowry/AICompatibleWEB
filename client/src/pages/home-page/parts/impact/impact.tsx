@@ -197,6 +197,9 @@ const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 					hexagon_args={{ colour: "white" }}
 					// _background={getTheme(index).backgroundColor}
 					_background={bg}
+					// _background="linear-gradient(to right bottom, #79C2D0, #C9E59F)"
+					_background_attached={true}
+					_background_size={"100vw 200vh"}
 				/>
 			}
 			index={1}
@@ -204,6 +207,9 @@ const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 				...SideBarFullOverlapStyle,
 				// background: getTheme(index).backgroundColor,
 				background: bg,
+				// background: `linear-gradient(to right bottom, #79C2D0, #C9E59F)`,
+
+				backgroundSize: "100vw 200vh",
 			}}
 		/>
 	</>

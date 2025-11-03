@@ -20,7 +20,7 @@ import {
 
 const CompWrapper: React.FC<ICallOutProps> = ({
 	content,
-	wrapper_style = { background: "red" },
+	wrapper_style = {},
 	noAos,
 }) =>
 	content ? (
@@ -70,8 +70,6 @@ const GridBody: React.FC<IGridBodyProps> = ({
 					gridTemplateColumns:
 						columnOverrides ?? `repeat(${components.length}, 1fr)`,
 				},
-				// ...styleOverrides,
-				// background: "red",
 			}}
 		>
 			{components.map((item, index) => (
@@ -80,11 +78,7 @@ const GridBody: React.FC<IGridBodyProps> = ({
 						content={item}
 						item_key={index}
 						noAos={noAos}
-						styleOverrides={
-							{
-								// background: "red",
-							}
-						}
+						styleOverrides={{}}
 					/>
 				</React.Fragment>
 			))}
@@ -132,7 +126,6 @@ const CallingCard: React.FC<
 						content={header}
 						wrapper_style={{
 							color: theme.primaryColor,
-							// background: styleOverrides.background,
 						}}
 					/>
 
@@ -151,7 +144,6 @@ const CallingCard: React.FC<
 										paddingTop: "2%",
 										borderTop: header ? `4px solid` : "",
 										...gridOverriders,
-										// background: styleOverrides.background,
 								  }
 								: {
 										// padding: !fullSpread ? "2%" : "0",
@@ -159,7 +151,6 @@ const CallingCard: React.FC<
 											? "50px 10px"
 											: "",
 										...gridOverriders,
-										// background: styleOverrides.background,
 								  }
 						}
 					/>
