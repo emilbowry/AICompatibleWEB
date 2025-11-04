@@ -9,7 +9,6 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { useLocation } from "react-router-dom";
 import { useIsMobile } from "../../hooks/BrowserDependant";
 import { useBrowserScale } from "../../hooks/WindowSizeDependent";
 import { TRAIL_SPEED } from "./Cursor.consts";
@@ -105,15 +104,8 @@ const useOptimizedTrailingPosition = (
 
 	return trailing_position;
 };
-const useHoveringLink = (loc?: any, setLoc?: any) => {
+const useHoveringLink = (_loc?: any, _setLoc?: any) => {
 	const [isHoveringLink, setIsHoveringLink] = useState(false);
-	const location = useLocation();
-	if (loc && setLoc) {
-		if (location !== loc) {
-			setIsHoveringLink(false);
-			setLoc(loc);
-		}
-	}
 	useEffect(() => {
 		window.addEventListener("mouseover", () => {});
 		window.addEventListener("mouseout", () => {});

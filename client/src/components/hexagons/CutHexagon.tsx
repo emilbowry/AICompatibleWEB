@@ -1,5 +1,4 @@
 // ===== CutHexagon =====
-import React from "react";
 
 import { midnight_green } from "../../utils/defaultColours";
 import { LogoLinearGradient } from "../callingcard/graphics";
