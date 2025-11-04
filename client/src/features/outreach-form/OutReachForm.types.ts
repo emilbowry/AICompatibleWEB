@@ -150,6 +150,8 @@ interface IFormMetaData {
 	submission_datetime: string;
 	source: string;
 	client_ip: TClientIP;
+	client_ip_region?: string;
+	phone_region?: string;
 	user_agent: string;
 	account_id: string | undefined;
 	form_identifier: "Footer" | "ContactUs" | "other";

@@ -90,6 +90,7 @@ const initialState: IContactFormState = {
 	metadata: {
 		source: "",
 		client_ip: "",
+		client_ip_region: "",
 		user_agent: "",
 		account_id: undefined,
 		form_identifier: "other",
