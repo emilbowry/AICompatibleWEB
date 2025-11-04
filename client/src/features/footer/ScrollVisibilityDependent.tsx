@@ -1,7 +1,7 @@
 // src/features/footer/ScrollVisibilityDependent.tsx
 
 import React, { useCallback, useEffect, useState } from "react";
-import { ValidComponent, formatComponent } from "../../utils/reactUtils";
+import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import { scrollVisabilityStyle } from "./Footer.styles";
 const calcVisibilityRegion = (
 	docHeight: number,
@@ -65,7 +65,8 @@ const ScrollVisibilityDependent: React.FC<{
 	StyleOverrides?: React.CSSProperties;
 }> = ({ element, StyleOverrides = {}, borders = undefined }) => (
 	<div style={useScrollVisibility(borders, 0.7, StyleOverrides)}>
-		{formatComponent(element as any)}
+		{/* {formatComponent(element as any)} */}
+		<FormatComponent Component={element} />
 	</div>
 );
 export { ScrollVisibilityDependent };

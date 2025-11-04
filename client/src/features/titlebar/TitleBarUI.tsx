@@ -1,6 +1,7 @@
 // src/features/titlebar/TitleBarUI.tsx
 
-import React, { createContext, useContext, useMemo, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+import { useLocation } from "react-router-dom";
 import {
 	DropdownContainerStyles,
 	InteractionWrapperStyles,
@@ -18,17 +19,18 @@ import {
 	TitleBarUILinks,
 } from "./TitleBarHelpers";
 const UICTX = createContext<ITitleBarUIState | undefined>(undefined);
+
 const useCurrentActiveLinkAlias = (Links: ITitleBarLink[][]) => {
-	return useMemo(() => {
-		for (const LinkGroup of Links) {
-			for (const sub_link of LinkGroup) {
-				if (sub_link.path === window.location.pathname) {
-					return formatLabel(LinkGroup[0].path, LinkGroup[0].alias);
-				}
+	const loc = useLocation().pathname;
+
+	for (const LinkGroup of Links) {
+		for (const sub_link of LinkGroup) {
+			if (sub_link.path === loc) {
+				return formatLabel(LinkGroup[0].path, LinkGroup[0].alias);
 			}
 		}
-		return formatLabel(Links[0][0].path, Links[0][0].alias);
-	}, [location.pathname, Links]);
+	}
+	return formatLabel(Links[0][0].path, Links[0][0].alias);
 };
 const useUIState = (Links: ITitleBarLink[][]) => {
 	const initial_active_alias = useCurrentActiveLinkAlias(Links);
@@ -76,18 +78,15 @@ const useDropDownInteractions = (Links: ITitleBarLink[][]) => {
 	if (ctx) {
 		const { active_link_alias, isOverLink, isActive } = ctx;
 
-		const ActiveLinkGroup = useMemo(
-			() =>
-				Links.find((LinkGroup) => {
-					const main_link = LinkGroup[0];
-					return (
-						main_link &&
-						formatLabel(main_link.path, main_link.alias) ===
-							active_link_alias
-					);
-				}),
-			[Links, active_link_alias]
-		);
+		const ActiveLinkGroup = Links.find((LinkGroup) => {
+			const main_link = LinkGroup[0];
+			return (
+				main_link &&
+				formatLabel(main_link.path, main_link.alias) ===
+					active_link_alias
+			);
+		});
+
 		const showDropdown = !!(
 			(isOverLink || isActive) &&
 			ActiveLinkGroup &&

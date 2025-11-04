@@ -7,20 +7,17 @@ const LAYOUT_BREAKPOINT = 1200;
 const useNarrowLayout = (threshold = LAYOUT_BREAKPOINT) => {
 	const [isNarrow, setIsNarrow] = useState(false);
 
-	const updateLayout = () => {
-		const shouldBeNarrow = window.innerWidth < threshold;
-		if (shouldBeNarrow !== isNarrow) {
-			setIsNarrow(shouldBeNarrow);
-		}
-	};
-
 	useEffect(() => {
+		const updateLayout = () => {
+			const shouldBeNarrow = window.innerWidth < threshold;
+			setIsNarrow(shouldBeNarrow);
+		};
 		updateLayout();
 		window.addEventListener("resize", updateLayout);
 		return () => {
 			window.removeEventListener("resize", updateLayout);
 		};
-	}, [isNarrow]);
+	}, [threshold]);
 	return isNarrow;
 };
 

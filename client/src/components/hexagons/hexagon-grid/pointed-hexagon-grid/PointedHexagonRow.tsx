@@ -4,7 +4,7 @@ import React from "react";
 
 import { IHexagonRowElements } from "../HexagonGrid.types";
 
-import { formatComponent } from "../../../../utils/reactUtils";
+import { FormatComponent } from "../../../../utils/reactUtils";
 import { PointedTopHexagon } from "../../Hexagons";
 
 import { useNarrowLayout } from "../../../../hooks/WindowSizeDependent";
@@ -18,47 +18,88 @@ import {
 } from "./PointedHexagonRow.styles";
 import { PointedtopHexagonFeatureGridProps } from "./PointedHexagonRow.types";
 
-const PointedtopHexagonGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
-	const renderWideLayout = () => {
-		return (
-			<div style={WideLayoutContainerStyle}>
-				{elements.map((element, index) => (
-					<React.Fragment key={index}>
-						<div style={wideItemStyle(index)}>
-							{formatComponent(element)}
-						</div>
-					</React.Fragment>
+const WideHexGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
+	return (
+		<div style={WideLayoutContainerStyle}>
+			{elements.map((element, index) => (
+				<React.Fragment key={index}>
+					<div style={wideItemStyle(index)}>
+						{/* {formatComponent(element)} */}
+						<FormatComponent Component={element} />
+					</div>
+				</React.Fragment>
+			))}
+		</div>
+	);
+};
+
+const NarrowHexGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
+	const top_row_elements = elements.slice(0, 2);
+	const bottom_row_element = elements[2];
+
+	return (
+		<div style={NarrowLayoutContainerStyle}>
+			<div style={NarrowTopRowStyle}>
+				{top_row_elements.map((element, index) => (
+					<div
+						style={narrowItemStyle(index)}
+						key={index}
+					>
+						{/* {formatComponent(element)} */}
+						<FormatComponent Component={element} />
+					</div>
 				))}
 			</div>
-		);
-	};
-
-	const renderNarrowLayout = () => {
-		const top_row_elements = elements.slice(0, 2);
-		const bottom_row_element = elements[2];
-
-		return (
-			<div style={NarrowLayoutContainerStyle}>
-				<div style={NarrowTopRowStyle}>
-					{top_row_elements.map((element, index) => (
-						<div
-							style={narrowItemStyle(index)}
-							key={index}
-						>
-							{formatComponent(element)}
-						</div>
-					))}
-				</div>
-				<div style={NarrowBottomRowStyle}>
-					{formatComponent(bottom_row_element)}
-				</div>
+			<div style={NarrowBottomRowStyle}>
+				{/* {formatComponent(bottom_row_element)} */}
+				<FormatComponent Component={bottom_row_element} />
 			</div>
-		);
-	};
+		</div>
+	);
+};
+const PointedtopHexagonGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
+	// const renderWideLayout = () => {
+	// 	return (
+	// 		<div style={WideLayoutContainerStyle}>
+	// 			{elements.map((element, index) => (
+	// 				<React.Fragment key={index}>
+	// 					<div style={wideItemStyle(index)}>
+	// 						{formatComponent(element)}
+	// 					</div>
+	// 				</React.Fragment>
+	// 			))}
+	// 		</div>
+	// 	);
+	// };
+
+	// const renderNarrowLayout = () => {
+	// 	const top_row_elements = elements.slice(0, 2);
+	// 	const bottom_row_element = elements[2];
+
+	// 	return (
+	// 		<div style={NarrowLayoutContainerStyle}>
+	// 			<div style={NarrowTopRowStyle}>
+	// 				{top_row_elements.map((element, index) => (
+	// 					<div
+	// 						style={narrowItemStyle(index)}
+	// 						key={index}
+	// 					>
+	// 						{formatComponent(element)}
+	// 					</div>
+	// 				))}
+	// 			</div>
+	// 			<div style={NarrowBottomRowStyle}>
+	// 				{formatComponent(bottom_row_element)}
+	// 			</div>
+	// 		</div>
+	// 	);
+	// };
+
+	const Comp = useNarrowLayout() ? NarrowHexGrid : WideHexGrid;
 
 	return (
 		<div style={{ zIndex: 50 }}>
-			{useNarrowLayout() ? renderNarrowLayout() : renderWideLayout()}
+			<Comp elements={elements} />
 		</div>
 	);
 };

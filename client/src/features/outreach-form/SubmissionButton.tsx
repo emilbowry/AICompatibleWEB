@@ -121,50 +121,46 @@ const useValidation = (form_type?: string) => {
 	const isValidLength =
 		allDirtyFieldNames.length == requiredFieldNames.length;
 
-	const runValidation = (
-		err_message: string | undefined,
-		fn: (...a: any[]) => boolean,
-		name: string,
-		valid_name: string | undefined = undefined,
-		result = false
-	) => {
-		if (
-			(valid_name ?? name) === name &&
-			!fn((fields as any)[name as any])
-		) {
-			setErrorState(err_message);
-			setSelectorCheckResult(result);
-			return false;
-		}
-
-		return true;
-	};
-
-	const _MissingRequired = () => isValidLength;
-	const _IsFullandComplete = () => !isValidLength;
-
 	useEffect(() => {
+		const runValidation = (
+			err_message: string | undefined,
+			fn: (...a: any[]) => boolean,
+			name: string,
+			valid_name: string | undefined = undefined,
+			result = false
+		) => {
+			if (
+				(valid_name ?? name) === name &&
+				!fn((fields as any)[name as any])
+			) {
+				setErrorState(err_message);
+				setSelectorCheckResult(result);
+				return false;
+			}
+
+			return true;
+		};
 		allDirtyFieldNames.forEach((n) => {
 			runValidation("Invalid email", validateEmail, n, "email") &&
 				runValidation(
 					"Non-numerical number of participents",
-					validateNumber,
+					() => isValidLength,
 					n,
 					"participants"
 				) &&
 				runValidation(
 					"Required Fields are marked with *",
-					_MissingRequired,
+					() => isValidLength,
 					n
 				) &&
 				runValidation(
 					"Required Fields are marked with *",
-					_MissingRequired,
+					() => isValidLength,
 					n
 				) &&
 				runValidation(
 					undefined,
-					_IsFullandComplete,
+					() => !isValidLength,
 					n,
 					undefined,
 					true

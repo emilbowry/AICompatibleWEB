@@ -74,7 +74,6 @@ const polyCutoutStyle = (
 		shapeOutside: isLeft
 			? leftCutout(usePointedTop)
 			: rightCutout(usePointedTop),
-		// clipPath: inner_left_cutout,
 		clipPath: isLeft
 			? background && leftBoundingBG(usePointedTop)
 			: background && rightBoundingBG(usePointedTop),
@@ -82,9 +81,6 @@ const polyCutoutStyle = (
 		float: isLeft ? "left" : "right",
 		height,
 		width,
-		// background: background,
-
-		// background: `linear-gradient(to right, #79C2D0, #C9E59F) fixed`,
 	};
 };
 

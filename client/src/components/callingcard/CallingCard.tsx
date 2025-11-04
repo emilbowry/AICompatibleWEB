@@ -3,7 +3,7 @@
 import React from "react";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { getTheme } from "../../styles";
-import { formatComponent } from "../../utils/reactUtils";
+import { FormatComponent } from "../../utils/reactUtils";
 import {
 	containerStyle,
 	GridBodyStyle,
@@ -28,13 +28,15 @@ const CompWrapper: React.FC<ICallOutProps> = ({
 			className={noAos ? "no-aos" : "aos-ignore"}
 			style={wrapper_style}
 		>
-			{formatComponent(content)}
+			{/* {formatComponent(content)} */}
+			<FormatComponent Component={content} />
 		</div>
 	) : null;
 
 const Header: React.FC<IHeaderProps> = (props) => <CompWrapper {...props} />;
 const Footer: React.FC<IFooterProps> = ({ content }) =>
-	content && formatComponent(content);
+	// content && formatComponent(content);
+	content && <FormatComponent Component={content} />;
 
 const GridItem = ({
 	content,
@@ -113,7 +115,6 @@ const CallingCard: React.FC<
 					...containerStyle,
 					color: theme.secondaryColor,
 					backgroundColor: theme.backgroundColor,
-					// padding: !fullSpread ? "2%" : "0",
 					borderTopLeftRadius: isPageElement ? "80px 60px" : "",
 					...styleOverrides,
 				}}
@@ -182,30 +183,24 @@ const SideBarCallingCard: React.FC<
 		fullSpreadSideBarNarrow = false,
 	} = props;
 	const isNarrow = useNarrowLayout();
-
-	const Child = () =>
-		sideBar ? (
-			<CallingCard
-				{...sideBar}
-				fullSpread={fullSpreadSideBarNarrow}
-				index={props.index}
-				noAos={true}
-				styleOverrides={{
-					// background: props.styleOverrides?.background,
-					background: "transparent",
-				}}
-			/>
-		) : (
-			<></>
-		);
-
+	const Child = sideBar ? (
+		<CallingCard
+			{...sideBar}
+			fullSpread={fullSpreadSideBarNarrow}
+			index={props.index}
+			noAos={true}
+			styleOverrides={{
+				background: "transparent",
+			}}
+		/>
+	) : null;
 	return isNarrow ? (
 		<CallingCard
 			{...props}
 			components={components}
 			narrowPageEl={isPageElement}
 		>
-			<Child />
+			{Child}
 		</CallingCard>
 	) : (
 		<CallingCard
@@ -213,7 +208,8 @@ const SideBarCallingCard: React.FC<
 			components={
 				sideBar
 					? [
-							<Child />,
+							Child,
+
 							<GridBody
 								components={components}
 								// styleOverrides={}

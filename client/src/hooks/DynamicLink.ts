@@ -17,18 +17,21 @@ const useDynamicLink = ({
 }: IDynamicLinkParams) => {
 	const [isOver, setIsOver] = useState(false);
 	const elementRef = useRef<any>(null);
-	const handleMouseOver = () => {
-		setIsOver(true);
-	};
-	const handleMouseOut = () => {
-		setIsOver(false);
-	};
-
+	// const handleMouseOver = () => {
+	// 		setIsOver(true);
+	// 	};
+	// 	const handleMouseOut = () => {
+	// 		setIsOver(false);
+	// 	};
 	useEffect(() => {
 		const element = elementRef.current;
-
+		const handleMouseOver = () => {
+			setIsOver(true);
+		};
+		const handleMouseOut = () => {
+			setIsOver(false);
+		};
 		if (element) {
-			// Bind listeners if the element is ready
 			element.addEventListener(
 				"mouseover",
 				handleMouseOver as EventListener
@@ -52,7 +55,7 @@ const useDynamicLink = ({
 				);
 			}
 		};
-	}, [elementRef.current]);
+	}, []);
 	const linkStyle = {
 		...interactiveLinkStyle(
 			condition_function

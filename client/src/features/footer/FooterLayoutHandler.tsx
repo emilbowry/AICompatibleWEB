@@ -1,7 +1,7 @@
 // src/features/footer/FooterLayoutHandler.tsx
 
 import React from "react";
-import { formatComponent, ValidComponent } from "../../utils/reactUtils";
+import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import {
 	footerContainerStyle,
 	FooterLayoutWrapperStyle,
@@ -18,7 +18,8 @@ const FooterLayoutHandler: React.FC<{
 			<div style={FooterTopStyle} />
 			<div style={FooterWrapperStyle}>
 				<div style={footerContainerStyle(StyleOverrides)}>
-					{formatComponent(component)}
+					{/* {formatComponent(component)} */}
+					<FormatComponent Component={component} />
 				</div>
 			</div>
 		</div>

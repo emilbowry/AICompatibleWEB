@@ -1,7 +1,7 @@
 // src/features/footer/GridFooter.tsx
 
 import React from "react";
-import { ValidComponent, formatComponent } from "../../utils/reactUtils";
+import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import { gridFooterStyle } from "./Footer.styles";
 
 const GridFooter: React.FC<{
@@ -14,6 +14,8 @@ const GridFooter: React.FC<{
 		</div>
 	);
 };
+
+const Empty = () => <div />;
 const GridFooterRows: React.FC<{
 	col_ratio?: number[];
 	children: ValidComponent[];
@@ -38,7 +40,7 @@ const GridFooterRows: React.FC<{
 		>
 			{children.map((item, _index) => (
 				<React.Fragment key={_index}>
-					{item ? formatComponent(item) : <div />}
+					{item ? <FormatComponent Component={item} /> : <Empty />}
 				</React.Fragment>
 			))}
 		</div>

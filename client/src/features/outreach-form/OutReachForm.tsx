@@ -80,7 +80,6 @@ const usePhoneRegion = () => {
 	);
 
 	const ctry = inferRegionNameFromPhoneNumber(phoneNumber);
-	console.log(ctry);
 
 	return ctry;
 };

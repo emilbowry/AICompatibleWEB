@@ -9,7 +9,8 @@ import React, {
 import { VISIBLE_TITLEBAR_HEIGHT } from "../../features/titlebar/TitleBar.consts";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
-	formatComponent,
+	// formatComponent,
+	FormatComponent,
 	Map,
 	NoOpFC,
 	SantisedElMap,
@@ -103,21 +104,44 @@ const ContentWrapper: React.FC<{
 		</div>
 	);
 };
+const HScallingWrapper: React.FC<{
+	element: any;
+	children?: React.ReactNode;
+}> = ({ element, children }) =>
+	!Array.isArray(element) ? (
+		<NoOpFC>{children}</NoOpFC>
+	) : (
+		<ScallingWrapper>{children}</ScallingWrapper>
+	);
+const HContentWrapper: React.FC<{
+	element: any;
+	useVerticalAlignment: boolean;
+	children?: React.ReactNode;
+}> = ({ element, children, useVerticalAlignment }) =>
+	!Array.isArray(element) && !useVerticalAlignment ? (
+		<NoOpFC>{children}</NoOpFC>
+	) : (
+		<ContentWrapper>{children}</ContentWrapper>
+	);
 const ContainedElement: THexFC = ({ element, useVerticalAlignment }) => {
-	const HContentWrapper =
-		!Array.isArray(element) && !useVerticalAlignment
-			? NoOpFC
-			: ContentWrapper;
+	// const HContentWrapper =
+	// 	!Array.isArray(element) && !useVerticalAlignment
+	// 		? NoOpFC
+	// 		: ContentWrapper;
 	const Inner: React.ReactNode = !Array.isArray(element) ? (
-		formatComponent(element)
+		// formatComponent(element)
+		<FormatComponent Component={element} />
 	) : (
 		<SantisedElMap element={element} />
 	);
-	const HScallingWrapper = !Array.isArray(element) ? NoOpFC : ScallingWrapper;
+	// const HScallingWrapper = !Array.isArray(element) ? NoOpFC : ScallingWrapper;
 
 	return (
-		<HContentWrapper>
-			<HScallingWrapper>{Inner}</HScallingWrapper>
+		<HContentWrapper
+			useVerticalAlignment={useVerticalAlignment}
+			element={element}
+		>
+			<HScallingWrapper element={element}>{Inner}</HScallingWrapper>
 		</HContentWrapper>
 	);
 };
@@ -206,7 +230,7 @@ const FixedBackgroundClipper: React.FC<{
 			window.removeEventListener("scroll", updateBackgroundPosition);
 			window.removeEventListener("resize", updateBackgroundPosition);
 		};
-	}, [isContained]);
+	}, [isContained, top, left]);
 
 	return (
 		<div

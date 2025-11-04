@@ -1,7 +1,7 @@
 // src/components/hexagons/hexagonRow/HexagonRow.tsx
 
 import React from "react";
-import { formatComponent } from "../../../../utils/reactUtils";
+import { FormatComponent } from "../../../../utils/reactUtils";
 import { IHexagonGridElements, THexRowLayoutProps } from "../HexagonGrid.types";
 import {
 	ContainerStyle,
@@ -34,7 +34,11 @@ const HexagonRow: React.FC<THexRowLayoutProps> = ({
 					})}
 					key={index}
 				>
-					{formatComponent(el, true)}
+					{/* {formatComponent(el, true)} */}
+					<FormatComponent
+						Component={el}
+						overlay={true}
+					/>
 				</div>
 			))}
 		</>

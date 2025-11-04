@@ -124,7 +124,7 @@ const useHoveringLink = (loc?: any, setLoc?: any) => {
 			window.removeEventListener("mouseover", () => {});
 			window.removeEventListener("mouseout", () => {});
 		};
-	}, [loc, location]);
+	}, [loc, location, setLoc]);
 	useEffect(() => {
 		const handleMouseOver = (e: MouseEvent) => {
 			if ((e.target as HTMLElement).tagName === "A") {

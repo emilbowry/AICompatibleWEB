@@ -142,7 +142,8 @@ const animationTagging = () => {
 };
 
 const useAnimationTagging = () => {
-	useEffect(animationTagging, [useLocation().pathname]);
+	const path = useLocation().pathname;
+	useEffect(animationTagging, [path]);
 };
 
 export { useAnimationTagging };

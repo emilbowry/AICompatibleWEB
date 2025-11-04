@@ -12,7 +12,7 @@ import { ToggleablePortal } from "../../components/pop-over/PopOver";
 import { OutReachForm } from "../../features/outreach-form/OutReachForm";
 import { useDynamicLink } from "../../hooks/DynamicLink";
 import { getTheme, linkStyle, VOLUME_CONSTANT_SIZE } from "../../styles";
-import { formatComponent, ValidComponent } from "../../utils/reactUtils";
+import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import { titleStyle } from "./ContactPage.styles";
 const theme = getTheme(0);
 const StyledLink: React.FC<{
@@ -47,7 +47,8 @@ const StyledLink: React.FC<{
 						  }
 				}
 			>
-				{formatComponent(content)}
+				{/* {formatComponent(content)} */}
+				<FormatComponent Component={content} />
 			</a>
 		</div>
 	</div>

@@ -31,14 +31,21 @@ export const getImageEl = (
 export const Map: React.FC<{
 	elements: any[];
 	formatting_args?: any[];
-	formatter?: (...args: any[]) => React.ReactNode;
+	formatter?: boolean;
 }> = ({ elements, formatting_args = [], formatter }) => (
 	<React.Fragment>
 		{elements.map(
 			(item, _index) =>
 				item && (
 					<React.Fragment key={_index}>
-						{formatter ? formatter(item, ...formatting_args) : item}
+						{formatter ? (
+							<FormatComponent
+								{...formatting_args}
+								Component={item}
+							/>
+						) : (
+							item
+						)}
 					</React.Fragment>
 				)
 		)}
@@ -53,7 +60,7 @@ export const SantisedElMap: React.FC<{
 			{element && (
 				<Map
 					elements={element}
-					formatter={formatComponent}
+					formatter={true}
 					formatting_args={formatting_args}
 				/>
 			)}
@@ -112,31 +119,59 @@ export const NoOpFC: React.FC<
 		children?: React.ReactNode;
 	} & any
 > = ({ children }) => <>{children}</>;
-export const formatComponent = (
-	component: ValidComponent,
-	overlay = false
-): React.ReactNode | string => {
-	if (component === null) {
+
+// export const formatComponent = (
+// 	component: ValidComponent,
+// 	overlay = false
+// ): React.ReactNode | string => {
+// 	if (component === null) {
+// 		return emptyEl;
+// 	} else if (Array.isArray(component)) {
+// 		return component.map((Comp, index) => (
+// 			<div
+// 				style={overlay ? { position: "absolute" } : {}}
+// 				key={index}
+// 			>
+// 				{formatComponent(Comp)}
+// 			</div>
+// 		));
+// 	} else if (
+// 		typeof component === "function" ||
+// 		(component as any).prototype instanceof React.Component
+// 	) {
+// 		const SingleComponent = component as React.ComponentType;
+// 		return <SingleComponent />;
+// 	} else {
+// 		return component;
+// 	}
+// };
+
+const isComp = (Component: ValidComponent): Component is React.ComponentType =>
+	typeof Component === "function" ||
+	(Component as any).prototype instanceof React.Component;
+
+export const FormatComponent: React.FC<{
+	Component: ValidComponent;
+	overlay?: boolean;
+}> = ({ Component, overlay = false }): React.ReactNode | string => {
+	if (Component === null) {
 		return emptyEl;
-	} else if (Array.isArray(component)) {
-		return component.map((Comp, index) => (
+	} else if (Array.isArray(Component)) {
+		return Component.map((Comp, index) => (
 			<div
 				style={overlay ? { position: "absolute" } : {}}
 				key={index}
 			>
-				{formatComponent(Comp)}
+				<FormatComponent Component={Comp} />
 			</div>
 		));
-	} else if (
-		typeof component === "function" ||
-		(component as any).prototype instanceof React.Component
-	) {
-		const SingleComponent = component as React.ComponentType;
-		return <SingleComponent />;
+	} else if (isComp(Component)) {
+		return <Component />;
 	} else {
-		return component;
+		return Component;
 	}
 };
+
 // const isAndroid = useMemo(() => /Android/i.test(navigator.userAgent), []);
 
 // export { isAndroid };

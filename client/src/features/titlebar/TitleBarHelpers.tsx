@@ -67,6 +67,36 @@ const TitleBarMenu: React.FC = () => {
 	);
 };
 
+const TitleBarUILink: React.FC<{
+	active_link_alias: string;
+	display_alias: string;
+	path: string;
+	onLinkOver: (alias: string) => void;
+}> = ({ active_link_alias, display_alias, onLinkOver, path }) => (
+	<div
+		{...useDynamicLink({
+			useDefaultDecoration: false,
+			condition_function: () => active_link_alias === display_alias,
+			style_args: ["2px"],
+			StyleOverrides: {
+				backgroundPosition: "bottom  left",
+				paddingBottom: "1px",
+			},
+		})}
+	>
+		<NavLink
+			to={path}
+			onMouseOver={() => onLinkOver(display_alias)}
+			style={{
+				color: "inherit",
+				textDecorationColor: "inherit",
+				textDecorationLine: "inherit",
+			}}
+		>
+			{display_alias}
+		</NavLink>
+	</div>
+);
 const TitleBarUILinks: React.FC<ITitleBarUILinksProps> = ({
 	active_link_alias,
 	Links,
@@ -78,51 +108,35 @@ const TitleBarUILinks: React.FC<ITitleBarUILinksProps> = ({
 			if (!main_link) return null;
 			const display_alias = formatLabel(main_link.path, main_link.alias);
 			return (
-				<div
+				<TitleBarUILink
+					active_link_alias={active_link_alias}
+					display_alias={display_alias}
+					path={main_link.path}
+					onLinkOver={onLinkOver}
 					key={display_alias}
-					{...useDynamicLink({
-						useDefaultDecoration: false,
-						condition_function: () =>
-							active_link_alias === display_alias,
-						style_args: ["2px"],
-						StyleOverrides: {
-							backgroundPosition: "bottom  left",
-							paddingBottom: "1px",
-						},
-					})}
-				>
-					<NavLink
-						to={main_link.path}
-						onMouseOver={() => onLinkOver(display_alias)}
-						style={{
-							color: "inherit",
-							textDecorationColor: "inherit",
-							textDecorationLine: "inherit",
-						}}
-					>
-						{display_alias}
-					</NavLink>
-				</div>
+				/>
 			);
 		})}
 	</div>
 );
 
-const usePillOnScroll = (d_threshold: number = 1, u_threshold: number = 10) => {
+const usePillOnScroll = (d_threshold: number = 5, u_threshold: number = 10) => {
 	const [isScrolled, setIsScrolled] = useState(false);
 	useEffect(() => {
 		const handleScroll = () => {
 			const current_scroll_y = window.scrollY;
-			if (!isScrolled && current_scroll_y > d_threshold)
-				setIsScrolled(true);
-			else if (isScrolled && current_scroll_y < u_threshold)
-				setIsScrolled(false);
+			setIsScrolled(
+				(_isScrolled) =>
+					(!_isScrolled && current_scroll_y > u_threshold) ||
+					(_isScrolled && !(current_scroll_y < d_threshold))
+			);
 		};
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
-	}, [isScrolled, d_threshold, u_threshold]);
+	}, [d_threshold, u_threshold]);
 	return isScrolled;
 };
+
 const usePillBarStyle = (isScrolled: boolean = usePillOnScroll()) => {
 	const TitleBarStyle = useMemo(
 		() => ({
@@ -136,6 +150,23 @@ const usePillBarStyle = (isScrolled: boolean = usePillOnScroll()) => {
 	return TitleBarStyle;
 };
 
+const DropDownLink: React.FC<{ path: string; alias: string | undefined }> = ({
+	path,
+	alias,
+}) => (
+	<NavLink
+		// key={`${link.path}-${index}`}
+		to={path}
+		{...useDynamicLink({
+			useDefaultDecoration: true,
+
+			StyleOverrides: DropdownLinkStyles,
+		})}
+		// style={DropdownLinkStyles}
+	>
+		{formatLabel(path, alias)}
+	</NavLink>
+);
 const DropDownOuter: React.FC<{ ActiveLinkGroup: ITitleBarLink[] }> = ({
 	ActiveLinkGroup,
 }) => (
@@ -143,18 +174,23 @@ const DropDownOuter: React.FC<{ ActiveLinkGroup: ITitleBarLink[] }> = ({
 		{ActiveLinkGroup.length > 1 && (
 			<div style={DropdownLinksColumnStyles}>
 				{ActiveLinkGroup.map((link, index) => (
-					<NavLink
-						key={`${link.path}-${index}`}
-						to={link.path}
-						{...useDynamicLink({
-							useDefaultDecoration: true,
+					// <NavLink
+					// 	key={`${link.path}-${index}`}
+					// 	to={link.path}
+					// 	{...useDynamicLink({
+					// 		useDefaultDecoration: true,
 
-							StyleOverrides: DropdownLinkStyles,
-						})}
-						// style={DropdownLinkStyles}
-					>
-						{formatLabel(link.path, link.alias)}
-					</NavLink>
+					// 		StyleOverrides: DropdownLinkStyles,
+					// 	})}
+					// 	// style={DropdownLinkStyles}
+					// >
+					// 	{formatLabel(link.path, link.alias)}
+					// </NavLink>
+					<DropDownLink
+						path={link.path}
+						alias={link.alias}
+						key={`${link.path}-${index}`}
+					/>
 				))}
 			</div>
 		)}
