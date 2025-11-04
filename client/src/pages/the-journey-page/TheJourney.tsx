@@ -12,6 +12,7 @@ import bw3 from "../../assets/bw3.jpg";
 import { bulb, bullseye, pencil } from "../../components/callingcard/graphics";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
+import { useTimelineData } from "../../services/api/data/data";
 import { generateGradient } from "../../styles";
 import { bgwhite } from "../../utils/defaultColours";
 import { BoxedImage } from "../../utils/reactUtils";
@@ -79,8 +80,11 @@ const TimelineData = [
 			"Open AI O3 high gets 20% on 'Humanity's Last Exam', a compilation of problems that specialised human experts find particularly hard",
 	},
 ];
+// const icons = [pencil, bullseye, bulb];
+// const images = [bw1, bw2, bw3];
+const getThirdHex = (index: number, data?: typeof TimelineData) => {
+	if (!data) return null;
 
-const getThirdHex = (index: number) => {
 	let thirdHexagon = (
 		<Hexagon
 			args={{
@@ -89,7 +93,9 @@ const getThirdHex = (index: number) => {
 		/>
 	);
 
-	const _icon = TimelineData[index + 1]?.icon;
+	const _icon =
+		TimelineData[index + 1]
+			?.icon; /* temporary until i figure out how i want to load images and icons */
 	const _image = TimelineData[index]?.image;
 	if (_icon) {
 		thirdHexagon = (
@@ -126,10 +132,12 @@ const RowContent: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 	<p style={RowContentStyle}>{children}</p>
 );
 
-const getRows = (isNarrow = false) => {
-	const colours = generateGradient(TimelineData.length).reverse();
-
-	return TimelineData.map((item, i) => {
+const getRows = (isNarrow = false, data?: typeof TimelineData) => {
+	const colours = generateGradient([].length).reverse();
+	// if (!Array.isArray(data)) return [{ elements: [null, null, null] }];
+	if (!data) return [{ elements: [null, null, null] }];
+	return data.map((item, i) => {
+		/* temporary until i figure out how i want to load images and icons */
 		const img = TimelineData[i]?.image;
 		const icon = TimelineData[i + 1]?.icon;
 
@@ -214,7 +222,7 @@ const TheJourney: React.FC = () => {
 	const isNarrow = useNarrowLayout();
 	const relative_spacing = 10;
 	const absolute_spacing = 0;
-
+	const Timeline_Data = useTimelineData();
 	return (
 		<div
 			style={{
@@ -223,7 +231,7 @@ const TheJourney: React.FC = () => {
 		>
 			<div style={BlurBackgroundStyle} />
 			<HexagonGrid
-				rows={getRows(isNarrow) as any}
+				rows={getRows(isNarrow, Timeline_Data) as any}
 				relative_spacing={relative_spacing}
 				absolute_spacing={absolute_spacing}
 				upper_first={isNarrow}
