@@ -18,7 +18,6 @@ const FooterLayoutHandler: React.FC<{
 			<div style={FooterTopStyle} />
 			<div style={FooterWrapperStyle}>
 				<div style={footerContainerStyle(StyleOverrides)}>
-					{/* {formatComponent(component)} */}
 					<FormatComponent Component={component} />
 				</div>
 			</div>

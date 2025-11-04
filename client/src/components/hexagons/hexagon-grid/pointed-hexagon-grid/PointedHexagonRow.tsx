@@ -24,7 +24,6 @@ const WideHexGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
 			{elements.map((element, index) => (
 				<React.Fragment key={index}>
 					<div style={wideItemStyle(index)}>
-						{/* {formatComponent(element)} */}
 						<FormatComponent Component={element} />
 					</div>
 				</React.Fragment>
@@ -45,13 +44,11 @@ const NarrowHexGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
 						style={narrowItemStyle(index)}
 						key={index}
 					>
-						{/* {formatComponent(element)} */}
 						<FormatComponent Component={element} />
 					</div>
 				))}
 			</div>
 			<div style={NarrowBottomRowStyle}>
-				{/* {formatComponent(bottom_row_element)} */}
 				<FormatComponent Component={bottom_row_element} />
 			</div>
 		</div>

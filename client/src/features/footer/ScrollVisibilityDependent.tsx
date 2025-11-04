@@ -1,6 +1,6 @@
 // src/features/footer/ScrollVisibilityDependent.tsx
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import { scrollVisabilityStyle } from "./Footer.styles";
 const calcVisibilityRegion = (
@@ -27,34 +27,33 @@ const useScrollVisibility = (
 	const [isVisible, setIsVisible] = useState(noBorders);
 	const [opacity, setOpacity] = useState(+noBorders);
 
-	const handleScroll = useCallback(() => {
-		if (noBorders) return;
-
-		const current_scroll_y = window.scrollY + 2;
-
-		const [maxVis, , minVis] = calcVisibilityRegion(
-			document.documentElement.scrollHeight,
-			borders,
-			footerVH,
-			window.innerHeight
-		);
-		setOpacity(
-			Math.min(
-				1,
-				Math.max(0, (current_scroll_y - minVis) / (maxVis - minVis))
-			)
-		);
-
-		setIsVisible(current_scroll_y >= minVis);
-	}, [borders, footerVH]);
-
 	useEffect(() => {
+		const handleScroll = () => {
+			if (noBorders) return;
+
+			const current_scroll_y = window.scrollY + 2;
+
+			const [maxVis, , minVis] = calcVisibilityRegion(
+				document.documentElement.scrollHeight,
+				borders,
+				footerVH,
+				window.innerHeight
+			);
+			setOpacity(
+				Math.min(
+					1,
+					Math.max(0, (current_scroll_y - minVis) / (maxVis - minVis))
+				)
+			);
+
+			setIsVisible(current_scroll_y >= minVis);
+		};
 		window.addEventListener("scroll", handleScroll);
 
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
 		};
-	}, [handleScroll]);
+	}, [noBorders, borders, footerVH]);
 
 	return scrollVisabilityStyle(isVisible, opacity, styling);
 };
@@ -65,7 +64,6 @@ const ScrollVisibilityDependent: React.FC<{
 	StyleOverrides?: React.CSSProperties;
 }> = ({ element, StyleOverrides = {}, borders = undefined }) => (
 	<div style={useScrollVisibility(borders, 0.7, StyleOverrides)}>
-		{/* {formatComponent(element as any)} */}
 		<FormatComponent Component={element} />
 	</div>
 );

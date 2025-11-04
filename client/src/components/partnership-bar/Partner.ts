@@ -14,7 +14,7 @@ class Partners implements IPartners {
 	readonly size: TPartnerSize;
 
 	constructor(partners: IPartners) {
-		let partnersObj = partners;
+		const partnersObj = partners;
 		this.partners = partnersObj.partners;
 		this.size = partnersObj.size ?? "Small";
 	}

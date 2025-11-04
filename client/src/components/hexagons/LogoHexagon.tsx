@@ -1,4 +1,5 @@
 // src/components/hexagons/LogoHexagon.tsx
+import React from "react";
 
 import { logo_yellow } from "../../utils/defaultColours";
 import { LogoLinearGradient } from "../callingcard/graphics";

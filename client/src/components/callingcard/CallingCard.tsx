@@ -28,7 +28,6 @@ const CompWrapper: React.FC<ICallOutProps> = ({
 			className={noAos ? "no-aos" : "aos-ignore"}
 			style={wrapper_style}
 		>
-			{/* {formatComponent(content)} */}
 			<FormatComponent Component={content} />
 		</div>
 	) : null;

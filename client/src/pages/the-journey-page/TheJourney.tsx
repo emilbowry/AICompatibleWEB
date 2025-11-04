@@ -210,7 +210,7 @@ const getRows = (isNarrow = false) => {
 		};
 	});
 };
-const theJourneyPage: React.FC = () => {
+const TheJourney: React.FC = () => {
 	const isNarrow = useNarrowLayout();
 	const relative_spacing = 10;
 	const absolute_spacing = 0;
@@ -233,6 +233,6 @@ const theJourneyPage: React.FC = () => {
 	);
 };
 
-const TheJourneyPage = () => <Page page={theJourneyPage} />;
+const TheJourneyPage = () => <Page page={TheJourney} />;
 
 export default TheJourneyPage;

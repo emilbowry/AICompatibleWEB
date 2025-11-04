@@ -8,6 +8,7 @@ import logo from "../../assets/logo.png";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { BackgroundStyle } from "../../styles";
 
+import { useLocation } from "react-router-dom";
 import { CursorContext } from "../../components/cursor/Cursor";
 import { PillTitleBar } from "../titlebar/TitleBar";
 import { VISIBLE_TITLEBAR_HEIGHT } from "../titlebar/TitleBar.consts";
@@ -35,6 +36,7 @@ const Page: React.FC<{
 		setHasCustomCursor(useCursor);
 	}, [setHasCustomCursor, useCursor]);
 	const isNarrow = useNarrowLayout();
+	const location = useLocation().pathname;
 	return (
 		<>
 			{bg ? <div style={BackgroundStyle}></div> : null}
@@ -44,7 +46,7 @@ const Page: React.FC<{
 				Links={navLinks}
 			/>
 			<main
-				key={location.pathname}
+				key={location}
 				style={{
 					...MainStyle,
 				}}

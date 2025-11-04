@@ -1,4 +1,5 @@
 // client/src/features/outreach-form/FormUI.tsx
+import React from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
@@ -44,11 +45,11 @@ const useFormField = (fieldName: TAllFields, type: string | undefined) => {
 				onChange,
 		  };
 };
-const _FormField: React.FC<TFormConfigProps<TAllFields>> = (config) => {
+const ProtoFormField: React.FC<TFormConfigProps<TAllFields>> = (config) => {
 	const props = config;
 
 	const { type, required, name: key } = props;
-
+	// const ProtoFormFields = useFormField(key, type);
 	const OtherProps = { ...useFormField(key, type), id: key };
 	const FieldProps = { ...props, ...OtherProps } as any;
 	const El =
@@ -126,7 +127,7 @@ const FormField: React.FC<TFormConfigProps<TAllFields>> = (config) => {
 						required && type != "checkbox" && type !== undefined
 					}
 				/>
-				<_FormField {...config} />
+				<ProtoFormField {...config} />
 				{description && (
 					<label
 						htmlFor={key}

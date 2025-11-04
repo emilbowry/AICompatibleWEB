@@ -34,7 +34,6 @@ const HexagonRow: React.FC<THexRowLayoutProps> = ({
 					})}
 					key={index}
 				>
-					{/* {formatComponent(el, true)} */}
 					<FormatComponent
 						Component={el}
 						overlay={true}

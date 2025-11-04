@@ -22,13 +22,13 @@ const useNarrowLayout = (threshold = LAYOUT_BREAKPOINT) => {
 };
 
 const useBrowserScale = (): number => {
-	const getScaleRatio = () => window.outerWidth / window.innerWidth;
-	const [scale, setScale] = useState(getScaleRatio());
+	const [scale, setScale] = useState(1);
 
 	useEffect(() => {
 		const updateScale = () => {
-			const current_scale = getScaleRatio();
-			setScale(current_scale);
+			if (typeof window !== "undefined") {
+				setScale(window.outerWidth / window.innerWidth);
+			}
 		};
 
 		window.addEventListener("resize", updateScale);

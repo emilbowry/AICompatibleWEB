@@ -1,6 +1,12 @@
 // client/src/features/outreach-form/PopOver.tsx
 
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, {
+	createContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import ReactDOM from "react-dom";
 import { useHref } from "react-router-dom";
 import {
@@ -11,46 +17,94 @@ import {
 } from "./PopOver.styles";
 import { IToggleablePortalProps } from "./PopOver.types";
 
-const modalRoot = document.getElementById("modal-root");
+// const modalRoot = document.getElementById("modal-root");
 
 const PortalContext = createContext<undefined | { source: string }>(undefined);
+const getModalID = () => `modal-root-${Math.random().toString(36).slice(2, 8)}`;
 
+// const useAModalRoot = () => {
+// 	const [containerEl] = useState(() => document.createElement("div"));
+
+// 	const modal_root = useMemo(() => {
+// 		const m = document.createElement("div");
+// 		m.id = getModalID();
+// 		document.body.appendChild(m);
+
+// 		return m;
+// 	}, []);
+
+// 	useEffect(() => {
+// 		modal_root.appendChild(containerEl);
+// 		document.body.style.overflow = "hidden";
+
+// 		return () => {
+// 			if (containerEl) {
+// 				modal_root.removeChild(containerEl);
+// 			}
+// 			document.body.style.overflow = "unset";
+// 		};
+// 	}, [containerEl, modal_root]);
+// 	// return containerEl;
+// 	// const containerEl = useMemo(() => {
+// 	// 	const c = document.createElement("div");
+// 	// 	const modal_root = document.createElement("div");
+// 	// 	modal_root.id = getModalID();
+// 	// 	document.body.appendChild(modal_root);
+// 	// 	modal_root.appendChild(c);
+
+// 	// }, []);
+// 	return containerEl;
+// };
+
+const useModalRoot = (closeModal?: () => void) => {
+	const containerEl = useMemo(() => {
+		const c = document.createElement("div");
+		const modal_root = document.createElement("div");
+		modal_root.id = getModalID();
+		document.body.appendChild(modal_root);
+		modal_root.appendChild(c);
+		return c;
+	}, []);
+
+	const handleExit = () => {
+		closeModal?.();
+		containerEl.parentElement?.remove();
+	};
+	return { containerEl, handleExit };
+};
 const ModalBody: React.FC<{
 	closeModal: () => void;
 	node?: React.ReactNode;
 }> = ({ closeModal, node }) => {
-	const elRef = useRef<HTMLDivElement | null>(null);
+	// const [containerEl] = useState(() => document.createElement("div"));
+	// // const [modalRoot] = useState(() => document.createElement("div"));
 
-	if (elRef.current === null) {
-		elRef.current = document.createElement("div");
-	}
+	// const modal_root = useMemo(() => {
+	// 	const m = document.createElement("div");
+	// 	m.id = getModalID();
+	// 	document.body.appendChild(m);
 
-	useEffect(() => {
-		if (!modalRoot || !elRef.current) {
-			console.error(
-				"Modal Root element not found! Ensure index.html has <div id='modal-root'></div>"
-			);
-			return;
-		}
+	// 	return m;
+	// }, []);
 
-		modalRoot.appendChild(elRef.current);
-		document.body.style.overflow = "hidden";
+	// useEffect(() => {
+	// 	modal_root.appendChild(containerEl);
+	// 	document.body.style.overflow = "hidden";
 
-		return () => {
-			if (elRef.current) {
-				modalRoot.removeChild(elRef.current);
-			}
-			document.body.style.overflow = "unset";
-		};
-	}, []);
-
+	// 	return () => {
+	// 		if (containerEl) {
+	// 			modal_root.removeChild(containerEl);
+	// 		}
+	// 		document.body.style.overflow = "unset";
+	// 	};
+	// }, [containerEl, modal_root]);
+	const { containerEl, handleExit } = useModalRoot(closeModal);
 	const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (e.target === e.currentTarget) {
-			closeModal();
+			// closeModal();
+			handleExit();
 		}
 	};
-
-	if (!elRef.current) return null;
 
 	return ReactDOM.createPortal(
 		<div
@@ -68,7 +122,7 @@ const ModalBody: React.FC<{
 				<div style={ModalContentStyle}>{node}</div>
 			</div>
 		</div>,
-		elRef.current
+		containerEl
 	);
 };
 

@@ -38,13 +38,13 @@ const useDynamicLink = ({
 		}
 
 		return () => {
-			const currentElement = elementRef.current;
-			if (currentElement) {
-				currentElement.removeEventListener(
+			// const currentElement = elementRef.current;
+			if (element) {
+				element.removeEventListener(
 					"mouseover",
 					handleMouseOver as EventListener
 				);
-				currentElement.removeEventListener(
+				element.removeEventListener(
 					"mouseout",
 					handleMouseOut as EventListener
 				);

@@ -53,6 +53,23 @@ const prompt_engineers: IPersona[] = [
 		body: "Will has 10 years of experience as a Data and Reporting Analyst for Nintendo, PwC and Everfox. His expertise is in automation so founded Surrey Data Solutions (SDS), a specialist consultancy delivering practical, high- impact solutions in business intelligence, data analytics, process automation, and robotic process automation (RPA).",
 	},
 ];
+
+const MailTo: React.FC<{ email: string; theme: any }> = ({ email, theme }) => (
+	<div>
+		<a
+			href={`mailto:${email}`}
+			{...useDynamicLink({
+				useDefaultDecoration: true,
+				style_args: ["3px"],
+				StyleOverrides: {
+					color: theme.primaryColor,
+				},
+			})}
+		>
+			{email}
+		</a>
+	</div>
+);
 const PHeader: React.FC<IPersona & { theme: ReturnType<typeof getTheme> }> = ({
 	name,
 	title,
@@ -67,22 +84,12 @@ const PHeader: React.FC<IPersona & { theme: ReturnType<typeof getTheme> }> = ({
 			</span>
 		</h3>
 		{email ? (
-			<div>
-				<a
-					href={`mailto:${email}`}
-					{...useDynamicLink({
-						useDefaultDecoration: true,
-						style_args: ["3px"],
-						StyleOverrides: {
-							color: theme.primaryColor,
-						},
-					})}
-				>
-					{email}
-				</a>
-			</div>
+			<MailTo
+				email={email}
+				theme={theme}
+			/>
 		) : (
-			<div></div>
+			<div />
 		)}
 	</div>
 );

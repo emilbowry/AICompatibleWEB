@@ -1,4 +1,5 @@
 // src/features/titlebar/TitleBarHelpers.tsx
+import React from "react";
 
 import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -137,7 +138,9 @@ const usePillOnScroll = (d_threshold: number = 5, u_threshold: number = 10) => {
 	return isScrolled;
 };
 
-const usePillBarStyle = (isScrolled: boolean = usePillOnScroll()) => {
+const usePillBarStyle = (_isScrolled: boolean) => {
+	const pill_DEFAULT = usePillOnScroll();
+	const isScrolled = _isScrolled || pill_DEFAULT;
 	const TitleBarStyle = useMemo(
 		() => ({
 			...titleBarStyles(),

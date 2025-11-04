@@ -1,8 +1,7 @@
 // src/components/callingcard/graphics.tsx
-
-// import React from "react";
+// @ts-ignore
+import React from "react";
 import { logo_blue, logo_yellow } from "../../utils/defaultColours";
-
 const LogoLinearGradient = (
 	<linearGradient
 		id="logoGradient"

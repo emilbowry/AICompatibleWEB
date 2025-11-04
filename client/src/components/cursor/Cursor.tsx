@@ -108,20 +108,20 @@ const useOptimizedTrailingPosition = (
 const useHoveringLink = (loc?: any, setLoc?: any) => {
 	const [isHoveringLink, setIsHoveringLink] = useState(false);
 	const location = useLocation();
-	useEffect(() => {
-		if (loc && setLoc) {
-			if (location !== loc) {
-				setIsHoveringLink(false);
-				setLoc(loc);
-			}
+	if (loc && setLoc) {
+		if (location !== loc) {
+			setIsHoveringLink(false);
+			setLoc(loc);
 		}
+	}
+	useEffect(() => {
 		window.addEventListener("mouseover", () => {});
 		window.addEventListener("mouseout", () => {});
 		return () => {
 			window.removeEventListener("mouseover", () => {});
 			window.removeEventListener("mouseout", () => {});
 		};
-	}, [loc, location, setLoc]);
+	}, []);
 	useEffect(() => {
 		const handleMouseOver = (e: MouseEvent) => {
 			if ((e.target as HTMLElement).tagName === "A") {

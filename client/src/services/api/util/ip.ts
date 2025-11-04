@@ -28,28 +28,14 @@ const useIP = () => {
 const GEOLOCATION_API_URL = "http://ip-api.com/json/";
 
 const useIPRegionGuess = (ip: string) => {
-	const [regionGuess, setRegionGuess] = useState<string>("awaiting IP...");
+	const initialGuess =
+		ip === "127.0.0.1" || ip === "::1"
+			? "Localhost"
+			: "determining region...";
+	const [regionGuess, setRegionGuess] = useState<string>(initialGuess);
 
 	useEffect(() => {
-		if (
-			!ip ||
-			ip === "fetching..." ||
-			ip === "not_found" ||
-			ip === "error_fetching" ||
-			ip === "error_response"
-		) {
-			setRegionGuess("determining region...");
-			return;
-		}
-
-		if (ip === "127.0.0.1" || ip === "::1") {
-			setRegionGuess("Localhost");
-			return;
-		}
-
 		const fetchRegion = async () => {
-			setRegionGuess("fetching region...");
-
 			try {
 				const apiResponse = await fetch(`${GEOLOCATION_API_URL}${ip}`);
 
