@@ -57,9 +57,6 @@ const HexSVG: React.FC<{
 	return (
 		<svg
 			style={svgStyle(styles)}
-			// style={{
-			// 	// background: `linear-gradient(to right, #79C2D0, #C9E59F) fixed`,
-			// }}
 			viewBox={
 				isPointedTop
 					? `${100 - (200 * Math.sqrt(3)) / 4} -100 ${
@@ -101,10 +98,7 @@ const ContentWrapper: React.FC<{
 	const { setContentRef } = useContext(HexagonContext);
 
 	return (
-		<div
-			ref={setContentRef}
-			// style={{}}
-		>
+		<div ref={setContentRef}>
 			<div style={ELWrapperStyle}>{children}</div>
 		</div>
 	);
@@ -171,7 +165,6 @@ const BoundingShape: React.FC<{
 
 const FixedBackgroundClipper: React.FC<{
 	background: string;
-	// backgroundSize?: string;
 	backgroundPosition?: string;
 	left?: number;
 	top?: number;
@@ -183,10 +176,8 @@ const FixedBackgroundClipper: React.FC<{
 	_background_size: backgroundSize = "100vw 200vh",
 	left = 0,
 	top = 0,
-	isContained = false,
-	// top_offset_str = `${VISIBLE_TITLEBAR_HEIGHT}vh`,
+	isContained = false /* slightly off for true case ...sometimes idk why */,
 }) => {
-	// const isContained = false;
 	const ref = useRef<HTMLDivElement>(null);
 	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
 	const { usePointedTop } = useContext(HexagonContext);
@@ -225,9 +216,7 @@ const FixedBackgroundClipper: React.FC<{
 				height: "100%",
 				clipPath: usePointedTop ? point_path : flat_path,
 				background,
-				// background: "transparent",
 				backgroundSize,
-				// backgroundPosition: bgPosition,
 				backgroundPosition: bgPosition,
 				backgroundAttachment: "fixed",
 
@@ -236,74 +225,6 @@ const FixedBackgroundClipper: React.FC<{
 		/>
 	);
 };
-
-// const FixedBackgroundClipper: React.FC<{
-// 	background: string;
-// 	backgroundSize?: string;
-// 	backgroundPosition?: string;
-// 	left?: number;
-// 	top?: number;
-// 	isBackgroundFixed?: boolean;
-// }> = ({
-// 	background,
-// 	backgroundSize = "100vw 150vh",
-// 	left = 0,
-// 	top = 0,
-// 	isBackgroundFixed = false,
-// }) => {
-// 	const ref = useRef<HTMLDivElement>(null);
-// 	const [bgPosition, setBgPosition] = useState<string>(`0 0`);
-// 	const { usePointedTop } = useContext(HexagonContext);
-// 	// const _docheight = window.innerHeight;
-
-// 	useLayoutEffect(() => {
-// 		const updateBackgroundPosition = () => {
-// 			// const docheight = window.innerHeight;
-// 			if (ref.current) {
-// 				// if (isBackgroundFixed) {
-// 				console.log(ref.current.offsetTop);
-
-// 				const rect = ref.current.getBoundingClientRect();
-
-// 				const offsetX =
-// 					-rect.left +
-// 					left +
-// 					+!isBackgroundFixed * window.scrollX +
-// 					0 * ref.current.offsetLeft;
-// 				const offsetY =
-// 					-rect.top - +!isBackgroundFixed * window.scrollY + top;
-
-// 				const newPosition = `${offsetX}px calc(${VISIBLE_TITLEBAR_HEIGHT}vh + ${offsetY}px`;
-// 				setBgPosition(newPosition);
-// 			}
-// 		};
-
-// 		updateBackgroundPosition();
-
-// 		window.addEventListener("scroll", updateBackgroundPosition);
-// 		window.addEventListener("resize", updateBackgroundPosition);
-
-// 		return () => {
-// 			window.removeEventListener("scroll", updateBackgroundPosition);
-// 			window.removeEventListener("resize", updateBackgroundPosition);
-// 		};
-// 	}, [isBackgroundFixed, left, top]);
-// 	return (
-// 		<div
-// 			ref={ref}
-// 			style={{
-// 				position: "absolute",
-// 				height: "100%",
-// 				clipPath: usePointedTop ? point_path : flat_path,
-// 				background,
-// 				backgroundSize,
-// 				backgroundPosition: bgPosition,
-
-// 				width: "100%",
-// 			}}
-// 		/>
-// 	);
-// };
 
 const flat_path =
 	"polygon(0% 50%, 25% 0%, 75% 0%, 100% 50%,75% 100%, 25% 100% )";
