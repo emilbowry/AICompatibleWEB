@@ -1,4 +1,4 @@
-// // src/pages/homepage/impact.tsx
+// src/pages/homepage/impact.tsx
 
 import React from "react";
 
@@ -161,8 +161,6 @@ const FounderLetter: React.FC<{ index?: number }> = ({ index = 0 }) => {
 					image={ls}
 					aspectRatio="5"
 					width="100%"
-					// wrapperStyling={{ height: "100%" }}
-					// wrapperStyling={{ width: "20vw" }}
 					wrapperStyling={{
 						width: "20vw",
 						margin: "auto 0",
@@ -175,29 +173,18 @@ const FounderLetter: React.FC<{ index?: number }> = ({ index = 0 }) => {
 	return letter;
 };
 
-// maskImage: "",
-
 const bg = `linear-gradient(to right, ${dark_midnight_green}  0%, ${midnight_green} 100%) fixed`;
 
-// const bg2 = `${
-// 	getTheme(1).backgroundColor
-// } linear-gradient(to bottom right,transparent 10%, rgb(255,255,255,0.1) 50%, transparent 90%) 100vw 300vh`;
 const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 	<>
 		<SideBarCallingCard
-			components={[
-				// <div style={{ position: "relative" }}>
-				<FounderLetter index={index} />,
-				// </div>,
-			]}
+			components={[<FounderLetter index={index} />]}
 			sideBar={{ components: [foot] }}
 			footer={
 				<PointedtopHexagonFeatureGrid
 					FeatureCallouts={impactFeatureCallouts}
 					hexagon_args={{ colour: "white" }}
-					// _background={getTheme(index).backgroundColor}
 					_background={bg}
-					// _background="linear-gradient(to right bottom, #79C2D0, #C9E59F)"
 					_background_attached={true}
 					_background_size={"100vw 200vh"}
 				/>
@@ -205,9 +192,7 @@ const ImpactCC: React.FC<{ index?: number }> = ({ index = 1 }) => (
 			index={1}
 			styleOverrides={{
 				...SideBarFullOverlapStyle,
-				// background: getTheme(index).backgroundColor,
 				background: bg,
-				// background: `linear-gradient(to right bottom, #79C2D0, #C9E59F)`,
 
 				backgroundSize: "100vw 200vh",
 			}}

@@ -63,7 +63,6 @@ const inferRegionNameFromPhoneNumber = (
 
 		return isoCountryCode;
 	}
-	// ("‭+447831799619");
 	return undefined;
 };
 const stripAllWhitespace = (str: string): string => {

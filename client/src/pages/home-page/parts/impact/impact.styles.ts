@@ -32,7 +32,6 @@ const stat_body_style: React.CSSProperties = {
 
 	textAlign: "center",
 	overflow: "visible",
-	// fontSize: "100%",
 };
 const LetterFooterContainerStyle: React.CSSProperties = {
 	display: "grid",
@@ -50,8 +49,6 @@ const FounderLetterWrapperStyle: React.CSSProperties = {
 	width: "90%",
 
 	fontSize: `calc(2*${VOLUME_CONSTANT_SIZE})`,
-	// display: "flex",
-	// flexDirection: "column",
 };
 export {
 	FounderLetterWrapperStyle,

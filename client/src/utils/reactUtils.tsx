@@ -82,13 +82,10 @@ export const BoxedImage: React.FC<{
 	wrapperStyling = {},
 }) => {
 	const wrapperStyle: React.CSSProperties = {
-		// ...GenericSectionStyle,
 		display: "flex",
 		width,
 		margin: width === "100%" ? "" : "auto",
 		aspectRatio,
-		// height: "10px",
-		// padding: 0,
 
 		justifyContent: "center",
 		alignContent: "center",
@@ -120,32 +117,6 @@ export const NoOpFC: React.FC<
 	} & any
 > = ({ children }) => <>{children}</>;
 
-// export const formatComponent = (
-// 	component: ValidComponent,
-// 	overlay = false
-// ): React.ReactNode | string => {
-// 	if (component === null) {
-// 		return emptyEl;
-// 	} else if (Array.isArray(component)) {
-// 		return component.map((Comp, index) => (
-// 			<div
-// 				style={overlay ? { position: "absolute" } : {}}
-// 				key={index}
-// 			>
-// 				{formatComponent(Comp)}
-// 			</div>
-// 		));
-// 	} else if (
-// 		typeof component === "function" ||
-// 		(component as any).prototype instanceof React.Component
-// 	) {
-// 		const SingleComponent = component as React.ComponentType;
-// 		return <SingleComponent />;
-// 	} else {
-// 		return component;
-// 	}
-// };
-
 const isComp = (Component: ValidComponent): Component is React.ComponentType =>
 	typeof Component === "function" ||
 	(Component as any).prototype instanceof React.Component;
@@ -171,7 +142,3 @@ export const FormatComponent: React.FC<{
 		return Component;
 	}
 };
-
-// const isAndroid = useMemo(() => /Android/i.test(navigator.userAgent), []);
-
-// export { isAndroid };

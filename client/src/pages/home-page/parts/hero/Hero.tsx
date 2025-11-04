@@ -21,8 +21,6 @@ const textEl = (
 		<div
 			style={{
 				fontStyle: "italic",
-
-				// width: "120%",
 			}}
 		>
 			<div>

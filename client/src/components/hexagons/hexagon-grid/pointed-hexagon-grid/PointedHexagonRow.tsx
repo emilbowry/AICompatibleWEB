@@ -58,43 +58,6 @@ const NarrowHexGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
 	);
 };
 const PointedtopHexagonGrid: React.FC<IHexagonRowElements> = ({ elements }) => {
-	// const renderWideLayout = () => {
-	// 	return (
-	// 		<div style={WideLayoutContainerStyle}>
-	// 			{elements.map((element, index) => (
-	// 				<React.Fragment key={index}>
-	// 					<div style={wideItemStyle(index)}>
-	// 						{formatComponent(element)}
-	// 					</div>
-	// 				</React.Fragment>
-	// 			))}
-	// 		</div>
-	// 	);
-	// };
-
-	// const renderNarrowLayout = () => {
-	// 	const top_row_elements = elements.slice(0, 2);
-	// 	const bottom_row_element = elements[2];
-
-	// 	return (
-	// 		<div style={NarrowLayoutContainerStyle}>
-	// 			<div style={NarrowTopRowStyle}>
-	// 				{top_row_elements.map((element, index) => (
-	// 					<div
-	// 						style={narrowItemStyle(index)}
-	// 						key={index}
-	// 					>
-	// 						{formatComponent(element)}
-	// 					</div>
-	// 				))}
-	// 			</div>
-	// 			<div style={NarrowBottomRowStyle}>
-	// 				{formatComponent(bottom_row_element)}
-	// 			</div>
-	// 		</div>
-	// 	);
-	// };
-
 	const Comp = useNarrowLayout() ? NarrowHexGrid : WideHexGrid;
 
 	return (

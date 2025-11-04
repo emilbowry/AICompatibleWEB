@@ -155,14 +155,12 @@ const DropDownLink: React.FC<{ path: string; alias: string | undefined }> = ({
 	alias,
 }) => (
 	<NavLink
-		// key={`${link.path}-${index}`}
 		to={path}
 		{...useDynamicLink({
 			useDefaultDecoration: true,
 
 			StyleOverrides: DropdownLinkStyles,
 		})}
-		// style={DropdownLinkStyles}
 	>
 		{formatLabel(path, alias)}
 	</NavLink>
@@ -174,18 +172,6 @@ const DropDownOuter: React.FC<{ ActiveLinkGroup: ITitleBarLink[] }> = ({
 		{ActiveLinkGroup.length > 1 && (
 			<div style={DropdownLinksColumnStyles}>
 				{ActiveLinkGroup.map((link, index) => (
-					// <NavLink
-					// 	key={`${link.path}-${index}`}
-					// 	to={link.path}
-					// 	{...useDynamicLink({
-					// 		useDefaultDecoration: true,
-
-					// 		StyleOverrides: DropdownLinkStyles,
-					// 	})}
-					// 	// style={DropdownLinkStyles}
-					// >
-					// 	{formatLabel(link.path, link.alias)}
-					// </NavLink>
 					<DropDownLink
 						path={link.path}
 						alias={link.alias}

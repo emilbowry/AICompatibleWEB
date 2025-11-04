@@ -88,7 +88,6 @@ const ourServicesFeatureCallouts = [
 ];
 
 import { SideBarBottomOverlapStyle } from "../../components/callingcard/CallingCard.styles";
-// import { IS_CHROME } from "../../hooks/BrowserDependant";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
 	ServicesContainerStyle,

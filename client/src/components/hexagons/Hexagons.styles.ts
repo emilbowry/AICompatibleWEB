@@ -35,7 +35,6 @@ const inner_point_left_cutout = "polygon(100% 0%, 100% 100%, 0% 75%, 0% 25%)";
 const inner_flat_left_cutout =
 	"polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 50%)";
 const inner_flat_right_cutout =
-	// "polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%, 0% 50%)";
 	"polygon(0% 0%, 50% 0%, 100% 50%, 50% 100%, 0% 100%)";
 
 const inner_point_right_cutout = "polygon(0% 0%, 100% 25%, 100% 75%, 0% 100%)";

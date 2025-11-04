@@ -112,7 +112,6 @@ const aboutUsFeatureCallouts = [
 	],
 ];
 
-// const bg = `linear-gradient(to right, ${white}  0%, ${alt_bgwhite} 100%) fixed`;
 const bg2 = `linear-gradient(to right, rgb(12 192 223 / 10%), rgb(255 222 89 / 10%)),
 		 ${white} fixed`;
 const AboutUsCallingCard: React.FC = () => {

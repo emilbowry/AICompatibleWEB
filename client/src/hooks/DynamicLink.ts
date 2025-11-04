@@ -17,12 +17,7 @@ const useDynamicLink = ({
 }: IDynamicLinkParams) => {
 	const [isOver, setIsOver] = useState(false);
 	const elementRef = useRef<any>(null);
-	// const handleMouseOver = () => {
-	// 		setIsOver(true);
-	// 	};
-	// 	const handleMouseOut = () => {
-	// 		setIsOver(false);
-	// 	};
+
 	useEffect(() => {
 		const element = elementRef.current;
 		const handleMouseOver = () => {

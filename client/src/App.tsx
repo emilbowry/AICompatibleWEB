@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 
 import { Route, Routes, useLocation } from "react-router-dom";
 import logo from "./assets/logoshape.svg";
@@ -19,7 +19,7 @@ import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
 import { useScrollToTop } from "./hooks/ScrollToTop";
 import { useAuthInit } from "./services/api/auth/auth";
 import { dark_midnight_green, lighter_logo_blue } from "./utils/defaultColours";
-
+/* 
 const ApiStatusChecker: React.FC = () => {
 	const [status, setStatus] = useState("Checking backend connection...");
 	const [color, setColor] = useState(dark_midnight_green);
@@ -36,14 +36,14 @@ const ApiStatusChecker: React.FC = () => {
 				setStatus(
 					`Backend Status: ${data.message} (${data.timestamp})`
 				);
-				setColor(lighter_logo_blue); // Success color
+				setColor(lighter_logo_blue); 
 			})
 			.catch((error) => {
 				console.error("Connection Error:", error);
 				setStatus(
 					`Backend Error: Could not connect or invalid response.`
 				);
-				setColor("red"); // Error color
+				setColor("red");
 			});
 	}, []);
 
@@ -71,7 +71,7 @@ const ApiStatusChecker: React.FC = () => {
 		</div>
 	);
 };
-
+ */
 const LoadingFC = () => (
 	<>
 		<div
@@ -93,7 +93,10 @@ const LoadingFC = () => (
 
 const App: React.FC = () => {
 	const [hasCustomCursor, setHasCustomCursor] = useState(true);
-	const [global_position, setGlobalMousePosition] = useState({ x: 0, y: 0 }); // to track between navlinks
+	const [global_position, setGlobalMousePosition] = useState({
+		x: 0,
+		y: 0,
+	}); /* to track between navlinks */
 	const location = useLocation();
 	const [loc, setLoc] = useState(location);
 	useAnimationTagging();

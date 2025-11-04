@@ -34,7 +34,6 @@ const logoutUser = createAsyncThunk(
 	"auth/logoutUser",
 	async (_, { rejectWithValue }) => {
 		try {
-			// ADD credentials: 'include' here as well
 			const response = await fetch("/api/auth/logout", {
 				method: "POST",
 				credentials: "include",

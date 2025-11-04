@@ -1,9 +1,8 @@
 // src/pages/home-page/demo/DemoPage.tsx
 import React from "react";
-// import { ContactForm } from "../../features/contact-form/ContactForm";
 import { Page } from "../../features/page/Page";
 const demoPage: React.FC = () => {
-	return <div>{/* <ContactForm /> */}</div>;
+	return <div></div>;
 };
 
 const DemoPage = () => (
@@ -13,5 +12,4 @@ const DemoPage = () => (
 	/>
 );
 
-// export { DemoPage };
 export default DemoPage;

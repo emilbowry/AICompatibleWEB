@@ -9,7 +9,6 @@ import React, {
 import { VISIBLE_TITLEBAR_HEIGHT } from "../../features/titlebar/TitleBar.consts";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
-	// formatComponent,
 	FormatComponent,
 	Map,
 	NoOpFC,
@@ -124,17 +123,11 @@ const HContentWrapper: React.FC<{
 		<ContentWrapper>{children}</ContentWrapper>
 	);
 const ContainedElement: THexFC = ({ element, useVerticalAlignment }) => {
-	// const HContentWrapper =
-	// 	!Array.isArray(element) && !useVerticalAlignment
-	// 		? NoOpFC
-	// 		: ContentWrapper;
 	const Inner: React.ReactNode = !Array.isArray(element) ? (
-		// formatComponent(element)
 		<FormatComponent Component={element} />
 	) : (
 		<SantisedElMap element={element} />
 	);
-	// const HScallingWrapper = !Array.isArray(element) ? NoOpFC : ScallingWrapper;
 
 	return (
 		<HContentWrapper

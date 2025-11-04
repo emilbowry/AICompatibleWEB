@@ -25,9 +25,6 @@ import {
 import { ICustomCursorProps, IPosition } from "./Cursor.types";
 
 const useMousePosition = (_position?: IPosition): IPosition => {
-	// const [mouse_position, setMousePosition] = useState(
-	// 	_position ?? { x: 0, y: 0 }
-	// );
 	const [mouse_position, setMousePosition] = useState(
 		() => _position ?? { x: 0, y: 0 }
 	);

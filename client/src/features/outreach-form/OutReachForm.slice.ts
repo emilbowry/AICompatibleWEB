@@ -96,7 +96,7 @@ const initialState: IContactFormState = {
 		form_identifier: "other",
 		submission_datetime: "",
 	},
-	status: "idle", // Initialize new status field
+	status: "idle",
 	error: null,
 	pdfDownloadUrl: null,
 };

@@ -13,7 +13,7 @@ import { bulb, bullseye, pencil } from "../../components/callingcard/graphics";
 import { IS_CHROME } from "../../hooks/BrowserDependant";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { generateGradient } from "../../styles";
-import { bgwhite, white } from "../../utils/defaultColours";
+import { bgwhite } from "../../utils/defaultColours";
 import { BoxedImage } from "../../utils/reactUtils";
 import {
 	BlurBackgroundStyle,
@@ -43,7 +43,6 @@ const TimelineData = [
 		date: "JAN 2024",
 		content:
 			"AIC runs its first series of prompt engineering training workshops with live clients, using the new methodology. Initially delivered through AIC first partner, The Growth House who offer leadership and teamship corporate training",
-		// icon: bullseye,
 	},
 	{
 		date: "MARCH 2024",
@@ -126,16 +125,13 @@ const RowHeader: React.FC<{
 const RowContent: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
 	<p style={RowContentStyle}>{children}</p>
 );
-const bg2 = `linear-gradient(to bottom, rgb(255 222 89 / 20%) 30%, rgb(12 192 223 / 20%) 30%),
-		 ${white} fixed`;
+
 const getRows = (isNarrow = false) => {
 	const colours = generateGradient(TimelineData.length).reverse();
 
 	return TimelineData.map((item, i) => {
 		const img = TimelineData[i]?.image;
 		const icon = TimelineData[i + 1]?.icon;
-
-		// TimelineData[i + 1]?.icon || TimelineData[i]?.image || undefined;
 
 		let baseRowElements = [
 			img && isNarrow ? (
@@ -232,7 +228,6 @@ const theJourneyPage: React.FC = () => {
 				absolute_spacing={absolute_spacing}
 				upper_first={isNarrow}
 				class_name="aos-ignore"
-				// containerStyle={{overflow:"visible"}}
 			/>
 		</div>
 	);

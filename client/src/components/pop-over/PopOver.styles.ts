@@ -4,7 +4,6 @@ const ModalBackdropStyle: React.CSSProperties = {
 	left: 0,
 	right: 0,
 	bottom: 0,
-	// background: "transparent",
 	maxHeight: "100vh",
 	display: "flex",
 	justifyContent: "center",
@@ -15,28 +14,17 @@ const ModalBackdropStyle: React.CSSProperties = {
 
 const ModalWrapperStyle: React.CSSProperties = {
 	position: "relative",
-	// width: "100%",
-	// width: "fit-content",
-
-	// display: "inline-block",
 };
 
 const ModalContentStyle: React.CSSProperties = {
 	display: "flex",
 
-	// background: "transparent",
 	backgroundColor: "rgb(255 255 255 / 40%)",
 	background: `linear-gradient(to bottom, rgb(255 222 89 / 10%), rgb(12 192 223 / 10%)),
 		rgb(255 255 255 / 50%)`,
 	backdropFilter: "blur(8px)",
 	borderRadius: "2%",
 	boxShadow: "0 4px 12px rgba(2, 1, 1, 0.2)",
-	// width: "100%",
-	// width: "fit-content",
-	// scrollbarGutter: "stable",
-
-	// overflowX: "auto",
-	// overflowY: "scroll",
 };
 
 const CloseButtonStyle: React.CSSProperties = {
@@ -46,8 +34,7 @@ const CloseButtonStyle: React.CSSProperties = {
 	marginTop: "-24px",
 	marginRight: "-24px",
 	fontWeight: "bold",
-	// backgroundColor: "#CCC",
-	// zIndex: 1001,
+
 	color: "black",
 };
 export {

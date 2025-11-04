@@ -31,7 +31,6 @@ const smallCursorStyle = (mousePosition: {
 	top: `${mousePosition.y - INNER_RADIUS / 2}px`,
 });
 
-// import { logo_blue } from "../../utils/defaultColours";
 import { logo_gradient_prime } from "../../styles";
 const largeCursorStyle = (largerCursorPosition: {
 	x: number;
@@ -94,16 +93,6 @@ const diamondStyle = (
 	}%)`,
 });
 
-// const clickInsertStyle = (mousePosition: IPosition): React.CSSProperties => ({
-// 	...baseHexStyle(mousePosition),
-// 	clipPath: `polygon(50% 50%,  ${50 - CHEV_GAP / 2}% ${
-// 		50 - CHEV_GAP * ASPECT_RATIO
-// 	}%,  ${100 - CHEV_GAP / 2}% ${50 - CHEV_GAP * ASPECT_RATIO}%, 100% 50%,  ${
-// 		100 - CHEV_GAP / 2
-// 	}% ${50 + CHEV_GAP * ASPECT_RATIO}%, ${50 - CHEV_GAP / 2}% ${
-// 		50 + CHEV_GAP * ASPECT_RATIO
-// 	}%)`,
-// });
 const clickInsertStyleA = (
 	mousePosition: IPosition,
 	scale_factor?: number

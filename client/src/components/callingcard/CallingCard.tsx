@@ -35,7 +35,6 @@ const CompWrapper: React.FC<ICallOutProps> = ({
 
 const Header: React.FC<IHeaderProps> = (props) => <CompWrapper {...props} />;
 const Footer: React.FC<IFooterProps> = ({ content }) =>
-	// content && formatComponent(content);
 	content && <FormatComponent Component={content} />;
 
 const GridItem = ({
@@ -147,7 +146,6 @@ const CallingCard: React.FC<
 										...gridOverriders,
 								  }
 								: {
-										// padding: !fullSpread ? "2%" : "0",
 										borderRadius: !fullSpread
 											? "50px 10px"
 											: "",
@@ -207,14 +205,7 @@ const SideBarCallingCard: React.FC<
 			{...props}
 			components={
 				sideBar
-					? [
-							Child,
-
-							<GridBody
-								components={components}
-								// styleOverrides={}
-							/>,
-					  ]
+					? [Child, <GridBody components={components} />]
 					: components
 			}
 			isPageElement={isPageElement}

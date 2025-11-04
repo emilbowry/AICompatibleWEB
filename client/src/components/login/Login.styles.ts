@@ -1,3 +1,5 @@
+// client/src/components/login/Login.styles.ts
+
 import { IUserProfile } from "../../services/api/auth/auth.types";
 
 const ButtonStyle: React.CSSProperties = {
@@ -35,7 +37,6 @@ const MenuStyle: React.CSSProperties = {
 const GoogleSignInContentStyle: React.CSSProperties = {
 	display: "flex",
 	alignItems: "center",
-	// justifyContent: "center",
 	justifyContent: "space-between",
 	padding: "10px 20px",
 	fontSize: "16px",
