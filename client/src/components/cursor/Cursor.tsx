@@ -133,7 +133,34 @@ const LogoCursor: React.FC<ICustomCursorProps> = (props) => {
 		</>
 	);
 };
+// const LogoCursor: React.FC<ICustomCursorProps> = React.memo((props) => {
+// 	const { isMouseClicked, trailing_position, scale_factor } = props;
 
+// 	// const trailingDiamondStyle = useMemo(
+// 	// 	() => diamondStyle(trailing_position, scale_factor),
+// 	// 	[trailing_position, scale_factor]
+// 	// );
+
+// 	return (
+// 		<>
+// 			{!isMouseClicked ? (
+// 				<CutChevron {...props} />
+// 			) : (
+// 				<MemoizedChev {...props} />
+// 			)}
+// 			<div style={diamondStyle(trailing_position, scale_factor)} />
+// 		</>
+// 	);
+// });
+// const MemoizedChev: React.FC<ICustomCursorProps> = React.memo(
+// 	({ mouse_position, scale_factor }) => {
+// 		// const style = useMemo(
+// 		// 	() => chevStyle(mouse_position, scale_factor),
+// 		// 	[mouse_position, scale_factor]
+// 		// );
+// 		return <div style={chevStyle(mouse_position, scale_factor)} />;
+// 	}
+// );
 const CutChevron: React.FC<ICustomCursorProps> = ({
 	mouse_position,
 	scale_factor,
@@ -145,6 +172,26 @@ const CutChevron: React.FC<ICustomCursorProps> = ({
 		</>
 	);
 };
+// const CutChevron: React.FC<ICustomCursorProps> = React.memo(
+// 	({ mouse_position, scale_factor }) => {
+// 		// const styleA = useMemo(
+// 		// 	() => clickInsertStyleA(mouse_position, scale_factor),
+// 		// 	[mouse_position, scale_factor]
+// 		// );
+// 		// const styleB = useMemo(
+// 		// 	() => clickInsertStyleB(mouse_position, scale_factor),
+// 		// 	[mouse_position, scale_factor]
+// 		// );
+
+// 		return (
+// 			<>
+// 				<div style={clickInsertStyleA(mouse_position, scale_factor)} />
+// 				<div style={clickInsertStyleB(mouse_position, scale_factor)} />
+// 			</>
+// 		);
+// 	}
+// );
+
 const StaticCursor: React.FC<ICustomCursorProps> = (
 	props: ICustomCursorProps
 ) => (
@@ -154,10 +201,27 @@ const StaticCursor: React.FC<ICustomCursorProps> = (
 		isMouseClicked={true}
 	/>
 );
+// const StaticCursor: React.FC<ICustomCursorProps> = React.memo((props) => (
+// 	<LogoCursor
+// 		{...props}
+// 		trailing_position={props.mouse_position}
+// 		isMouseClicked={true}
+// 	/>
+// ));
 const FullHexCursor: React.FC<ICustomCursorProps> = ({
 	mouse_position,
 	scale_factor,
 }) => <div style={hexStyle(mouse_position, scale_factor)} />;
+// const FullHexCursor: React.FC<ICustomCursorProps> = React.memo(
+// 	({ mouse_position, scale_factor }) => {
+// 		// Memoize the style object
+// 		// const style = useMemo(
+// 		// 	() => hexStyle(mouse_position, scale_factor),
+// 		// 	[mouse_position, scale_factor]
+// 		// );
+// 		return <div style={hexStyle(mouse_position, scale_factor)} />;
+// 	}
+// );
 
 const DefaultCursor: React.FC<ICustomCursorProps> = ({ mouse_position }) => (
 	<>
@@ -165,6 +229,25 @@ const DefaultCursor: React.FC<ICustomCursorProps> = ({ mouse_position }) => (
 		<div style={largeCursorStyle(mouse_position)} />
 	</>
 );
+// const DefaultCursor: React.FC<ICustomCursorProps> = React.memo(
+// 	({ mouse_position }) => {
+// 		const smallStyle = useMemo(
+// 			() => smallCursorStyle(mouse_position),
+// 			[mouse_position]
+// 		);
+// 		const largeStyle = useMemo(
+// 			() => largeCursorStyle(mouse_position),
+// 			[mouse_position]
+// 		);
+
+// 		return (
+// 			<>
+// 				<div style={smallStyle} />
+// 				<div style={largeStyle} />
+// 			</>
+// 		);
+// 	}
+// );
 
 const HexCursor: React.FC<ICustomCursorProps> = (props: ICustomCursorProps) =>
 	props.isHoveringLink ? (
