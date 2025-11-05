@@ -3,11 +3,19 @@ import React from "react";
 
 import { Menu } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { AuthMenu } from "../../components/login/AuthMenu";
+import { SignInButtons } from "../../components/login/AuthMenu";
+import { MenuStyle } from "../../components/login/Login.styles";
+import { LoginStatus } from "../../components/login/LoginStatus";
+import { LogOutButton } from "../../components/login/LogOutButton";
 import { ModalBody } from "../../components/pop-over/PopOver";
 import { useDynamicLink } from "../../hooks/DynamicLink";
+import {
+	selectAuthStatus,
+	selectUser,
+} from "../../services/api/auth/auth.slice";
 import {
 	DropdownImageContainerStyles,
 	DropdownImageStyles,
@@ -23,7 +31,11 @@ import {
 	RightHandContainerStyles,
 	titleBarStyles,
 } from "./TitleBar.styles";
-import { ITitleBarLink, ITitleBarUILinksProps } from "./TitleBar.types";
+import {
+	ITitleBarLink,
+	ITitleBarProps,
+	ITitleBarUILinksProps,
+} from "./TitleBar.types";
 
 const formatLabel = (key: string, alias?: string): string => {
 	if (alias) return alias;
@@ -41,9 +53,31 @@ const TitleBarLogo: React.FC = () => (
 		/>
 	</div>
 );
+const AuthMenu: React.FC<{ menu_links?: ITitleBarLink[] }> = ({
+	menu_links,
+}) => {
+	const user = useSelector(selectUser);
+	const status = useSelector(selectAuthStatus);
 
-const TitleBarMenu: React.FC = () => {
+	return (
+		<div style={MenuStyle}>
+			{status === "loading" || status === "idle" ? (
+				<></>
+			) : user ? (
+				<>
+					<LoginStatus />
+					<LogOutButton />
+				</>
+			) : (
+				<SignInButtons />
+			)}
+			{menu_links ? <LinkList link_group={menu_links} /> : <></>}
+		</div>
+	);
+};
+const TitleBarMenu: React.FC<ITitleBarProps> = ({ Links }) => {
 	const [isOpen, setIsOpen] = useState(false);
+	const menu_links = Links?.[1];
 
 	return (
 		<>
@@ -61,7 +95,7 @@ const TitleBarMenu: React.FC = () => {
 					closeModal={() => {
 						setIsOpen(false);
 					}}
-					node={<AuthMenu />}
+					node={<AuthMenu menu_links={menu_links} />}
 				/>
 			)}
 		</>
@@ -168,20 +202,26 @@ const DropDownLink: React.FC<{ path: string; alias: string | undefined }> = ({
 		{formatLabel(path, alias)}
 	</NavLink>
 );
+
+const LinkList: React.FC<{ link_group: ITitleBarLink[] }> = ({
+	link_group,
+}) => (
+	<div style={DropdownLinksColumnStyles}>
+		{link_group.map((link, index) => (
+			<DropDownLink
+				path={link.path}
+				alias={link.alias}
+				key={`${link.path}-${index}`}
+			/>
+		))}
+	</div>
+);
 const DropDownOuter: React.FC<{ ActiveLinkGroup: ITitleBarLink[] }> = ({
 	ActiveLinkGroup,
 }) => (
 	<div style={DropdownStyles}>
 		{ActiveLinkGroup.length > 1 && (
-			<div style={DropdownLinksColumnStyles}>
-				{ActiveLinkGroup.map((link, index) => (
-					<DropDownLink
-						path={link.path}
-						alias={link.alias}
-						key={`${link.path}-${index}`}
-					/>
-				))}
-			</div>
+			<LinkList link_group={ActiveLinkGroup} />
 		)}
 		<DropDownInner ActiveLinkGroup={ActiveLinkGroup} />
 	</div>

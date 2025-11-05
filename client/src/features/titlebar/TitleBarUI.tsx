@@ -101,7 +101,7 @@ const useDropDownInteractions = (Links: ITitleBarLink[][]) => {
 	}
 };
 const TitleBarUI: React.FC<ITitleBarProps> = (props) => (
-	<UICTX value={useUIState(props.Links)}>
+	<UICTX value={useUIState(props.Links[0])}>
 		<InnerTitleBarUI {...props} />
 	</UICTX>
 );
@@ -127,10 +127,10 @@ const InnerTitleBarUI: React.FC<ITitleBarProps> = (props) => {
 					active_link_alias={
 						useContext(UICTX)?.active_link_alias || ""
 					}
-					Links={Links}
+					Links={Links[0]}
 					onLinkOver={onLinkOver}
 				/>
-				<TitleBarMenu />
+				<TitleBarMenu {...props} />
 			</div>
 			{props.children}
 		</div>
@@ -138,7 +138,7 @@ const InnerTitleBarUI: React.FC<ITitleBarProps> = (props) => {
 };
 const Dropdown: React.FC<ITitleBarProps> = (props) => {
 	const { ActiveLinkGroup, showDropdown } = useDropDownInteractions(
-		props.Links
+		props.Links[0]
 	);
 	const { onMouseEnter } = useActiveDropdownLink();
 	return (

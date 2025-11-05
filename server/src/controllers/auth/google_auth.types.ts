@@ -9,12 +9,13 @@ interface IPrismaUserData extends SessionData {
 	user?: TUserProfile;
 }
 
+type role = "admin" | "user";
 interface IUserProfile {
 	id: string;
 	googleId: string;
 	name: string;
 	email: string;
-	role: "admin" | "user";
+	roles: role[];
 }
 interface IUserSessionData extends SessionData {
 	user?: IUserProfile;

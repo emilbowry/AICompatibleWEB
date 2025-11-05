@@ -1,6 +1,6 @@
 // client/src/services/api/auth/auth.ts
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppDispatch } from "../../../store";
@@ -36,4 +36,26 @@ const useAccountId = (): string | null => {
 	const user = useSelector(selectUser);
 	return user?.id ?? null;
 };
-export { useAccountId, useAuthInit, useLogout };
+
+const useRoles = () => {
+	const [role, setRole] = useState<string[]>(["default"]);
+
+	useEffect(() => {
+		const fetchRole = async () => {
+			try {
+				const response = await fetch("/api/auth/role");
+				if (response.ok) {
+					const data = await response.json();
+					setRole(data.roles);
+				}
+			} catch (error) {
+				console.error("Failed to fetch role:", error);
+			}
+		};
+
+		fetchRole();
+	}, []);
+	return role;
+};
+
+export { useAccountId, useAuthInit, useLogout, useRoles };

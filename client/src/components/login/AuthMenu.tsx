@@ -1,18 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import googleSVG from "../../assets/googleNeutral.svg";
-import {
-	selectAuthStatus,
-	selectUser,
-} from "../../services/api/auth/auth.slice";
-import {
-	GoogleSignInContentStyle,
-	GoogleSignInStyle,
-	LoadingStyle,
-	MenuStyle,
-} from "./Login.styles";
-import { LoginStatus } from "./LoginStatus";
-import { LogOutButton } from "./LogOutButton";
+import { GoogleSignInContentStyle, GoogleSignInStyle } from "./Login.styles";
 const SignInButtons: React.FC<{ provider?: string }> = ({
 	provider = "google",
 }) => (
@@ -26,24 +14,5 @@ const SignInButtons: React.FC<{ provider?: string }> = ({
 		</div>
 	</a>
 );
-const AuthMenu: React.FC = () => {
-	const user = useSelector(selectUser);
-	const status = useSelector(selectAuthStatus);
 
-	return status === "loading" || status === "idle" ? (
-		<div style={LoadingStyle}>Loading...</div>
-	) : (
-		<div style={MenuStyle}>
-			{user ? (
-				<>
-					<LoginStatus />
-					<LogOutButton />
-				</>
-			) : (
-				<SignInButtons />
-			)}
-		</div>
-	);
-};
-
-export { AuthMenu };
+export { SignInButtons };

@@ -14,6 +14,7 @@ interface IAppConfig {
 	serverURL: string;
 	stripeSecretKey: string;
 	mongo: IMongoConfig;
+	owner_email: string;
 }
 interface IMongoConfig {
 	mongoUri: string;

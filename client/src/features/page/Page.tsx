@@ -3,28 +3,18 @@
 import React, { useContext, useEffect } from "react";
 import { Footer } from "../footer/Footer";
 
-import dropdownImage from "../../assets/aicwork.jpg";
 import logo from "../../assets/logo.png";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { BackgroundStyle } from "../../styles";
 
 import { useLocation } from "react-router-dom";
 import { CursorContext } from "../../components/cursor/Cursor";
+import { useRoles } from "../../services/api/auth/auth";
+import { useAccessRoutes } from "../access-managment/router";
+
 import { PillTitleBar } from "../titlebar/TitleBar";
 import { VISIBLE_TITLEBAR_HEIGHT } from "../titlebar/TitleBar.consts";
-import { ITitleBarLink } from "../titlebar/TitleBar.types";
 import { MainStyle, PageStyle } from "./Page.styles";
-const navLinks: ITitleBarLink[][] = [
-	[
-		{ path: "/", alias: "Home", image: dropdownImage },
-		{ path: "/demo_and_testing", alias: "Demo Page" },
-		{ path: "/dpotool", alias: "DPO Tool" },
-	],
-	[{ path: "/thejourney", alias: "The Journey" }],
-
-	[{ path: "/ourservices", alias: "Our Services" }],
-	[{ path: "/contact", alias: "Contact" }],
-];
 
 const Page: React.FC<{
 	page: React.FC;
@@ -37,13 +27,15 @@ const Page: React.FC<{
 	}, [setHasCustomCursor, useCursor]);
 	const isNarrow = useNarrowLayout();
 	const location = useLocation().pathname;
+	const roles = useRoles();
+	const routes = useAccessRoutes(roles);
 	return (
 		<>
 			{bg ? <div style={BackgroundStyle}></div> : null}
 
 			<PillTitleBar
 				logo_src={logo}
-				Links={navLinks}
+				Links={routes}
 			/>
 			<main
 				key={location}
