@@ -1,20 +1,21 @@
 // client/src/features/access-managment/router.tsx
 
 import { Route, Routes } from "react-router-dom";
+import { useRoles } from "../../services/api/auth/auth";
 import { IRoutes } from "./accessmanagent.types";
 import { AdminRoutes, default_routes, TestSideBar } from "./default_routes";
-
-const testBar = false;
 
 const AllRoutes: Record<string, [IRoutes[][], IRoutes[]]> = {
 	DEFAULT: default_routes,
 	USER: TestSideBar,
 	ADMIN: AdminRoutes,
 };
-// const useRole = () => (testBar ? "default" : "ADMIN");
-import { useRoles } from "../../services/api/auth/auth";
 const useAccessRoutes = (roles: string[]) =>
-	roles.includes("ADMIN") ? AdminRoutes : AllRoutes["DEFAULT"];
+	roles.includes("ADMIN")
+		? AdminRoutes
+		: roles.includes("USER")
+		? TestSideBar
+		: AllRoutes["DEFAULT"];
 const DRouter: React.FC = () => {
 	const role = useRoles();
 	console.log(role);

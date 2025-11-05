@@ -9,7 +9,7 @@ const getRole = (req: Request, res: Response) => {
 	} else if (user.email === config.owner_email) {
 		res.json({ roles: ["ADMIN"] });
 	} else {
-		res.json({ roles: user.roles });
+		res.json({ roles: user.role });
 	}
 };
 export { getRole };

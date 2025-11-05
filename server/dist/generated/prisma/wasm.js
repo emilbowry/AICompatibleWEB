@@ -120,7 +120,8 @@ exports.Prisma.QueryMode = {
 };
 exports.Role = exports.$Enums.Role = {
   USER: 'USER',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  DEFAULT: 'DEFAULT'
 };
 
 exports.Prisma.ModelName = {
@@ -170,7 +171,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": true,
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -179,8 +180,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\n//generator client {\n//  provider = \"prisma-client\"\n//  output   = \"../src/generated/prisma\"\n//}\n\n//datasource db {\n//  provider = \"postgresql\"\n//  url      = env(\"DATABASE_URL\")\n//}\n// This is your Prisma schema file.\n// It's the single source of truth for your database structure.\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  // This tells Prisma to read the connection string from your .env file\n  url      = env(\"DATABASE_URL\")\n}\n\n// Defines an Enum for the user roles. Prisma will create a corresponding\n// TypeScript enum that you can use in your code.\nenum Role {\n  USER\n  ADMIN\n}\n\n// Defines the User model, which will become the \"User\" table in your database.\nmodel User {\n  id    String @id @default(uuid()) // The primary key, a UUID.\n  email String @unique // A unique constraint ensures no two users have the same email.\n  name  String\n  role  Role   @default(USER) // New users will default to the 'USER' role.\n\n  createdAt DateTime @default(now()) // Prisma handles setting this on creation.\n  updatedAt DateTime @updatedAt // Prisma handles updating this on any change.\n\n  // This is a \"relation field\". It doesn't exist in the database table\n  // but tells Prisma that a User can be related to many LinkedAccount records.\n  accounts LinkedAccount[]\n}\n\n// Defines the LinkedAccount model for different login methods (Google, Apple, etc.).\nmodel LinkedAccount {\n  id             String @id @default(cuid()) // A unique ID for this specific record.\n  provider       String // e.g., \"google\"\n  providerUserId String // The unique ID from the external provider.\n\n  // This defines the many-to-one relationship back to the User model.\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  userId String // This is the actual foreign key column in the database.\n\n  createdAt DateTime @default(now())\n\n  // This is a composite unique key. It ensures you can't have two rows\n  // with the exact same provider and providerUserId (e.g., you can't link\n  // the same Google account to two different users).\n  @@unique([provider, providerUserId])\n}\n",
-  "inlineSchemaHash": "bbc1e4b012d8616685a40dbda63cc564c94ab3c1e56abcf452f98f3d13f28918",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\n//generator client {\n//  provider = \"prisma-client\"\n//  output   = \"../src/generated/prisma\"\n//}\n\n//datasource db {\n//  provider = \"postgresql\"\n//  url      = env(\"DATABASE_URL\")\n//}\n// This is your Prisma schema file.\n// It's the single source of truth for your database structure.\n\ngenerator client {\n  provider      = \"prisma-client-js\"\n  output        = \"../src/generated/prisma\"\n  binaryTargets = [\"native\", \"debian-openssl-3.0.x\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  // This tells Prisma to read the connection string from your .env file\n  url      = env(\"DATABASE_URL\")\n}\n\n// Defines an Enum for the user roles. Prisma will create a corresponding\n// TypeScript enum that you can use in your code.\nenum Role {\n  USER\n  ADMIN\n  DEFAULT\n}\n\n// Defines the User model, which will become the \"User\" table in your database.\nmodel User {\n  id    String @id @default(uuid()) // The primary key, a UUID.\n  email String @unique // A unique constraint ensures no two users have the same email.\n  name  String\n  role  Role[] @default([USER]) // New users will default to the 'USER' role.\n\n  createdAt DateTime @default(now()) // Prisma handles setting this on creation.\n  updatedAt DateTime @updatedAt // Prisma handles updating this on any change.\n\n  // This is a \"relation field\". It doesn't exist in the database table\n  // but tells Prisma that a User can be related to many LinkedAccount records.\n  accounts LinkedAccount[]\n}\n\n// Defines the LinkedAccount model for different login methods (Google, Apple, etc.).\nmodel LinkedAccount {\n  id             String @id @default(cuid()) // A unique ID for this specific record.\n  provider       String // e.g., \"google\"\n  providerUserId String // The unique ID from the external provider.\n\n  // This defines the many-to-one relationship back to the User model.\n  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)\n  userId String // This is the actual foreign key column in the database.\n\n  createdAt DateTime @default(now())\n\n  // This is a composite unique key. It ensures you can't have two rows\n  // with the exact same provider and providerUserId (e.g., you can't link\n  // the same Google account to two different users).\n  @@unique([provider, providerUserId])\n}\n",
+  "inlineSchemaHash": "0578ac65b0058a4227f0ae0880f2eb24ebe66f715f9a738fe00ff6b99eb33102",
   "copyEngine": true
 }
 config.dirname = '/'

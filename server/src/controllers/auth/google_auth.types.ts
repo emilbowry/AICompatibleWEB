@@ -15,7 +15,7 @@ interface IUserProfile {
 	googleId: string;
 	name: string;
 	email: string;
-	roles: role[];
+	role: role[];
 }
 interface IUserSessionData extends SessionData {
 	user?: IUserProfile;

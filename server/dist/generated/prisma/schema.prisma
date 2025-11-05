@@ -33,6 +33,7 @@ datasource db {
 enum Role {
   USER
   ADMIN
+  DEFAULT
 }
 
 // Defines the User model, which will become the "User" table in your database.
@@ -40,7 +41,7 @@ model User {
   id    String @id @default(uuid()) // The primary key, a UUID.
   email String @unique // A unique constraint ensures no two users have the same email.
   name  String
-  role  Role   @default(USER) // New users will default to the 'USER' role.
+  role  Role[] @default([USER]) // New users will default to the 'USER' role.
 
   createdAt DateTime @default(now()) // Prisma handles setting this on creation.
   updatedAt DateTime @updatedAt // Prisma handles updating this on any change.

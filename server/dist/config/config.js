@@ -16,5 +16,6 @@ const config = {
     google: google_config,
     stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
     mongo: mongoConfig,
+    owner_email: process.env.OWNER_EMAIL || "",
 };
 export { config };
