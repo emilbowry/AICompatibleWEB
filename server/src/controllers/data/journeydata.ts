@@ -55,7 +55,6 @@ const TimelineData = [
 ];
 
 const getJourneyData = (_req: Request, res: Response) => {
-	// const ip = req.ip;
 	res.json({ TimelineData });
 };
 

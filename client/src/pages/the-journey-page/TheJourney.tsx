@@ -93,9 +93,7 @@ const getThirdHex = (index: number, data?: typeof TimelineData) => {
 		/>
 	);
 
-	const _icon =
-		TimelineData[index + 1]
-			?.icon; /* temporary until i figure out how i want to load images and icons */
+	const _icon = data[index + 1]?.icon;
 	const _image = TimelineData[index]?.image;
 	if (_icon) {
 		thirdHexagon = (
@@ -138,8 +136,8 @@ const getRows = (isNarrow = false, data?: typeof TimelineData) => {
 	if (!data) return [{ elements: [null, null, null] }];
 	return data.map((item, i) => {
 		/* temporary until i figure out how i want to load images and icons */
-		const img = TimelineData[i]?.image;
-		const icon = TimelineData[i + 1]?.icon;
+		const img = data[i]?.image;
+		const icon = data[i + 1]?.icon;
 
 		let baseRowElements = [
 			img && isNarrow ? (

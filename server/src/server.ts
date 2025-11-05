@@ -3,6 +3,7 @@
 import http from "http";
 import app from "./app.js";
 import { config } from "./config/config.js";
+import { connectToMongo, seedDatabase } from "./config/mongo.js";
 
 console.log("--- STARTING API SERVER ---");
 
@@ -19,6 +20,9 @@ server.on("error", (e: NodeJS.ErrnoException) => {
 });
 
 try {
+	await connectToMongo();
+	await seedDatabase();
+
 	await new Promise<void>((resolve) => {
 		server.listen(config.port, "127.0.0.1", () => {
 			console.log(

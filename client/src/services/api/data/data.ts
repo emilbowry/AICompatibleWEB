@@ -8,11 +8,11 @@ const useTimelineData = () => {
 	useEffect(() => {
 		const fetchTimelineData = async () => {
 			try {
-				const response = await fetch("/api/data/journey_data");
+				const response = await fetch("/api/data/timeline");
 				if (response.ok) {
 					const data = await response.json();
 					console.log(data);
-					setTimeLineData(data.TimelineData || [{}]);
+					setTimeLineData(data || [{}]);
 				} else {
 					setTimeLineData([{}]);
 				}

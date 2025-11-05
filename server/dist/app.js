@@ -4,10 +4,18 @@ import session from "express-session";
 import { config } from "./config/config.js";
 import { sessionConfig } from "./config/session.js";
 import apiRoutes from "./routes/api.js";
+import { fileURLToPath } from "url";
+import path from "path";
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.json());
+// app.use(express.static(path.join(__dirname, "../assets")));
+// console.log(path.join(__dirname, "../assets"));
+app.use("/public", express.static(path.join(__dirname, "../assets")));
+app.use(session(sessionConfig));
 app.use(express.json());
 app.set("trust proxy", 1);
-app.use(session(sessionConfig));
 const corsOptions = {
     origin: config.isProduction ? "https://emilbowry.com" : config.clientURL,
     credentials: true,

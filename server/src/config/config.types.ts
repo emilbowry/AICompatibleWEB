@@ -13,5 +13,9 @@ interface IAppConfig {
 	google: IGoogleConfig;
 	serverURL: string;
 	stripeSecretKey: string;
+	mongo: IMongoConfig;
 }
-export type { IAppConfig, IGoogleConfig };
+interface IMongoConfig {
+	mongoUri: string;
+}
+export type { IAppConfig, IGoogleConfig, IMongoConfig };

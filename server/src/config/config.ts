@@ -1,6 +1,6 @@
 // src/config/index.ts
 import * as dotenv from "dotenv";
-import { IAppConfig, IGoogleConfig } from "./config.types.js";
+import { IAppConfig, IGoogleConfig, IMongoConfig } from "./config.types.js";
 
 dotenv.config();
 const serverURL =
@@ -10,6 +10,7 @@ const google_config: IGoogleConfig = {
 	clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
 	redirectUri: `${serverURL}/api/auth/google/callback`,
 };
+const mongoConfig: IMongoConfig = { mongoUri: process.env.MONGO_URI || "" };
 const config: IAppConfig = {
 	port: parseInt(process.env.PORT || "7878", 10),
 	isProduction: process.env.NODE_ENV === "production",
@@ -17,6 +18,7 @@ const config: IAppConfig = {
 	serverURL,
 	google: google_config,
 	stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
+	mongo: mongoConfig,
 };
 
 export { config };

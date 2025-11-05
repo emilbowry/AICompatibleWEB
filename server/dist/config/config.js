@@ -7,6 +7,7 @@ const google_config = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     redirectUri: `${serverURL}/api/auth/google/callback`,
 };
+const mongoConfig = { mongoUri: process.env.MONGO_URI || "" };
 const config = {
     port: parseInt(process.env.PORT || "7878", 10),
     isProduction: process.env.NODE_ENV === "production",
@@ -14,5 +15,6 @@ const config = {
     serverURL,
     google: google_config,
     stripeSecretKey: process.env.STRIPE_SECRET_KEY || "",
+    mongo: mongoConfig,
 };
 export { config };

@@ -7,6 +7,22 @@ export const wrapLink = (
 	el: React.ReactNode
 ): React.ReactNode => (link ? <a href={link}>{el}</a> : el);
 
+const _get_data_uri = (svgString: string, asCSSUrl = false): string => {
+	// A more robust way to encode SVG for data URIs
+	const encoded = svgString
+		.replace(/"/g, "'") // Use single quotes
+		.replace(/%/g, "%25")
+		.replace(/#/g, "%23")
+		.replace(/{/g, "%7B")
+		.replace(/}/g, "%7D")
+		.replace(/</g, "%3C")
+		.replace(/>/g, "%3E")
+		.replace(/\s+/g, " "); // Condense whitespace
+
+	const str_uri = `data:image/svg+xml,${encoded}`;
+	return asCSSUrl ? `url("${str_uri}")` : str_uri;
+};
+
 export const getImageEl = (
 	image: string | undefined | React.SVGElementType,
 	styling: React.CSSProperties = {},
@@ -16,6 +32,8 @@ export const getImageEl = (
 	if (React.isValidElement(image)) {
 		const _string = stringifySVG(image);
 		_image = get_data_uri(_string);
+	} else if (typeof image === "string" && image.trim().startsWith("<svg")) {
+		_image = _get_data_uri(image);
 	}
 	return _image ? (
 		<img

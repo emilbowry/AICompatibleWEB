@@ -23,7 +23,8 @@
     "typescript": "^5.4.5"
   },
   "imports": {
-    "#prisma/client": "./dist/generated/prisma/index.js"
+    "#prisma/client": "./dist/generated/prisma/index.js",
+    "#bw1": "./assets/bw1.jpg"
   },
   "keywords": [],
   "license": "ISC",
