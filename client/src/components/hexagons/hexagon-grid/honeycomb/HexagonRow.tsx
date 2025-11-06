@@ -52,6 +52,7 @@ const HexagonGrid: React.FC<IHexagonGridElements> = ({
 	containerStyle = {},
 	class_name,
 }) => {
+	if (rows.length === 1) return <></>;
 	const length = rows.length;
 	const n = rows[0].elements.length;
 	const topExtension = rows[0].elements.some(

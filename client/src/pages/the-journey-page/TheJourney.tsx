@@ -217,6 +217,7 @@ const getRows = (isNarrow = false, data?: typeof TimelineData) => {
 	});
 };
 const TheJourney: React.FC = () => {
+	// const []
 	const isNarrow = useNarrowLayout();
 	const relative_spacing = 10;
 	const absolute_spacing = 0;

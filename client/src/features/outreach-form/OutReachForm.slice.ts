@@ -86,6 +86,7 @@ const initialState: IContactFormState = {
 		job_title: undefined,
 		organisation: undefined,
 		raw_phone_number: undefined,
+		call_time: undefined,
 	},
 	metadata: {
 		source: "",
@@ -115,9 +116,10 @@ const outreachFormSlice = createSlice({
 			const { field, value } = action.payload;
 			(state.fields[field] as any) = value;
 		},
-		initializeMetadata: (state, action: PayloadAction<IFormMetaData>) => {
+		initialiseMetadata: (state, action: PayloadAction<IFormMetaData>) => {
 			state.metadata = action.payload;
 		},
+
 		resetForm: (state) => {
 			state.fields = initialState.fields;
 			state.metadata = initialState.metadata;
@@ -148,7 +150,7 @@ const outreachFormSlice = createSlice({
 	},
 });
 
-export const { updateField, initializeMetadata, resetForm } =
+export const { updateField, initialiseMetadata, resetForm } =
 	outreachFormSlice.actions;
 export { initialState, outreachFormSlice, submitFormAndGeneratePdf };
 export default outreachFormSlice.reducer;

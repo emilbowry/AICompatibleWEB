@@ -7,7 +7,6 @@ import React, {
 } from "react";
 
 import { VISIBLE_TITLEBAR_HEIGHT } from "../../features/titlebar/TitleBar.consts";
-import { IS_CHROME } from "../../hooks/BrowserDependant";
 import {
 	FormatComponent,
 	Map,
@@ -441,20 +440,20 @@ class Hexagon
 		const _reformed_color =
 			this.props._background === undefined ? color : "transparent";
 		return {
-			defs: !IS_CHROME
-				? [
-						<mask id="hexagon">
-							<path
-								d={this.hex_path}
-								fill="white"
-							/>
-						</mask>,
-				  ]
-				: [],
+			defs: [
+				<mask id="hexagon">
+					<path
+						d={this.hex_path}
+						fill="white"
+					/>
+				</mask>,
+			],
+			// : [],
 			paths: [
 				<path
 					d={this.hex_path}
-					mask={!IS_CHROME ? "url(#hexagon)" : ""}
+					// mask={!IS_CHROME ? "url(#hexagon)" : ""}
+					mask={"url(#hexagon)"}
 					fill={_reformed_color}
 					stroke={borderColor}
 					strokeWidth={borderWidth}
@@ -474,11 +473,17 @@ class Hexagon
 			_background = undefined,
 			_background_attached = false,
 			_background_size = "100vw 150vh",
+			clsname = "",
 			...styleProps
 		} = this.props;
 		return (
 			<HexagonContext value={this.hex_state}>
-				<div style={containerStyle(styleProps)}>
+				<div
+					style={{
+						...containerStyle(styleProps),
+					}}
+					className={clsname}
+				>
 					<ComposedHexSVG styles={svgStyle} />
 
 					<CenterAlignedElement

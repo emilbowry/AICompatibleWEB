@@ -53,7 +53,7 @@ body {
 }
 .no-aos {
   isolation: isolate;
-  contain: paint;
+  contain: paint; 
   transform: none
 }
 

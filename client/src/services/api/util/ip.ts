@@ -25,6 +25,7 @@ const useIP = () => {
 	}, []);
 	return ip;
 };
+
 const GEOLOCATION_API_URL = "http://ip-api.com/json/";
 
 const useIPRegionGuess = (ip: string) => {

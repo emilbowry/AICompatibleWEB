@@ -1,5 +1,4 @@
 // src/components/hexagons/LogoHexagon.tsx
-import React from "react";
 
 import { logo_yellow } from "../../utils/defaultColours";
 import { LogoLinearGradient } from "../callingcard/graphics";
@@ -15,7 +14,11 @@ class LogoHexagon extends Hexagon {
 	override getDefaultAssignments() {
 		return [
 			...super.getDefaultAssignments(),
-			{ key: "withGap", return_value: false },
+			{
+				key: "withGap",
+				return_value: (original_args: any) =>
+					original_args?.withGap ?? false,
+			},
 		];
 	}
 	override construct() {
@@ -35,7 +38,7 @@ class LogoHexagon extends Hexagon {
 			],
 		};
 
-		if (this.santiseOptionalParameters() == true) {
+		if (this.santiseOptionalParameters()["withGap"] == true) {
 			components.defs.push(
 				<mask id="logoCutout">
 					<path

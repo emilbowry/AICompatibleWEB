@@ -11,7 +11,7 @@ import { ProtoAddToCalender } from "./calendar/Calendar";
 import { CheckoutButton } from "./checkout/Checkout";
 import {
 	FormContext,
-	useInitializeFormMetadata,
+	useInitialiseFormMetadata,
 	useMetadata,
 } from "./OutReachForm";
 import { initialState, submitFormAndGeneratePdf } from "./OutReachForm.slice";
@@ -235,7 +235,7 @@ const Submission: React.FC<{
 }> = ({ includeMetaData }) => {
 	const { form_type, isFormError = false } = useContext(FormContext);
 	const MetaData = useMetadata();
-	useInitializeFormMetadata(MetaData);
+	useInitialiseFormMetadata(MetaData);
 
 	const data_val_key =
 		form_type === "BookCall"

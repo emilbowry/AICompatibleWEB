@@ -17,7 +17,7 @@ const containerStyle = ({
 };
 
 const svgStyle = (args: IHexagonStyleParams): React.CSSProperties => {
-	return {};
+	return args;
 };
 
 const s = 1;

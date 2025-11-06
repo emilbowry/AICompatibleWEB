@@ -116,6 +116,7 @@ const ElementStyle = (scale_params: TScaleParams): React.CSSProperties => {
 		marginRight: Xshifts[1],
 		marginTop: Yshifts[0],
 		marginBottom: Yshifts[1],
+		overflow: "visible",
 	};
 };
 

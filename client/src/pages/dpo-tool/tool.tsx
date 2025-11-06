@@ -63,8 +63,7 @@ We may collect and/or verify the following categories of Personal Information ab
 * Sensitive Personal Information, such as government identification numbers (which may include Social Security Number or equivalent, driver’s license number, passport number) and financial account information and
 * Additional Information, as permitted by law or required to comply with legal obligations, which may include criminal records or alleged criminal activity, or information about any person or corporation with whom you have had, currently have, or may have a financial relationship.
 
-Personal Information you provide during the registration process may be retained, even if your registration is left incomplete or abandoned. 
-<!-- Unique Property: The privacy policy affirms that personal information provided during the registration process may be retained even if the registration is incomplete or abandoned -->
+Personal Information you provide during the registration process may be retained, even if your registration is left incomplete or abandoned.<!-- Unique Property: The privacy policy affirms that personal information provided during the registration process may be retained even if the registration is incomplete or abandoned -->
 
 
 D. Combination of Personal information

@@ -46,7 +46,7 @@ const useRoles = () => {
 				const response = await fetch("/api/auth/role");
 				if (response.ok) {
 					const data = await response.json();
-					setRole(data.roles);
+					setRole(data.role);
 				}
 			} catch (error) {
 				console.error("Failed to fetch role:", error);
@@ -54,7 +54,8 @@ const useRoles = () => {
 		};
 
 		fetchRole();
-	});
+	}, []);
+	console.log(role);
 	return role;
 };
 

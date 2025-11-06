@@ -12,7 +12,7 @@ import { AppDispatch, RootState } from "../../store";
 import { Appointment } from "./Appointments";
 import { useDefaultDateTimeLocal } from "./calendar/Calendar";
 import { FormContainer } from "./FormUI";
-import { initializeMetadata } from "./OutReachForm.slice";
+import { initialiseMetadata } from "./OutReachForm.slice";
 import {
 	ErrMessageStyle,
 	FormContainerStyle,
@@ -103,17 +103,17 @@ const useMetadata = (): IFormMetaData => {
 
 	return metaData;
 };
-const useInitializeFormMetadata = (MetaData: IFormMetaData) => {
+const useInitialiseFormMetadata = (MetaData: IFormMetaData) => {
 	const dispatch = useDispatch<AppDispatch>();
 
 	useEffect(() => {
 		if (MetaData) {
-			dispatch(initializeMetadata(MetaData));
+			dispatch(initialiseMetadata(MetaData));
 		}
 	}, [MetaData, dispatch]);
 };
 
-export { useInitializeFormMetadata, useMetadata };
+export { useInitialiseFormMetadata, useMetadata };
 
 const default_form_context = {
 	submit_disabled: true,
@@ -131,12 +131,23 @@ const FormStatus: React.FC = () => {
 	const { validationErr } = useContext(FormContext);
 	return validationErr && <div style={ErrMessageStyle}>{validationErr}</div>;
 };
+
+// const useAccountEmail = () => {
+// 	const dispatch = useDispatch<AppDispatch>();
+
+// 	useEffect(() => {
+// 		const email = useSelector((state: RootState) => state.auth.user?.email);
+// 		const name = useSelector((state: RootState) => state.auth.user?.name);
+// 		dispatch(updateField({ field: "email", value: email }));
+// 		dispatch(updateField({ field: "name", value: name }));
+// 	}, [dispatch]);
+// };
 const OutReachForm: React.FC<{
 	form_type?: string;
 	includeMetaData?: boolean;
 }> = ({ form_type, includeMetaData }) => {
 	const { isInvalid, err_state } = useValidation(form_type);
-
+	// useAccountEmail();
 	const [submitted, setSubmitted] = useState(false);
 
 	return (

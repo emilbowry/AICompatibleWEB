@@ -31,6 +31,7 @@ const LoadingFC = () => (
 );
 
 import { DRouter } from "./features/access-managment/router";
+import { useAdmin } from "./services/api/util/admin";
 const App: React.FC = () => {
 	const [hasCustomCursor, setHasCustomCursor] = useState(true);
 	const [global_position, setGlobalMousePosition] = useState({
@@ -42,6 +43,8 @@ const App: React.FC = () => {
 	useAnimationTagging();
 	useScrollToTop();
 	useAuthInit();
+	useAdmin();
+	// console.log();
 	return (
 		<>
 			{/* <ApiStatusChecker /> */}

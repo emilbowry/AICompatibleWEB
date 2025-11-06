@@ -52,6 +52,8 @@ const Page: React.FC<{
 						fontSize: isNarrow
 							? "calc(1.6rem*calc(1vw/1vh))"
 							: "2rem",
+						maxWidth: "100vw",
+						// overflowX: "clip !important",
 					}}
 				>
 					<Page />

@@ -8,7 +8,12 @@ import { OurTeam } from "./parts/ourteam/OurTeam";
 
 const homePage: React.FC = () => {
 	return (
-		<div style={{ display: "grid", gridTemplateColumns: "100%" }}>
+		<div
+			style={{
+				display: "grid",
+				gridTemplateColumns: "100%",
+			}}
+		>
 			<Hero />
 			<OurTeam />
 			<AboutUsCallingCard />

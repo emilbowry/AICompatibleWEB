@@ -10,22 +10,24 @@ const AllRoutes: Record<string, [IRoutes[][], IRoutes[]]> = {
 	USER: TestSideBar,
 	ADMIN: AdminRoutes,
 };
-const useAccessRoutes = (roles: string[]) =>
-	roles.includes("ADMIN")
+const useAccessRoutes = (role: string[]) =>
+	role.includes("ADMIN")
 		? AdminRoutes
-		: roles.includes("USER")
+		: role.includes("USER")
 		? TestSideBar
 		: AllRoutes["DEFAULT"];
 const DRouter: React.FC = () => {
 	const role = useRoles();
-	console.log(role);
 	const _routes = useAccessRoutes(role);
-	const routes = [..._routes[0]];
-	if (_routes[1].length > 0) routes.push(_routes[1]);
+	const routes = _routes.flat(2); //[..._routes[0]];
+	// const flatRoutes: IRoutes[] = _routes.flat(2);
+	// const a = [[1, 2, 3, ],[4, 5]];
+	// console.log(([] as any).concat(a));
+	// if (_routes[1].length > 0) routes.push(_routes[1]);
 	return (
 		<Routes>
 			{routes.map((link, i) => {
-				const item = link[0];
+				const item = link;
 				const Comp = item.component;
 				return (
 					<Route

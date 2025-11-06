@@ -5,11 +5,11 @@ import { IUserSessionData } from "./google_auth.types.js";
 const getRole = (req: Request, res: Response) => {
 	const user = (req.session as IUserSessionData).user;
 	if (!user) {
-		res.json({ roles: ["DEFAULT"] });
+		res.json({ role: ["DEFAULT"] });
 	} else if (user.email === config.owner_email) {
-		res.json({ roles: ["ADMIN"] });
+		res.json({ role: ["ADMIN"] });
 	} else {
-		res.json({ roles: user.role });
+		res.json({ role: user.role });
 	}
 };
 export { getRole };

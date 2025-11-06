@@ -10,7 +10,7 @@ const PageStyle: React.CSSProperties = {
 const MainStyle: React.CSSProperties = {
 	position: "relative",
 	height: "100%",
-	maxWidth: "100%",
+	maxWidth: "100vw",
 	overflow: "clip",
 	display: "flex",
 	flexDirection: "column",
