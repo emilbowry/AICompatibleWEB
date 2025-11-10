@@ -16,3 +16,4 @@ client/.env
 server/.env
 temp
 .venv
+tool/embeddings.ipynb

@@ -1,4 +1,4 @@
-// client/src/features/outreach-form/PopOver.tsx
+// client/src/components/pop-over/PopOver.tsx
 
 import React, { createContext, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
@@ -35,16 +35,21 @@ const ModalBody: React.FC<{
 	node?: React.ReactNode;
 }> = ({ closeModal, node }) => {
 	const { containerEl, handleExit } = useModalRoot(closeModal);
+	const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === e.currentTarget) {
+			handleExit();
+		}
+	};
 
 	return ReactDOM.createPortal(
 		<div
 			style={ModalBackdropStyle}
-			onClick={handleExit}
+			onClick={handleBackdropClick}
 			className="no-aos"
 		>
 			<div style={ModalWrapperStyle}>
 				<button
-					onClick={handleExit}
+					onClick={closeModal}
 					style={CloseButtonStyle}
 				>
 					&times;

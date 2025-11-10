@@ -12,7 +12,7 @@ import { AppDispatch, RootState } from "../../store";
 import { Appointment } from "./Appointments";
 import { useDefaultDateTimeLocal } from "./calendar/Calendar";
 import { FormContainer } from "./FormUI";
-import { initialiseMetadata } from "./OutReachForm.slice";
+import { initialiseMetadata, updateField } from "./OutReachForm.slice";
 import {
 	ErrMessageStyle,
 	FormContainerStyle,
@@ -132,22 +132,21 @@ const FormStatus: React.FC = () => {
 	return validationErr && <div style={ErrMessageStyle}>{validationErr}</div>;
 };
 
-// const useAccountEmail = () => {
-// 	const dispatch = useDispatch<AppDispatch>();
-
-// 	useEffect(() => {
-// 		const email = useSelector((state: RootState) => state.auth.user?.email);
-// 		const name = useSelector((state: RootState) => state.auth.user?.name);
-// 		dispatch(updateField({ field: "email", value: email }));
-// 		dispatch(updateField({ field: "name", value: name }));
-// 	}, [dispatch]);
-// };
+const useAccountEmail = () => {
+	const dispatch = useDispatch<AppDispatch>();
+	const email = useSelector((state: RootState) => state.auth.user?.email);
+	const name = useSelector((state: RootState) => state.auth.user?.name);
+	useEffect(() => {
+		dispatch(updateField({ field: "email", value: email }));
+		dispatch(updateField({ field: "name", value: name }));
+	}, [dispatch]);
+};
 const OutReachForm: React.FC<{
 	form_type?: string;
 	includeMetaData?: boolean;
 }> = ({ form_type, includeMetaData }) => {
 	const { isInvalid, err_state } = useValidation(form_type);
-	// useAccountEmail();
+	useAccountEmail();
 	const [submitted, setSubmitted] = useState(false);
 
 	return (
