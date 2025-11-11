@@ -18,3 +18,4 @@ temp
 .venv
 tool/embedings.ipynb
 tool/.env
+.env

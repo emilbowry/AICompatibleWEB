@@ -16,7 +16,6 @@ const fetchCurrentUser = createAsyncThunk<
 	{ rejectValue: string }
 >("auth/fetchCurrentUser", async (_, { rejectWithValue }) => {
 	try {
-		// ADD credentials: 'include' to the fetch options
 		const response = await fetch("/api/auth/me", {
 			credentials: "include",
 		});

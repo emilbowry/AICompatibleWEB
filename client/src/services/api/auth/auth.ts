@@ -54,8 +54,7 @@ const useRoles = () => {
 		};
 
 		fetchRole();
-	}, []);
-	console.log(role);
+	});
 	return role;
 };
 

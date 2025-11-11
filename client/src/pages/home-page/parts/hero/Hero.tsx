@@ -8,8 +8,12 @@ import { Hexagon } from "../../../../components/hexagons/Hexagons";
 import { ImageHexagon } from "../../../../components/hexagons/ImageHexagon";
 import { LogoHexagon } from "../../../../components/hexagons/LogoHexagon";
 import { HexagonGrid } from "../../../../components/hexagons/hexagon-grid/honeycomb/HexagonRow";
-import { light_mix_green, white } from "../../../../utils/defaultColours";
-// import { RotatingLogo } from "../../../demo/DemoPage";
+import {
+	light_mix_green,
+	lighter_logo_blue,
+	white,
+} from "../../../../utils/defaultColours";
+
 type TOptions = "full" | "partial" | "fixed";
 
 interface IUserRotation {
@@ -52,9 +56,7 @@ const useRotation = (params: IUserRotation): number => {
 				let angle = prevAngle;
 				if (mode === "full") {
 					angle = startingAngle + theta_linear(scrollY.current);
-				} /*  else if (isSaturated.current) {
-					angle = boundAngle;
-				}  */ else if (mode === "partial") {
+				} else if (mode === "partial") {
 					angle = startingAngle + theta_linear(scrollY.current);
 				} else if (
 					mode === "fixed" &&
@@ -110,7 +112,8 @@ const RotatingLogo: React.FC<any> = ({ props }) => {
 		>
 			<div
 				style={{
-					position: "fixed",
+					// position: "fixed",
+					position: "absolute",
 
 					width: "100%",
 					contain: "none",
@@ -131,7 +134,7 @@ const RotatingLogo: React.FC<any> = ({ props }) => {
 			<div
 				style={{
 					contain: "none",
-
+					position: "absolute",
 					width: "100%",
 				}}
 				className="no-aos"
@@ -196,19 +199,18 @@ const useScrollOpacity = () => {
 	return scrollFraction;
 };
 const Hero: React.FC = () => {
-	// console.log();
 	const scrollFrac = useScrollOpacity();
 
 	const firstRow = [
 		null,
 		<Hexagon
+			args={{ colour: lighter_logo_blue }}
 			opacity={0.6 * (1 - scrollFrac)}
 			clsname="no-aos"
 		/>,
 
 		<ImageHexagon
 			img={hi3}
-			// opacity={0.6}
 			opacity={0.6 * (1 - scrollFrac)}
 			clsname="no-aos"
 		/>,
@@ -216,7 +218,6 @@ const Hero: React.FC = () => {
 	const secondRow = [
 		<ImageHexagon
 			img={hi1}
-			// opacity={0.6 * scrollFrac}
 			opacity={0.6 * (1 - scrollFrac)}
 			clsname="no-aos"
 		/>,
@@ -234,7 +235,6 @@ const Hero: React.FC = () => {
 			args={{ colour: light_mix_green }}
 			element={textEl}
 			useVerticalAlignment={true}
-			// opacity={0.6}
 			opacity={0.6 * (1 - scrollFrac)}
 			clsname="no-aos"
 		/>,
@@ -252,14 +252,25 @@ const Hero: React.FC = () => {
 			style={{
 				position: "relative",
 				height: "100%",
-				background: `rgb(0,0,0,${0.7 * scrollFrac})`,
-				backdropFilter: `blur(${16 * scrollFrac}px)`,
-				maskImage:
-					"linear-gradient(to bottom,rgb(0,0,0) 85%,   transparent 100%)",
+				// background: `rgb(0,0,0,${0.7 * scrollFrac})`,
+				// backdropFilter: `blur(${16 * scrollFrac}px)`,
+				// maskImage:
+				// 	"linear-gradient(to bottom,rgb(0,0,0) 85%,   transparent 100%)",
 			}}
 
 			// className="no-aos"
 		>
+			<div
+				style={{
+					position: "absolute",
+					height: "100%",
+					width: "100%",
+					background: `rgb(0,0,0,${0.7 * scrollFrac})`,
+					backdropFilter: `blur(${16 * scrollFrac}px)`,
+					maskImage:
+						"linear-gradient(to bottom,rgb(0,0,0) 85%,   transparent 100%)",
+				}}
+			/>
 			<div
 				style={{
 					height: "110vh",
@@ -273,13 +284,11 @@ const Hero: React.FC = () => {
 				<div
 					style={{
 						height: "30vh",
-						// background: "rgb(255,0,0,0.5)",
 					}}
 				>
 					<div
 						style={{
 							position: "absolute",
-							top: "-10vh",
 							textAlign: "center",
 							margin: "auto",
 							width: "100%",
@@ -290,8 +299,7 @@ const Hero: React.FC = () => {
 								color: white,
 								fontWeight: "normal",
 								fontSize: "3.5rem",
-								// fontFamily:
-								// 	"Hiragino Maru Gothic Hiragino Mincho ProN",
+								// paddingBottom: "2vh",
 							}}
 						>
 							AI Compatible
@@ -303,9 +311,7 @@ const Hero: React.FC = () => {
 						bottom: "-30%",
 						position: "sticky",
 						minHeight: "100vh",
-						// background: "rgb(255,0,0,0.5)",
 						marginTop: "-10vh",
-						// padding: "auto",
 					}}
 				>
 					<div
@@ -313,8 +319,7 @@ const Hero: React.FC = () => {
 							display: "grid",
 							gridTemplateColumns: "1fr minmax(auto, 1000px) 1fr",
 							marginBottom: "5%",
-							// margin: "auto",
-							// height: "100%",
+
 							padding: "auto",
 							contain: "paint",
 
