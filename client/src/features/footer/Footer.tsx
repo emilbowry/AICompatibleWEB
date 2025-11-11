@@ -215,6 +215,13 @@ const FooterPartershipBar: React.FC = () => (
 
 * @issues - overflows page width on mobile
 */
-const Footer: React.FC = () => <FooterLayoutHandler component={FooterLayout} />;
+const Footer: React.FC<{ overrideBackground?: boolean }> = ({
+	overrideBackground = false,
+}) => (
+	<FooterLayoutHandler
+		component={FooterLayout}
+		overrideBackground={overrideBackground}
+	/>
+);
 
 export { Footer };

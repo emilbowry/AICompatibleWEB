@@ -4,7 +4,6 @@ import React from "react";
 import { Hexagon } from "../../components/hexagons/Hexagons";
 import { ImageHexagon } from "../../components/hexagons/ImageHexagon";
 import { HexagonGrid } from "../../components/hexagons/hexagon-grid/honeycomb/HexagonRow";
-import { Page } from "../../features/page/Page";
 
 import bw1 from "../../assets/bw1.jpg";
 import bw2 from "../../assets/bw2.jpg";
@@ -240,6 +239,6 @@ const TheJourney: React.FC = () => {
 	);
 };
 
-const TheJourneyPage = () => <Page page={TheJourney} />;
+// const TheJourneyPage = () => <Page page={TheJourney} />;
 
-export default TheJourneyPage;
+export default TheJourney;

@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { Suspense, useState } from "react";
+import React, { useState } from "react";
 
 import { useLocation } from "react-router-dom";
 import logo from "./assets/logoshape.svg";
@@ -7,7 +7,6 @@ import { useAnimationTagging } from "./hooks/AnimationTagging";
 import "./styles.css";
 
 import { CursorContext, CustomCursor } from "./components/cursor/Cursor";
-import { useScrollToTop } from "./hooks/ScrollToTop";
 import { useAuthInit } from "./services/api/auth/auth";
 import { dark_midnight_green, lighter_logo_blue } from "./utils/defaultColours";
 
@@ -41,29 +40,24 @@ const App: React.FC = () => {
 	const location = useLocation();
 	const [loc, setLoc] = useState(location);
 	useAnimationTagging();
-	useScrollToTop();
+	// useScrollToTop();
 	useAuthInit();
 	useAdmin();
-	// console.log();
 	return (
 		<>
-			{/* <ApiStatusChecker /> */}
-
-			<Suspense fallback={<LoadingFC />}>
-				<CursorContext
-					value={{
-						hasCustomCursor,
-						setHasCustomCursor,
-						global_position,
-						setGlobalMousePosition,
-						loc,
-						setLoc,
-					}}
-				>
-					<CustomCursor />
-					<DRouter />
-				</CursorContext>
-			</Suspense>
+			<CursorContext
+				value={{
+					hasCustomCursor,
+					setHasCustomCursor,
+					global_position,
+					setGlobalMousePosition,
+					loc,
+					setLoc,
+				}}
+			>
+				<CustomCursor />
+				<DRouter />
+			</CursorContext>
 		</>
 	);
 };

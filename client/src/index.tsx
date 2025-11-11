@@ -11,6 +11,7 @@ import "../public/favicon.ico";
 import "../public/site.webmanifest";
 import App from "./App";
 import { store } from "./store";
+// import { App } from "./testing";
 const root = createRoot(document.getElementById("root")!);
 
 class ErrorBoundary extends React.Component {
@@ -35,10 +36,6 @@ class ErrorBoundary extends React.Component {
 		return (this.props as any).children;
 	}
 }
-
-// Then wrap your root:
-//   <App />
-// </ErrorBoundary>
 
 root.render(
 	<ErrorBoundary>

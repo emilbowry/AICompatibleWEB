@@ -10,7 +10,6 @@ import React, {
 } from "react";
 import type { Components } from "react-markdown";
 import ReactMarkdown from "react-markdown";
-import { Page } from "../../features/page/Page";
 // import { logo_blue, logo_yellow } from "../../utils/defaultColours";
 import { generateGradient } from "../../styles";
 
@@ -433,11 +432,13 @@ export const PolicyAnalyzer: React.FC = () => {
 	);
 };
 // Assuming the Page component exists for context
-const ToolPage = () => (
-	<Page
-		page={PolicyAnalyzer}
-		bg={false}
-		useCursor={false}
-	/>
-);
-export default ToolPage;
+// const ToolPage = () => (
+// 	<Page
+// 		page={PolicyAnalyzer}
+// 		bg={false}
+// 		useCursor={false}
+// 	/>
+// );
+
+const F = () => <div>Hello</div>;
+export default F;

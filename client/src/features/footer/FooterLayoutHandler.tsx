@@ -1,6 +1,7 @@
 // src/features/footer/FooterLayoutHandler.tsx
 
 import React from "react";
+import { dark_midnight_green } from "../../utils/defaultColours";
 import { FormatComponent, ValidComponent } from "../../utils/reactUtils";
 import {
 	footerContainerStyle,
@@ -12,9 +13,17 @@ import {
 const FooterLayoutHandler: React.FC<{
 	component: ValidComponent;
 	StyleOverrides?: React.CSSProperties;
-}> = ({ component, StyleOverrides = {} }) => {
+	overrideBackground?: boolean;
+}> = ({ component, StyleOverrides = {}, overrideBackground = false }) => {
 	return (
-		<div style={FooterLayoutWrapperStyle}>
+		<div
+			style={{
+				...FooterLayoutWrapperStyle,
+				...(overrideBackground
+					? { background: dark_midnight_green }
+					: {}),
+			}}
+		>
 			<div style={FooterTopStyle} />
 			<div style={FooterWrapperStyle}>
 				<div style={footerContainerStyle(StyleOverrides)}>

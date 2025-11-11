@@ -4,7 +4,6 @@ import React from "react";
 import { SideBarCallingCard } from "../../components/callingcard/CallingCard";
 import { bulb, bullseye, pencil } from "../../components/callingcard/graphics";
 import { PointedtopHexagonFeatureGrid } from "../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
-import { Page } from "../../features/page/Page";
 import { bgwhite } from "../../utils/defaultColours";
 import { BoxedImage } from "../../utils/reactUtils";
 import {
@@ -113,7 +112,7 @@ const ServicesSideBar: React.FC = () => {
 	);
 };
 
-const ourServices: React.FC = () => (
+const OurServices: React.FC = () => (
 	<>
 		<SideBarCallingCard
 			components={[<Services {...cserv} />, <Services {...tserv} />]}
@@ -138,10 +137,10 @@ const ourServices: React.FC = () => (
 	</>
 );
 
-const OurServices = () => (
-	<Page
-		page={ourServices}
-		bg={true}
-	/>
-);
+// const OurServices = () => (
+// 	<Page
+// 		page={ourServices}
+// 		bg={true}
+// 	/>
+// );
 export default OurServices;

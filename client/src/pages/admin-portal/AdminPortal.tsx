@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Page } from "../../features/page/Page";
 import {
 	dark_midnight_green,
 	lighter_logo_blue,
@@ -63,5 +62,5 @@ const AdminPortal: React.FC = () => (
 	</div>
 );
 
-const AdminPage = () => <Page page={AdminPortal} />;
-export default AdminPage;
+// const AdminPage = () => <Page page={AdminPortal} />;
+export default AdminPortal;

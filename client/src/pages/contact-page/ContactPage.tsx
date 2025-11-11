@@ -3,7 +3,6 @@
 import React, { useRef } from "react";
 
 import { SideBarCallingCard } from "../../components/callingcard/CallingCard";
-import { Page } from "../../features/page/Page";
 
 import { PointedtopHexagonFeatureGrid } from "../../components/hexagons/hexagon-grid/pointed-hexagon-grid/PointedHexagonRow";
 import { bgwhite } from "../../utils/defaultColours";
@@ -198,7 +197,7 @@ const contactFeatureCallouts = [
 	],
 ];
 
-const contactPage: React.FC = () => (
+const ContactPage: React.FC = () => (
 	<>
 		<SideBarCallingCard
 			components={[sidebar_body]}
@@ -231,6 +230,6 @@ const contactPage: React.FC = () => (
 	</>
 );
 
-const ContactPage = () => <Page page={contactPage} />;
+// const ContactPage = () => <Page page={contactPage} />;
 
 export default ContactPage;
