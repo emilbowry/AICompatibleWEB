@@ -29,7 +29,7 @@ import {
 
 const WallLayout = (n: number): [number, number, number] => {
 	const top_row =
-		Math.sign(n) * ((((n % 3) + 1) % 2) + Math.max(1, Math.floor(n / 3)));
+		Math.sign(n) * ((((n % 3) + 1) % 2) + Math.max(1, Math.floor(n / 3))); // sign forcing for n=0 bricks to 0
 	const bottom_row =
 		Math.floor((n + 1) / 3) - (((n + 1) % Math.max(1, Math.min(n, 3))) % 2);
 	return [top_row, n - (top_row + bottom_row), bottom_row];

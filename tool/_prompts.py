@@ -19,10 +19,12 @@ ANALYSIS_PROMPT = """**Role:** You are a Data Protection Officer (DPO) specializ
         *   **Is followed by a statement that is *verifiably true* based *only* on the provided excerpt.** The statement must directly reflect an affirmation from the text.
         *   **Ends with a question mark (`?`).**
         *   Is concise and directly to the point, avoiding speculation or information not explicitly stated in the excerpt.
-    *   Present each question with its assigned ID.
+        *   Present each question with its assigned ID.
 
 4.  **Output Generation:**
     *   Present the formulated questions as a JSON, where each item includes the question ID and the question itself. The order of questions in this list does not matter for this step; simply list them as they are identified.
+    *   If the input does not contain at least one whole sentence, e.g `We collect the following categories of personal data:` return empty json `{}`
+    *   You may only output JSON
 	
 
 **Important Considerations:**
@@ -30,7 +32,7 @@ ANALYSIS_PROMPT = """**Role:** You are a Data Protection Officer (DPO) specializ
 *   **Completeness (within excerpt):
 ** Aim to capture all significant affirmations related to personal data within the given text.
 *   **Conciseness:** Keep each question focused on a single, clear point.
-*   **Anonymisation:** Keep the primary company name generic, and substiture it with either "the company" or "the service"
+*   **Anonymisation:** Keep the primary company and products name generic, and substitute it with either "the company" or "the service", "the product" or another suitible substitution.
 
 **Example Input**
 ```Privacy Policy Excerpt
