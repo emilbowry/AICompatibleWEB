@@ -1,3 +1,5 @@
+# tool/question_analysis.py
+
 from pydantic import BaseModel, Field
 from typing import List, Optional
 from prompts import ANALYSIS_PROMPT, SUBSTRING_PROMPT
@@ -41,16 +43,17 @@ class LLMInterface:
 * **Feedback on your use of our Services:** We appreciate feedback, including ideas and suggestions for improvement or rating an Output in response to an Input ("**Feedback**"). If you rate an Output in response to an Input—for example, by using the thumbs up/thumbs down icon—we will store the entire related conversation as part of your Feedback. You can learn more about how we use Feedback [here](https://privacy.anthropic.com/en/articles/10023565-how-does-anthropic-use-submitted-feedback).
 * **Communication Information:** If you communicate with us, including via our chatbot on our Help site, we collect your name, contact information, and the contents of any messages you send."""
 
-	def __init__(self, model, *, debug=True):
+	def __init__(self, model, *, debug=False):
 		self.model = model
 		if debug == True:
 			self.debug = True
 		else:
-			self.mode = False
+			self.debug = False
 
 	def generateQuestions(self, input_section=None):
 		if (self.debug == True) or (input_section is None):
 			input_section = LLMInterface.Debug_Section
+			print("using debug for qs")
 
 		prompt = f"""{ANALYSIS_PROMPT}
 **-- Start of input --**
@@ -86,6 +89,8 @@ class LLMInterface:
 			raise
 		if (self.debug == True) or (input_section is None):
 			input_section = LLMInterface.Debug_Section
+			print("using debug for subs")
+
 		prompt = f"""{SUBSTRING_PROMPT}
 
 **-- Start of input --**
