@@ -2,10 +2,11 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from prompts import ANALYSIS_PROMPT, SUBSTRING_PROMPT
 import ast
+
 from model_management import GeminiModel
 
 
-class Affirmation_Question_Set(BaseModel):
+class Affirmation_Question(BaseModel):
 	id: int = Field(description="Question id")
 	question: str = Field(
 		description="The full question that starts with the prefix 'Does the privacy policy affirm that...' and is verifiably true based on the provided text."
@@ -14,7 +15,7 @@ class Affirmation_Question_Set(BaseModel):
 
 class Affirmation_Question_Set(BaseModel):
 
-	Affirmation_Question_Set: List[Affirmation_Question_Set]
+	Affirmation_Question_Set: List[Affirmation_Question]
 
 
 class Substring(BaseModel):
@@ -75,7 +76,7 @@ class LLMInterface:
 		question_set = question_set[q_set_key]
 		for i, q_pair in enumerate(question_set):
 			q = q_pair["question"]
-			embedding = self.model.getSemanticEmbedding(q)
+			embedding = self.model.getSemanticEmbedding(q, usePreprocessing="MAIN")
 			q_set_w_embeddings[q_set_key][i]["embedding_vector"] = embedding
 
 		return q_set_w_embeddings

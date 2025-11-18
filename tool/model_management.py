@@ -52,7 +52,16 @@ class GeminiModel:
 		response = chat.send_message(prompt)
 		return response.text
 
-	def getSemanticEmbedding(self, semantic_datum, *, model_name=None, task_type=None):
+	def getSemanticEmbedding(
+		self, _semantic_datum, *, model_name=None, task_type=None, usePreprocessing=None
+	):
+		if usePreprocessing is None:
+			semantic_datum = _semantic_datum
+		elif usePreprocessing == "MAIN":
+			semantic_datum = GeminiModel.preprocessStatement(_semantic_datum)
+		elif usePreprocessing == "ALT":
+			semantic_datum = GeminiModel.preprocessStatement_alt(_semantic_datum)
+
 		if task_type is None:
 			# task_type = "SEMANTIC_SIMILARITY"
 			task_type = "FACT_VERIFICATION"
@@ -66,7 +75,7 @@ class GeminiModel:
 		return result.embeddings[0].values
 
 	@staticmethod
-	def preprocessStatement(statement):
+	def preprocessStatement_alt(statement):
 		prefix = "Does the privacy policy affirm"
 		replacement = "The privacy policy affirms"
 		processed_text = ("The privacy policy affirms" + statement[len(prefix) :])[:-1] + "."
@@ -74,14 +83,7 @@ class GeminiModel:
 		return processed_text
 
 	@staticmethod
-	def preprocessStatement_alt(statement):
+	def preprocessStatement(statement):
 		prefix = "Does the privacy policy affirm that "
 		processed_text = (statement[len(prefix) :].capitalize())[:-1] + "."
 		return processed_text
-
-
-def process_sim(emb_a, emb_b):
-	arr_1 = np.array(emb_a)
-	arr_2 = np.array(emb_b)
-	similarity_score = (arr_1 / np.linalg.norm(arr_1)) @ (arr_2 / np.linalg.norm(arr_2))
-	return similarity_score
