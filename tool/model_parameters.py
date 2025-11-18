@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 FLASH_LATEST = "gemini-2.5-flash-preview-09-2025"
-PRO = "gemini-2.5-pro"
+PRO = "models/gemini-3-pro-preview"
 DEFAULT_MODEL_NAME = FLASH_LATEST
 
 
