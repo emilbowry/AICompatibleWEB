@@ -56,11 +56,11 @@ class LLMInterface:
 			print("using debug for qs")
 
 		prompt = f"""{ANALYSIS_PROMPT}
-**-- Start of input --**
-```
+
+# Input Privacy Policy Excerpt
+```excerpt
 {input_section}
 ```
-**-- End of input --**
 """
 		resp = self.model.generateContent(
 			prompt,
@@ -72,17 +72,36 @@ class LLMInterface:
 
 		return resp
 
-	def process_embeddings(self, _question_set=None):
+	def processEmbeddings(self, _question_set, add_facts=False):
 		question_set = ast.literal_eval(_question_set)
 		q_set_w_embeddings = question_set.copy()
 		q_set_key = list(question_set.keys())[0]
 		question_set = question_set[q_set_key]
 		for i, q_pair in enumerate(question_set):
 			q = q_pair["question"]
+
 			embedding = self.model.getSemanticEmbedding(q, usePreprocessing="MAIN")
 			q_set_w_embeddings[q_set_key][i]["embedding_vector"] = embedding
+			if add_facts:
+				f_embedding = self.model.getSemanticEmbedding(
+					q,
+					usePreprocessing="ALT",
+				)
+				q_set_w_embeddings[q_set_key][i]["retrieval_embedding_vector"] = f_embedding
 
 		return q_set_w_embeddings
+
+	def getRetrevalChunkEmbeddings(self, chunk, no_op=False):
+
+		if no_op:
+			embedding = None
+		else:
+
+			embedding = self.model.getSemanticEmbedding(
+				chunk, usePreprocessing=None, task_type="RETRIEVAL_DOCUMENT"
+			)
+
+		return embedding
 
 	def generateSubstring(self, input_section=None, question_set=None):
 		if question_set is None:
@@ -120,5 +139,5 @@ class LLMInterface:
 # i = LLMInterface(test_model)
 
 # q_set = i.generateQuestions()
-# # print(i.process_embeddings(q_set))
+# # print(i.processEmbeddings(q_set))
 # # # print(i.generateSubstring(question_set=q_set))

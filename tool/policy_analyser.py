@@ -11,9 +11,31 @@ from model_management import GeminiModel
 import numpy as np
 import json
 import os
+from google.genai import types
 
 QUESTIONS_FILE = "./questions.json"
 POLICIES_FILE = "./policies.json"
+
+
+# [TODO]:
+# - Supplemental RAG retreval
+# 	- add alt embeddings for RETRIEVAL_DOCUMENT
+# - Better question generation, (more general)
+# - Clustering, filtering and pruning questions
+# - Re-analysis mode
+# - Make getCleanedMatch better for parts where we get multiple matches of substring edge case
+# - Make extractContent more robust
+# - Thinkabout where we can parellelise API calls
+
+
+def splitParargraphs(input_string):
+	return input_string.split("\n\n")
+
+
+def splitNewlines(input_string):
+	while "\n\n" in input_string:
+		input_string = input_string.replace("\n\n", "\n")
+	return input_string.split("\n")
 
 
 def _loadJson(filepath):
@@ -130,6 +152,10 @@ def getCleanedMatch(sub_match, substring, superstring):
 
 class AnalysisProcessor:
 
+	modes = ["ANALYSIS", "DEBUG_QUESTION_GENERATION"]
+	substring_modes = ["PROMPT", "FACT_EMBEDDINGS"]
+
+	useRetreval = True
 	MARKDOWN_LINK_PATTERN = re.compile(r"(\[.*?\])\((.*?)\)")
 	URL_PLACEHOLDER = "(DYNAMIC_URL_REMOVED)"
 
@@ -188,12 +214,28 @@ class AnalysisProcessor:
 		policy_hash = AnalysisProcessor.getHash(normalised_content)
 		return policy_content, policy_hash
 
-	@staticmethod
-	def processChunks(policy_content):
+	def processChunks(self, policy_content):
 		proto_chunks = AnalysisProcessor.splitMarkdown(policy_content)
+		if self.useRetreval:
+			_embeddings = self.analysis_model.client.models.embed_content(
+				model="gemini-embedding-001",
+				contents=proto_chunks,
+				config=types.EmbedContentConfig(task_type="SEMANTIC_SIMILARITY"),
+			)
+			embeddings = [e for e in _embeddings.embeddings]
 		chunks = []
-		for i in proto_chunks:
-			chunks.append({AnalysisProcessor.getHash(i): i})
+		for i, chunk in enumerate(proto_chunks):
+			if self.useRetreval and type(embeddings == list):
+				chunks.append(
+					{
+						AnalysisProcessor.getHash(chunk): chunk,
+						"retrieval_embedding_vector": embeddings[i].values,
+					}
+				)
+				if i == 0:
+					print(embeddings[0].values)
+			else:
+				chunks.append({AnalysisProcessor.getHash(i): i})
 		return chunks
 
 	@staticmethod
@@ -232,105 +274,227 @@ class AnalysisProcessor:
 		else:
 			addNewPolicy(policy_name, policy_data)
 
-	def __init__(self, data_source):
+	def __init__(self, data_source, mode=0, substring_mode=1):
+		_mode = 0
+		if type(mode) == int and mode < len(self.modes):
+			_mode = mode
+		_substring_mode = 1
+		if type(substring_mode) == int and substring_mode < len(self.substring_modes):
+			_substring_mode = substring_mode
+		self.substring_mode = self.substring_modes[_substring_mode]
+		self.mode = self.modes[_mode]
 		self.data_source = data_source
+		self.analysis_model = GeminiModel()
+		self.model_interface = LLMInterface(self.analysis_model)
 
-	def runAnalyses(self):
+	def promptBasedSubstring(
+		self, _question_set, chunk_content, policy_content, chunk_hash, policy_hash
+	):
 
-		analysis_model = GeminiModel()
-		model_interface = LLMInterface(analysis_model)
+		with_embeddings: dict = self.model_interface.processEmbeddings(_question_set)
+
+		_ = list(with_embeddings.keys())[0]
+		question_data = with_embeddings[_]
+		preprocessed_questions = self.getDuplicateQuestions(question_data)
+
+		modified_question_set = ast.literal_eval(_question_set)
+		question_dict_key = list(modified_question_set.keys())[0]
+		modified_question_data = modified_question_set[question_dict_key]
+		for i in preprocessed_questions:
+			modified_question_data[i[0]].update({"question": i[1]})
+
+		input_question_data = json.dumps(
+			{question_dict_key: modified_question_data}, indent=2
+		)
+
+		_substring_set = self.model_interface.generateSubstring(
+			chunk_content, input_question_data
+		)
+		substring_set = ast.literal_eval(_substring_set)
+
+		_ = list(substring_set.keys())[0]
+		substring_data = substring_set[_]
+		for i, s in enumerate(substring_data):
+			substring = s["substring"]
+			question = question_data[i]["question"]
+
+			substring_indices = None
+			if not substring in chunk_content:
+
+				print("NOT IN POLICY")
+
+				minimal_match = getMaxMatchSubstring(substring, chunk_content)
+				if minimal_match is not None or minimal_match != "":
+					_substring = getCleanedMatch(minimal_match, substring, chunk_content)
+					if _substring is not None or _substring != "":
+						print(f"found match: {substring} => {_substring}")
+
+						substring = _substring
+					else:
+						substring = None
+				else:
+					substring = None
+			if substring is None:
+				continue
+			substring_indices = getSubstringIndices(policy_content, substring)
+			saved_question_data = loadQuestions()
+			question_update = {
+				"substring": substring,
+				"substring_indices": substring_indices,
+				"chunk_hash": chunk_hash,
+				"method": "PROMPT",
+			}
+			if question in saved_question_data:
+
+				if policy_hash in saved_question_data:
+					previous = saved_question_data[policy_hash]
+					update = [*previous, question_update]
+					updateQuestionEntry(
+						question,
+						{policy_hash: [update]},
+					)
+
+			else:
+				addNewQuestion(
+					question,
+					{
+						"embedding_vector": question_data[i]["embedding_vector"],
+						policy_hash: [question_update],
+					},
+				)
+
+	def factBasedSubstrings(
+		self, _question_set, chunk_content, policy_content, chunk_hash, policy_hash
+	):
+		with_embeddings: dict = self.model_interface.processEmbeddings(_question_set)
+
+		_ = list(with_embeddings.keys())[0]
+		question_data = with_embeddings[_]
+		preprocessed_questions = self.getDuplicateQuestions(question_data)
+
+		modified_question_set = ast.literal_eval(_question_set)
+		question_dict_key = list(modified_question_set.keys())[0]
+		modified_question_data = modified_question_set[question_dict_key]
+		for i in preprocessed_questions:
+			modified_question_data[i[0]].update({"question": i[1]})
+
+		questions = modified_question_data
+		chunk_lines = splitNewlines(chunk_content)
+		facts = [GeminiModel.preprocessStatement_alt(q["question"]) for q in questions]
+
+		fact_embeddings: list = [
+			e.values
+			for e in self.analysis_model.client.models.embed_content(
+				model="gemini-embedding-001",
+				contents=facts,
+				config=types.EmbedContentConfig(task_type="FACT_VERIFICATION"),
+			).embeddings
+		]
+
+		chunk_embeddings: list = [
+			e.values
+			for e in self.analysis_model.client.models.embed_content(
+				model="gemini-embedding-001",
+				contents=chunk_lines,
+				config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
+			).embeddings
+		]
+		saved_question_data = loadQuestions()
+
+		for i, fact in enumerate(fact_embeddings):
+			idx = np.argmax(np.dot(chunk_embeddings, fact))
+			substring = chunk_lines[idx]
+			substring_indices = getSubstringIndices(policy_content, substring)
+			q = questions[i]["question"]
+			question_update = {
+				"substring": substring,
+				"substring_indices": substring_indices,
+				"chunk_hash": chunk_hash,
+				"method": "FACT_EMBEDDINGS",
+			}
+
+			if q in saved_question_data:
+
+				if policy_hash in saved_question_data:
+					previous = saved_question_data[policy_hash]
+					update = [*previous, question_update]
+					updateQuestionEntry(
+						q,
+						{policy_hash: update},
+					)
+
+			else:
+				addNewQuestion(
+					q,
+					{
+						"embedding_vector": question_data[i]["embedding_vector"],
+						"retreval_embedding_vector": fact,
+						policy_hash: [question_update],
+					},
+				)
+
+	def runAnalyses(self, mode=None, limit_iterations=None):
+		if mode is not None and mode in self.modes:
+			self.mode = mode
 
 		for policy_name, policy_url in self.data_source.items():
 			policy_content, policy_hash = AnalysisProcessor.processUrl(policy_url)
 
 			if self.isStored(policy_name, policy_hash):
-				continue
+				if self.mode == "DEBUG_QUESTION_GENERATION":
+					policy_chunks = loadPolicies()[policy_name][policy_hash]["policy_chunks"]
+				else:
+					continue
+			else:
 
-			policy_chunks = AnalysisProcessor.processChunks(policy_content)
-			self.updatePolicyData(policy_content, policy_chunks, policy_name, policy_hash)
+				policy_chunks = self.processChunks(policy_content)
+				self.updatePolicyData(policy_content, policy_chunks, policy_name, policy_hash)
 
-			# iterations = 0
+			iterations = 0
 
 			for chunk in policy_chunks:
-				# if iterations == 5:
-				# 	break
+				if limit_iterations is not None and type(iterations) == int:
+					print(iterations)
+					if iterations >= limit_iterations:
+						break
+				iterations += 1
+
 				chunk_hash = list(chunk.keys())[0]
+				# chunk_embedding = chunk.pop("retreval_embedding_vector")
 				chunk_content = list(chunk.values())[0]
 
-				_question_set: str = model_interface.generateQuestions(chunk_content)
-				with_embeddings: dict = model_interface.process_embeddings(_question_set)
+				_question_set: str = self.model_interface.generateQuestions(chunk_content)
+				question_set = ast.literal_eval(_question_set)
+				if self.mode == "DEBUG_QUESTION_GENERATION":
 
-				_ = list(with_embeddings.keys())[0]
-				question_data = with_embeddings[_]
-
-				preprocessed_questions = self.getDuplicateQuestions(question_data)
-
-				modified_question_set = ast.literal_eval(_question_set)
-				question_dict_key = list(modified_question_set.keys())[0]
-				modified_question_data = modified_question_set[question_dict_key]
-				for i in preprocessed_questions:
-					modified_question_data[i[0]].update({"question": i[1]})
-
-				input_question_data = json.dumps(
-					{question_dict_key: modified_question_data}, indent=2
-				)
-
-				_substring_set = model_interface.generateSubstring(
-					chunk_content, input_question_data
-				)
-				substring_set = ast.literal_eval(_substring_set)
-
-				_ = list(substring_set.keys())[0]
-				substring_data = substring_set[_]
-				for i, s in enumerate(substring_data):
-					substring = s["substring"]
-					question = question_data[i]["question"]
-
-					substring_indices = None
-					if not substring in chunk_content:
-
-						print("NOT IN POLICY")
-
-						minimal_match = getMaxMatchSubstring(substring, chunk_content)
-						if minimal_match is not None or minimal_match != "":
-							_substring = getCleanedMatch(minimal_match, substring, chunk_content)
-							if _substring is not None or _substring != "":
-								print(f"found match: {substring} => {_substring}")
-
-								substring = _substring
-							else:
-								substring = None
-						else:
-							substring = None
-					if substring is None:
-						continue
-					substring_indices = getSubstringIndices(policy_content, substring)
-					saved_question_data = loadQuestions()
-					if question in saved_question_data:
-						question_update = {
-							"substring": substring,
-							"substring_indices": substring_indices,
-							"chunk_hash": chunk_hash,
-						}
-						if policy_hash in saved_question_data:
-							previous = saved_question_data[policy_hash]
-							update = [*previous, question_update]
-							updateQuestionEntry(
-								question,
-								{policy_hash: update},
-							)
-
-					else:
-						addNewQuestion(
-							question,
-							{
-								"embedding_vector": question_data[i]["embedding_vector"],
-								policy_hash: [
-									{
-										"substring": substring,
-										"substring_indices": substring_indices,
-										"chunk_hash": chunk_hash,
-									}
-								],
-							},
+					_ = list(question_set.keys())[0]
+					question_data = question_set[_]
+					for i, q in enumerate(question_data):
+						question = question_data[i]["question"]
+						addNewQuestion(question, {})
+				else:
+					if self.substring_mode == "PROMPT":
+						self.promptBasedSubstring(
+							_question_set, chunk_content, policy_content, chunk_hash, policy_hash
 						)
+					elif self.substring_mode == "FACT_EMBEDDINGS":
+						self.factBasedSubstrings(
+							_question_set, chunk_content, policy_content, chunk_hash, policy_hash
+						)
+					elif self.substring_mode == "TESTING":
+						saved_question_data = loadQuestions()
+						saved_policy_data = loadPolicies()
+						computed_policies = []
+						for k, v in saved_policy_data:
+							policy_name = k
+							if type(v) == dict:
+								saved_policy_hashes = list(v.keys())
+								for i in saved_policy_hashes:
+									chunk_hashes = []
+
+									for j in v[saved_policy_hashes]["policy_chunks"]:
+
+
+# Split into a question computation pipeline, that generates the question, dict with embedding_vector, retreval_embedding_vector?, and relevant policy_hash:{chunk_hash} signiture.
+# Means we can filter questions before processing
+# Then seperate the substring information into its own pipeline
