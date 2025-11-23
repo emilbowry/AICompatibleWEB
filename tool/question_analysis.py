@@ -4,7 +4,8 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from prompts import ANALYSIS_PROMPT, SUBSTRING_PROMPT
 import ast
-
+from google.genai import types
+import numpy as np
 from model_management import GeminiModel
 
 
@@ -90,6 +91,46 @@ class LLMInterface:
 				q_set_w_embeddings[q_set_key][i]["retrieval_embedding_vector"] = f_embedding
 
 		return q_set_w_embeddings
+
+	def processFactEmbeddings(self, question_keyed_dict, add_facts=False):
+		pairings = []
+		copy_dict = question_keyed_dict.copy()
+		for question in copy_dict.keys():
+
+			f_embedding = self.model.getSemanticEmbedding(
+				question,
+				usePreprocessing="ALT",
+			)
+			pairings.append([question, f_embedding])
+
+		return pairings
+
+	# def processFactEmbeddings(self, question_keyed_dict, add_facts=False):
+	# 	copy_dict = question_keyed_dict.copy()
+	# 	pairings = [k for k in copy_dict.keys()]
+
+	# 	inputs = [self.model.preprocessStatement_alt(k) for k in pairings]
+	# 	end = False
+	# 	start = 0
+	# 	offset = 90
+	# 	embeddings = []
+	# 	while not end:
+
+	# 		em: list = [
+	# 			e.values
+	# 			for e in self.model.client.models.embed_content(
+	# 				model="gemini-embedding-001",
+	# 				contents=inputs[start : start + offset],
+	# 				config=types.EmbedContentConfig(task_type="FACT_VERIFICATION"),
+	# 			).embeddings
+	# 		]
+	# 		if start >= len(inputs):
+	# 			end = True
+	# 		start += offset
+	# 		embeddings.extend(em)
+
+	# 	output = list(np.array(pairings, embeddings).T)
+	# 	return output
 
 	def getRetrevalChunkEmbeddings(self, chunk, no_op=False):
 
