@@ -1,6 +1,215 @@
 // client/src/pages/demo/DemoPage.tsx
 
-///
-//
-const F = () => <></>;
+// client/src/pages/demo/DemoPage.tsx
+
+import React, {
+	createContext,
+	useContext,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+// import { DocumentAnalysisViewer } from "../dpo-tool/css_dual";
+import { DocumentAnalysisViewer } from "../dpo-tool/css_dual2";
+
+// import { DocumentAnalysisViewer } from "../dpo-tool/dual";
+const CONFIG = {
+	itemHeight: 10,
+	itemWidth: 10,
+
+	itemGap: 5,
+	radius: 50,
+	containerHeightRatio: 1,
+};
+
+const DEMO_STRINGS = [
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+];
+
+const getContainerStyle = (): React.CSSProperties => ({
+	position: "fixed",
+	width: "50vh",
+	height: "50vh",
+
+	// overflow: "hidden",
+});
+
+const container_style: React.CSSProperties = {
+	width: "100vh",
+	height: "100vh",
+	// marginLeft: "50vh",
+};
+const getItemStyle = (
+	marginTop: number,
+	marginLeft: number,
+	isActive: boolean,
+	opacity = 1
+): React.CSSProperties => ({
+	position: "absolute",
+
+	height: `${CONFIG.itemHeight}vh`,
+	width: `${CONFIG.itemWidth}vh`,
+	display: "flex",
+	marginTop: `${marginTop}vh`,
+	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}vh)`,
+
+	textAlign: "center",
+	justifyContent: "center",
+	alignItems: "center",
+	// backgroundColor: `rgb(${color_index % 255},0,0)`,
+	backgroundColor: "red",
+	opacity: opacity,
+	color: "#ffffff",
+});
+
+const getHelperLineStyle = (): React.CSSProperties => ({
+	position: "absolute",
+	left: 0,
+	width: "100%",
+	height: "1px",
+	// background: "red",
+	opacity: 0.3,
+	pointerEvents: "none",
+});
+
+interface WheelItemProps {
+	text: string;
+	index: number;
+}
+
+interface ScrollWheelProps {
+	items: string[];
+}
+
+const WheelItem: React.FC<WheelItemProps> = ({ text, index }) => {
+	const [isActive, setIsActive] = useState(false);
+	const { items_per_half_turn, rotation } = useContext(ScrollWheelContext);
+	const total_items = 31;
+	const total_turns = Math.floor(total_items / (items_per_half_turn * 2)) + 1;
+	const theta = Math.PI / items_per_half_turn;
+
+	const current_angle = theta * -index + rotation;
+	const current_progress = current_angle % (2 * Math.PI * total_turns);
+	const z_score =
+		Math.floor(current_progress / (2 * Math.PI)) === 0
+			? Math.sin(current_progress) ** 2
+			: 0;
+
+	const factor = 5;
+	const marginLeft = items_per_half_turn * Math.sin(current_angle) * factor; // ASSUME SQUARE FOR NOW
+	const marginTop =
+		(items_per_half_turn - items_per_half_turn * Math.cos(current_angle)) *
+			factor -
+		CONFIG.itemHeight / 2;
+	const style = getItemStyle(marginTop, marginLeft, isActive, z_score);
+
+	return (
+		<div
+			style={style}
+			onClick={() => setIsActive(!isActive)}
+		>
+			{text}
+		</div>
+	);
+};
+const ScrollWheelContext = createContext({
+	items_per_half_turn: 6,
+	rotation: 0,
+	total_items: 0,
+});
+
+const useScrollController = (initialIndex: number = 0) => {
+	const [rotation, setRotation] = useState(initialIndex);
+	const ref = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const element = ref.current;
+		if (!element) return;
+
+		const handleWheel = (e: WheelEvent) => {
+			// 1. Prevent the browser from scrolling the page
+			e.preventDefault();
+			const innerHeight = window.innerHeight;
+			const delta_y = e.deltaY;
+			const tangent_distance = innerHeight / 2 / 2;
+
+			const delta_theta = Math.atan(delta_y / tangent_distance);
+
+			setRotation((prev) => prev + delta_theta);
+		};
+
+		element.addEventListener("wheel", handleWheel, { passive: false });
+
+		return () => {
+			element.removeEventListener("wheel", handleWheel);
+		};
+	}, []);
+
+	return { rotation, ref };
+};
+export const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
+	const containerStyle = getContainerStyle();
+	const helperLineStyle = getHelperLineStyle();
+	const items_per_half_turn = 6;
+	const total_items = items.length;
+	const { rotation, ref } = useScrollController();
+
+	return (
+		<ScrollWheelContext
+			value={{
+				items_per_half_turn: items_per_half_turn,
+				rotation,
+				total_items,
+			}}
+		>
+			<div
+				style={container_style}
+				className="no-aos"
+			>
+				<div
+					style={containerStyle}
+					ref={ref}
+				>
+					{items.map((text, i) => {
+						return (
+							<WheelItem
+								key={i}
+								text={text}
+								index={i}
+							/>
+						);
+					})}
+
+					<div style={helperLineStyle} />
+				</div>
+			</div>
+		</ScrollWheelContext>
+	);
+};
+const DemoContainer = () => {
+	return <DocumentAnalysisViewer />; // <ArcScrollWheel items={DEMO_STRINGS} />;
+};
+const F = () => <DocumentAnalysisViewer />;
+export { DemoContainer };
 export default F;
