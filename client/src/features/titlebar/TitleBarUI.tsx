@@ -115,6 +115,7 @@ const TitleBarUI: React.FC<ITitleBarProps> = (props) => (
 const InnerTitleBarUI: React.FC<ITitleBarProps> = (props) => {
 	const { Links, styleFunction = () => ({}) } = props;
 	const { onWrapperMouseLeave, onLinkOver } = useActiveTitleLink();
+	const active_link_alias = useContext(UICTX)?.active_link_alias;
 	return (
 		<div
 			style={InteractionWrapperStyles}
@@ -124,9 +125,7 @@ const InnerTitleBarUI: React.FC<ITitleBarProps> = (props) => {
 			<div style={styleFunction()}>
 				<TitleBarLogo />
 				<TitleBarUILinks
-					active_link_alias={
-						useContext(UICTX)?.active_link_alias || ""
-					}
+					active_link_alias={active_link_alias || ""}
 					Links={Links[0]}
 					onLinkOver={onLinkOver}
 				/>

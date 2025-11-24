@@ -44,6 +44,37 @@ const formatLabel = (key: string, alias?: string): string => {
 		.replace(/_/g, " ")
 		.replace(/\w\S*/g, (w) => w[0].toUpperCase() + w.slice(1));
 };
+const usePillOnScroll = (d_threshold: number = 5, u_threshold: number = 10) => {
+	const [isScrolled, setIsScrolled] = useState(false);
+	useEffect(() => {
+		const handleScroll = () => {
+			const current_scroll_y = window.scrollY;
+			setIsScrolled(
+				(_isScrolled) =>
+					(!_isScrolled && current_scroll_y > u_threshold) ||
+					(_isScrolled && !(current_scroll_y < d_threshold))
+			);
+		};
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, [d_threshold, u_threshold]);
+	return isScrolled;
+};
+
+const usePillBarStyle = (_isScrolled: boolean) => {
+	const pill_DEFAULT = usePillOnScroll();
+	const isScrolled = _isScrolled || pill_DEFAULT;
+	const TitleBarStyle = useMemo(
+		() => ({
+			...titleBarStyles(),
+			transition: "all 0.5s ease-in-out",
+			...(isScrolled ? PillBarOverrides : {}),
+		}),
+		[isScrolled]
+	);
+
+	return TitleBarStyle;
+};
 const TitleBarLogo: React.FC = () => (
 	<div style={LogoContainerStyles}>
 		<img
@@ -154,38 +185,6 @@ const TitleBarUILinks: React.FC<ITitleBarUILinksProps> = ({
 		})}
 	</div>
 );
-
-const usePillOnScroll = (d_threshold: number = 5, u_threshold: number = 10) => {
-	const [isScrolled, setIsScrolled] = useState(false);
-	useEffect(() => {
-		const handleScroll = () => {
-			const current_scroll_y = window.scrollY;
-			setIsScrolled(
-				(_isScrolled) =>
-					(!_isScrolled && current_scroll_y > u_threshold) ||
-					(_isScrolled && !(current_scroll_y < d_threshold))
-			);
-		};
-		window.addEventListener("scroll", handleScroll);
-		return () => window.removeEventListener("scroll", handleScroll);
-	}, [d_threshold, u_threshold]);
-	return isScrolled;
-};
-
-const usePillBarStyle = (_isScrolled: boolean) => {
-	const pill_DEFAULT = usePillOnScroll();
-	const isScrolled = _isScrolled || pill_DEFAULT;
-	const TitleBarStyle = useMemo(
-		() => ({
-			...titleBarStyles(),
-			transition: "all 0.5s ease-in-out",
-			...(isScrolled ? PillBarOverrides : {}),
-		}),
-		[isScrolled]
-	);
-
-	return TitleBarStyle;
-};
 
 const DropDownLink: React.FC<{ path: string; alias: string | undefined }> = ({
 	path,
