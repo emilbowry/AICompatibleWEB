@@ -105,7 +105,7 @@ class LLMInterface:
 
 		return pairings
 
-	# def processFactEmbeddings(self, question_keyed_dict, add_facts=False):
+	# def processFactEmbeddings(self, question_keyed_dict, add_facts=False): # doesnt seem to work causes HTTP 400s
 	# 	copy_dict = question_keyed_dict.copy()
 	# 	pairings = [k for k in copy_dict.keys()]
 

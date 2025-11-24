@@ -307,20 +307,6 @@ class AnalysisProcessor:
 		policy_data = loadPolicies()
 		return (policy_name in policy_data) and (policy_hash in policy_data[policy_name])
 
-	def swapSeenQuestions(self, with_embeddings):
-
-		_ = list(with_embeddings.keys())[0]
-		question_data = with_embeddings[_]
-		preprocessed_questions = self.getDuplicateQuestions(question_data)
-
-		modified_question_set = with_embeddings	# ast.literal_eval(_question_set)
-		question_dict_key = list(modified_question_set.keys())[0]
-		modified_question_data = modified_question_set[question_dict_key]
-		for i in preprocessed_questions:
-			modified_question_data[i[0]].update({"question": i[1]})
-
-		return modified_question_data
-
 	def processChunks(self, policy_content):
 		proto_chunks = AnalysisProcessor.splitMarkdown(policy_content)
 		_embeddings = self.analysis_model.client.models.embed_content(
@@ -381,11 +367,11 @@ class AnalysisProcessor:
 		if self.debug == False:
 			self.question_data = loadQuestions(debug=False)
 			self.policy_data = loadPolicies()
-		else:
-			if self.question_data is None:
-				self.question_data = {}
-			if self.policy_data is None:
-				self.policy_data = {}
+		# else:
+		# 	if self.question_data is None:
+		# 		self.question_data = {}
+		# 	if self.policy_data is None:
+		# 		self.policy_data = {}
 
 	def saveData(self):
 
@@ -413,8 +399,8 @@ class AnalysisProcessor:
 		self.policy_data[policy_name].update(new_version_data)
 
 	def filterDuplicates(self):
-		if self.debug == False:
-			self.loadData()
+		# if self.debug == False:
+		self.loadData()
 		old_data = self.question_data.copy()
 		indexed_questions = []
 		indexed_embeddings = []
@@ -439,19 +425,22 @@ class AnalysisProcessor:
 
 		print(f"Strings to remove:")
 
-		for i, key in enumerate(strings_to_pop):
+		for i, _key in enumerate(strings_to_pop):
+			key = str(_key)
+			main = str(strings_overrides[i])
 			print(f"duplicate: {key}, main:{strings_overrides[i]}")
 			policy_data = self.question_data[key]["policy_data"]
 			for k, v in policy_data.items():
-				if k in self.question_data[strings_overrides[i]]["policy_data"]:
-					print(f"updating: {self.question_data[strings_overrides[i]]["policy_data"][k]}")
-					print(f"with: {v}")
-					self.question_data[strings_overrides[i]]["policy_data"][k].update(v)
-				else:
-					print(f"adding: {dict({k:v})}")
-					print(f"to: {self.question_data[strings_overrides[i]]["policy_data"]}")
+				if main in self.question_data:	# why is this check even necessary
+					if k in self.question_data[main]["policy_data"]:
+						print(f"updating: {self.question_data[main]["policy_data"][k]}")
+						print(f"with: {v}")
+						self.question_data[main]["policy_data"][k].update(v)
+					else:
+						print(f"adding: {dict({k:v})}")
+						print(f"to: {self.question_data[main]["policy_data"]}")
 
-					self.question_data[strings_overrides[i]]["policy_data"].update({k: v})
+						self.question_data[main]["policy_data"].update({k: v})
 			policy_data = self.question_data.pop(key)
 		self.saveData()
 
@@ -459,7 +448,11 @@ class AnalysisProcessor:
 		print(f"STARTING chunk {index} in {policy_name}")
 		chunk_hash = list(chunk["chunk_content"].keys())[0]
 		chunk_content = list(chunk["chunk_content"].values())[0]
-
+		seen = False
+		# if policy_name in self.policy_data and policy_hash in self.policy_data[policy_name]:
+		# 	for i in self.policy_data[policy_name][policy_hash]["policy_chunks"]:
+		# 		if chunk_hash in i["chunk_content"]:
+		# 			return
 		_question_set: str = self.model_interface.generateQuestions(chunk_content)
 		start_time = time.time()
 		with_embeddings: dict = self.model_interface.processEmbeddings(
@@ -512,6 +505,7 @@ class AnalysisProcessor:
 		question_emb = self.model_interface.processFactEmbeddings(self.question_data)
 		for i in question_emb:
 			self.question_data[i[0]].update({"retrieval_embedding_vector": i[1]})
+		self.saveData()
 
 	def runAnalyses(self, mode=None, limit_iterations=None):
 		self.loadData()
@@ -627,6 +621,7 @@ class AnalysisProcessor:
 			needs_facts, needs_prompts = self.getUpdates()
 			print(len(needs_facts), len(needs_prompts))
 		elif self.substring_mode == "CROSS_FACTS":
+			# ideally we want to exclude the trivial cases assuming "FACT_EMBEDDINGS" has been ran first
 			all_q_embeddings = []
 			all_qs = []
 			for k, v in self.question_data.items():
@@ -640,13 +635,14 @@ class AnalysisProcessor:
 			for _policy_name, v in self.policy_data.items():
 				for _policy_hash, w in v.items():
 					for i in w["policy_chunks"]:
+
 						all_secs.append(list(i["chunk_content"].values())[0])
 						all_sec_hashes.append(list(i["chunk_content"].keys())[0])
 
 						all_sec_emb.append(i["retrieval_embedding_vector"])
 			sim_matrix = np.dot(np.array(all_q_embeddings), np.array(all_sec_emb).T)
-			threshold = 0.7
-			indices_tuple = np.where(sim_matrix > threshold)
+			threshold = 0.3	# idk seems to be somewhat reasonable
+			indices_tuple = np.array(np.where(sim_matrix > threshold)).T
 			for i in indices_tuple:
 				chunk = all_secs[i[1]]
 				chunk_hash = all_sec_hashes[i[1]]
@@ -674,7 +670,7 @@ class AnalysisProcessor:
 					for _policy_name, v in self.policy_data.items():
 						for _policy_hash, w in v.items():
 							for i in w["policy_chunks"]:
-								if chunk_hash in w["policy_chunks"]["chunk_content"]:
+								if chunk_hash in i["chunk_content"]:
 									policy = w["policy_content"]
 									policy_hash = _policy_hash
 									# policy_name = _policy_name
@@ -683,14 +679,33 @@ class AnalysisProcessor:
 						if policy is not None:
 							break
 					if policy is not None:
+
 						substring_indices = getSubstringIndices(policy, substring)
-						print(f"Found High Likelihood affirmation: {question}-{substring}")
+
 						question_update = {
 							"substring": substring,
 							"substring_indices": substring_indices,
 							"method": "CROSS_FACTS",
 						}
-						self.updateQuestionChunk(question, policy_hash, chunk_hash, question_update)
+						if policy_hash in self.question_data[question]["policy_data"]:
+							if chunk_hash in self.question_data[question]["policy_data"][policy_hash]:
+								continue	# high likelihood this is trivial
+							else:
+								self.question_data[question]["policy_data"][policy_hash].update(
+									{chunk_hash: [question_update]}
+								)
+						else:
+							self.question_data[question]["policy_data"].update(
+								{policy_hash: {chunk_hash: [question_update]}}
+							)
+
+						print(f"Found High Likelihood affirmation: similarity {mat[idx]} ")
+						print(f"Question: {question}")
+						print(f"Substring: {substring}")
+						# self.question_data[question_text]["policy_data"][policy_hash][chunk_hash].append(
+						# 	new_substring_data
+						# )
+						# self.updateQuestionChunk(question, policy_hash, chunk_hash, question_update)
 			self.saveData()
 
 	# needs_facts, needs_prompts = self.getUpdates()

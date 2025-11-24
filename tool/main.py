@@ -6,6 +6,8 @@ data_source = {
 	# "perplexity": "https://www.perplexity.ai/hub/legal/privacy-policy",	# HTTPError: 403 Client Error: Forbidden for url: https://www.perplexity.ai/hub/legal/privacy-policy
 	# "deepseek": "https://cdn.deepseek.com/policies/en-US/deepseek-privacy-policy.html", # Returns None
 }
-a = AnalysisProcessor(data_source)
+a = AnalysisProcessor(data_source, debug=False)
 a.runAnalyses()
+
 a.runSubstringAnalysis("FACT_EMBEDDINGS")
+a.runSubstringAnalysis("CROSS_FACTS")

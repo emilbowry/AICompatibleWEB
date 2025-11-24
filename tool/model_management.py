@@ -13,11 +13,14 @@ embedding_models = {
 chat_models = {
 	"FLASH_LATEST": "gemini-2.5-flash-preview-09-2025",
 	"PRO": "gemini-2.5-pro",
+	"PRO_NEW": "gemini-3-pro-preview",
 }
 
 
 class GeminiModel:
-	DEFAULT_CHAT_MODEL = chat_models["FLASH_LATEST"]
+	# DEFAULT_CHAT_MODEL = chat_models["FLASH_LATEST"]
+	DEFAULT_CHAT_MODEL = chat_models["PRO_NEW"]
+
 	DEFAULT_EMBEDDING_MODEL = embedding_models["Current"]
 
 	def __init__(self, *, api_key=None):
