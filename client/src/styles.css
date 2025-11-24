@@ -22,7 +22,7 @@ body {
 .aos {
   opacity: 0.9;
 }
-.aos .is-visible {
+.aos.is-visible {
   opacity: revert;
   transform:  translateX(0);
   animation: fadeInUpAnimation 1s ease forwards; 
@@ -33,10 +33,25 @@ body {
 .is-visible {
   opacity: revert;
 }
-@keyframes fadeInUpAnimation {
+/* @keyframes fadeInUpAnimation {
   from {
     opacity: 0.9;
     transform: translateX(calc(((0.05vw)*(var(--aos-base-depth)))* cos((var(--aos-sibling-index, 0) + var(--aos-base-depth, 0)) * pi)));
+  }
+  to {
+    transform: translateX(0);
+  }
+} */
+@keyframes fadeInUpAnimation {
+  from {
+    opacity: 0.9;
+    /* Added ( ... + 10) below to ensure Depth 0 has a multiplier */
+    transform: translateX(
+      calc(
+        (0.05vw * (var(--aos-base-depth) )) * 
+        cos((var(--aos-sibling-index, 0) + var(--aos-base-depth, 0)) * pi)
+      )
+    );
   }
   to {
     transform: translateX(0);

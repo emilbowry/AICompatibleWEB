@@ -11,7 +11,10 @@ const isHTMLElement = (el: Element): el is HTMLElement =>
 	el instanceof HTMLElement;
 const isInSVG = (el: Element) =>
 	el.namespaceURI === "http://www.w3.org/2000/svg" || !!el.closest("svg");
-
+const isGeneralSpan = (el: Element) =>
+	el.tagName === "SPAN" && !el.classList.contains("aos-enable");
+const isNonVisual = (el: Element) =>
+	["BR", "WBR", "SCRIPT", "STYLE"].includes(el.tagName);
 const cleanSVGAccidents = () => {
 	document.querySelectorAll("svg.aos, svg .aos").forEach((el) => {
 		el.classList.remove("aos", "is-visible");
@@ -19,7 +22,11 @@ const cleanSVGAccidents = () => {
 };
 
 const shouldSkip = (el: Element) =>
-	!!el.closest(".no-aos") || isInSVG(el) || !isHTMLElement(el);
+	!!el.closest(".no-aos") ||
+	isInSVG(el) ||
+	!isHTMLElement(el) ||
+	isGeneralSpan(el) ||
+	isNonVisual(el);
 const setElementProperties = (
 	el: Element,
 	baseDepth: number,
