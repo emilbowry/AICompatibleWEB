@@ -31,6 +31,7 @@ const LoadingFC = () => (
 
 import { DRouter } from "./features/access-managment/router";
 import { useAdmin } from "./services/api/util/admin";
+import { useScrollToTop } from "./hooks/ScrollToTop";
 const App: React.FC = () => {
 	const [hasCustomCursor, setHasCustomCursor] = useState(true);
 	const [global_position, setGlobalMousePosition] = useState({
@@ -40,7 +41,7 @@ const App: React.FC = () => {
 	const location = useLocation();
 	const [loc, setLoc] = useState(location);
 	useAnimationTagging();
-	// useScrollToTop();
+	useScrollToTop();
 	useAuthInit();
 	useAdmin();
 	return (

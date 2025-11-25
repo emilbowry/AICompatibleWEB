@@ -10,13 +10,14 @@ import React, {
 	useState,
 } from "react";
 // import { DocumentAnalysisViewer } from "../dpo-tool/css_dual";
-// import { ExperimentScene } from "./DemoCube";
+import { DocumentAnalysisViewer } from "../dpo-tool/CSS_Markdown/CSSMarkdown";
+import { ExperimentScene } from "./DemoCube";
 
 // import { DocumentAnalysisViewer } from "../dpo-tool/dual";
 const CONFIG = {
 	itemHeight: 10,
-	itemWidth: 10,
-	radius: 80,
+	itemWidth: 20,
+	radius: 100,
 	containerHeightRatio: 1,
 };
 
@@ -32,17 +33,17 @@ const DEMO_STRINGS = [
 	"T",
 	"T",
 	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
+	// "T",
 ];
 
 const getContainerStyle = (): React.CSSProperties => ({
@@ -54,8 +55,10 @@ const getContainerStyle = (): React.CSSProperties => ({
 });
 
 const container_style: React.CSSProperties = {
-	width: "100vh",
-	height: "100vh",
+	// width: "100vw * 1vh/1vw",
+	height: `calc(${100}%)`,
+	// marginBottom: `${2 * CONFIG.itemHeight}%`,
+	aspectRatio: "1",
 	// marginLeft: "50vh",
 };
 const getItemStyle = (
@@ -66,11 +69,13 @@ const getItemStyle = (
 ): React.CSSProperties => ({
 	position: "absolute",
 
-	height: `${CONFIG.itemHeight}vh`,
-	width: `${CONFIG.itemWidth}vh`,
+	height: `${CONFIG.itemHeight}%`,
+	width: `${CONFIG.itemWidth}%`,
 	display: "flex",
-	marginTop: `${marginTop - CONFIG.itemHeight / 2}vh`,
-	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}vh)`,
+	marginTop: `${marginTop - CONFIG.itemHeight / 2}%`,
+	// transform: `translateY(${marginTop - CONFIG.itemHeight / 2}%)`, // doesnt work since its now wrt to item height
+	// marginBottom: `${-CONFIG.itemHeight / 2}%`,
+	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}%)`,
 
 	textAlign: "center",
 	justifyContent: "center",
@@ -138,8 +143,6 @@ const ScrollWheelContext = createContext({
 	total_items: 0,
 });
 
-// const useScrollController = (initialIndex: number = 0) => {
-// 	const [rotation, setRotation] = useState(initialIndex);
 const useScrollController = () => {
 	const [rotation, setRotation] = useState(() => 0);
 	const ref = useRef<HTMLDivElement>(null);
@@ -206,10 +209,13 @@ const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
 		</ScrollWheelContext>
 	);
 };
-import { DocumentAnalysisViewer } from "../dpo-tool/CSS_Markdown/CSSMarkdown";
-const DemoWheelScroll = () => <DocumentAnalysisViewer />; //<ArcScrollWheel items={DEMO_STRINGS} />;
+const DemoWheelScroll = () => <ArcScrollWheel items={DEMO_STRINGS} />;
 export { ArcScrollWheel, DemoWheelScroll };
-
-const F = () => <DocumentAnalysisViewer />; //<ArcScrollWheel items={DEMO_STRINGS} />;
-// export { DemoContainer };
-export default F;
+const DemoContainer = () => {
+	return (
+		<div style={{ height: "800px", width: "100vh" }}>
+			<ArcScrollWheel items={DEMO_STRINGS} />
+		</div>
+	);
+};
+export default DemoContainer;
