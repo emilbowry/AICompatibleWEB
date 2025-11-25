@@ -9,8 +9,10 @@ import React, {
 	useState,
 } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { visit } from "unist-util-visit";
+import remarkGfm from "remark-gfm";
+
+// Data Imports
 import local_question_data from "./output_q.json";
 import local_policy_data from "./output_p.json";
 
@@ -46,8 +48,9 @@ import { styleObjectToString, generateGradient } from "../../../styles";
 import {
 	TDocId,
 	THighlightId,
-	IAnalysisData,
-	IDocumentMap,
+	IRawDocLibrary,
+	IRawAnalysisData,
+	IDocMeta,
 	IHighlightNode,
 	IFlatSegment,
 	IAnalysisUIState,
@@ -55,59 +58,21 @@ import {
 	ICategoryButtonProps,
 } from "./CSSMarkdown.types";
 
-// --- Mock Data ---
+const RAW_DOCS = local_policy_data as unknown as IRawDocLibrary;
+const RAW_ANALYSIS = local_question_data as unknown as IRawAnalysisData;
 
-// const DOCUMENTS: IDocumentMap = {
-// 	doc_alpha: `# Project Alpha Analysis
+const DOC_LOOKUP: Record<TDocId, IDocMeta> = {};
 
-// This document contains the preliminary results.
-// We observed several key factors.
+Object.entries(RAW_DOCS).forEach(([policyName, versions]) => {
+	Object.entries(versions).forEach(([hash, data]) => {
+		DOC_LOOKUP[hash] = {
+			content: data.policy_content,
+			label: `${policyName} (${data.fetch_date})`,
+		};
+	});
+});
 
-// ## Key Findings
-
-// 1. Velocity increased by 20% in Q3.
-// 2. Bug reports dropped significantly.
-// 3. Customer satisfaction is high.
-
-// ## Risks
-
-// - Legacy systems are a bottleneck.
-// - API rate limits are being hit frequently.
-// `,
-// 	doc_beta: `# Project Beta Review
-
-// This is the secondary analysis for Beta.
-// While promising, there are overlaps.
-
-// ## Shared Observations
-
-// 1. Velocity increased by 20% in Q3.
-// 2. API rate limits are being hit frequently.
-
-// ## Beta Specifics
-
-// - The new UI framework is causing blocking.
-// - Mobile adoption is up 40%.
-// `,
-// };
-
-// const NEW_MOCK_JSON_DATA: IAnalysisData = {
-// 	a: [
-// 		{ docId: "doc_alpha", start: 128, end: 160 }, // "1. Velocity..."
-// 		{ docId: "doc_alpha", start: 164, end: 198 }, // "2. Bug..."
-// 		{ docId: "doc_beta", start: 129, end: 161 }, // "1. Velocity..."
-// 		{ docId: "doc_beta", start: 273, end: 299 }, // "- Mobile..."
-// 	],
-// 	b: [
-// 		{ docId: "doc_alpha", start: 246, end: 278 }, // "- Legacy..."
-// 	],
-// 	c: [
-// 		{ docId: "doc_beta", start: 229, end: 270 }, // "- The new UI..."
-// 	],
-// };
-const DOCUMENTS: IDocumentMap = local_policy_data;
-const NEW_MOCK_JSON_DATA: IAnalysisData = local_question_data;
-const ANALYSIS_KEYS = Object.keys(NEW_MOCK_JSON_DATA);
+const ANALYSIS_KEYS = Object.keys(RAW_ANALYSIS);
 const GRADIENT_COLORS = generateGradient(ANALYSIS_KEYS.length);
 
 const ID_COLORS: Record<string, string> = {};
@@ -115,29 +80,38 @@ ANALYSIS_KEYS.forEach((key, index) => {
 	ID_COLORS[key] = GRADIENT_COLORS[index];
 });
 
-const DOC_KEYS = Object.keys(DOCUMENTS);
+const DOC_HASHES = Object.keys(DOC_LOOKUP);
 const DOC_COLORS_LIST = generateGradient(
-	DOC_KEYS.length,
-	"#16a34a", // Start (Green)
-	"#ea580c" // End (Orange)
+	DOC_HASHES.length,
+	"#16a34a", // Green
+	"#ea580c" // Orange
 );
 
 const DOC_THEME_COLORS: Record<string, string> = {};
-DOC_KEYS.forEach((key, index) => {
-	DOC_THEME_COLORS[key] = DOC_COLORS_LIST[index];
+DOC_HASHES.forEach((hash, index) => {
+	DOC_THEME_COLORS[hash] = DOC_COLORS_LIST[index];
 });
-const flattenRanges = (docId: TDocId, data: IAnalysisData): IFlatSegment[] => {
+
+const flattenRanges = (
+	docId: TDocId,
+	data: IRawAnalysisData
+): IFlatSegment[] => {
 	const points = new Set<number>();
+
+	// [ { id: "Question A", start: 10, end: 20 }, ... ]
 	const rangeMap: { id: THighlightId; start: number; end: number }[] = [];
 
-	Object.entries(data).forEach(([id, ranges]) => {
-		ranges.forEach((r) => {
-			if (r.docId === docId) {
-				points.add(r.start);
-				points.add(r.end);
-				rangeMap.push({ id, start: r.start, end: r.end });
-			}
-		});
+	Object.entries(data).forEach(([questionId, docMap]) => {
+		const occurrences = docMap[docId];
+
+		if (occurrences) {
+			occurrences.forEach((instance) => {
+				const [start, end] = instance.substring_indices;
+				points.add(start);
+				points.add(end);
+				rangeMap.push({ id: questionId, start, end });
+			});
+		}
 	});
 
 	const sortedPoints = Array.from(points).sort((a, b) => a - b);
@@ -205,6 +179,7 @@ const remarkHighlightPlugin = (options: { segments: IFlatSegment[] }) => {
 						hEnd - nodeStart
 					);
 
+					// Safe CSS Class Generation
 					const classNames = seg.ids
 						.map((id) => toCssClass(id))
 						.join(" ");
@@ -235,46 +210,12 @@ const remarkHighlightPlugin = (options: { segments: IFlatSegment[] }) => {
 	};
 };
 
-// --- Context & Hooks ---
-
 const AnalysisCTX = createContext<IAnalysisUIState>(undefined as any);
 
-// const useAnalysisState = (): IAnalysisUIState => {
-// 	const [activeIds, setActiveIds] = useState<THighlightId[]>([]);
-// 	const [selectedDocs, setSelectedDocs] = useState<TDocId[]>(["doc_alpha"]);
-// 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-// 	const toggleDoc = (docId: TDocId) => {
-// 		setSelectedDocs((prev) =>
-// 			prev.includes(docId)
-// 				? prev.filter((d) => d !== docId)
-// 				: [...prev, docId]
-// 		);
-// 	};
-
-// 	const toggleId = (id: THighlightId) => {
-// 		setActiveIds((prev) =>
-// 			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-// 		);
-// 	};
-
-// 	return {
-// 		activeIds,
-// 		setActiveIds,
-// 		selectedDocs,
-// 		setSelectedDocs,
-// 		isDropdownOpen,
-// 		setIsDropdownOpen,
-// 		toggleDoc,
-// 		toggleId,
-// 	};
-// };
 const useAnalysisState = (): IAnalysisUIState => {
 	const [activeIds, setActiveIds] = useState<THighlightId[]>([]);
 	const [selectedDocs, setSelectedDocs] = useState<TDocId[]>([]);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-	// NEW: State to signal a scroll event
 	const [scrollToId, setScrollToId] = useState<THighlightId | null>(null);
 
 	const toggleDoc = (docId: TDocId) => {
@@ -294,7 +235,6 @@ const useAnalysisState = (): IAnalysisUIState => {
 
 		if (isTurningOn) {
 			setScrollToId(id);
-
 			setTimeout(() => setScrollToId(null), 100);
 		}
 	};
@@ -311,6 +251,7 @@ const useAnalysisState = (): IAnalysisUIState => {
 		scrollToId,
 	};
 };
+
 const useAutoScroll = (containerRef: React.RefObject<HTMLDivElement>) => {
 	const { scrollToId } = useAnalysisContext();
 
@@ -319,21 +260,16 @@ const useAutoScroll = (containerRef: React.RefObject<HTMLDivElement>) => {
 
 		const container = containerRef.current;
 		const target = container.querySelector(
-			// toCssClass(scrollToId)
 			`.${toCssClass(scrollToId)}`
 		) as HTMLElement;
 
 		if (target) {
 			const containerRect = container.getBoundingClientRect();
 			const targetRect = target.getBoundingClientRect();
-
 			const relativeTop = targetRect.top - containerRect.top;
-
 			const currentScroll = container.scrollTop;
-
 			const centerOffset =
 				containerRect.height / 2 - targetRect.height / 2;
-
 			const scrollPos = currentScroll + relativeTop - centerOffset;
 
 			container.scrollTo({
@@ -343,6 +279,7 @@ const useAutoScroll = (containerRef: React.RefObject<HTMLDivElement>) => {
 		}
 	}, [scrollToId, containerRef]);
 };
+
 const useDynamicStyles = () => {
 	const { activeIds } = useAnalysisContext();
 
@@ -351,12 +288,9 @@ const useDynamicStyles = () => {
 		[activeIds]
 	);
 
-	const cssString = useMemo(
-		() => styleObjectToString(highlightRules),
-		[highlightRules]
-	);
-	return cssString;
+	return useMemo(() => styleObjectToString(highlightRules), [highlightRules]);
 };
+
 const useAnalysisContext = () => {
 	const context = useContext(AnalysisCTX);
 	if (!context) {
@@ -373,12 +307,12 @@ const useDataCategorization = () => {
 	return useMemo(() => {
 		const qTypes: Record<THighlightId, "unique" | "shared"> = {};
 
-		Object.entries(NEW_MOCK_JSON_DATA).forEach(([id, ranges]) => {
-			const uniqueDocsForQuestion = new Set(ranges.map((r) => r.docId));
+		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+			const uniqueDocsForQuestion = new Set(Object.keys(docMap)); // Keys are hashes
 			if (uniqueDocsForQuestion.size > 1) {
-				qTypes[id] = "shared";
+				qTypes[questionId] = "shared";
 			} else {
-				qTypes[id] = "unique";
+				qTypes[questionId] = "unique";
 			}
 		});
 
@@ -387,21 +321,25 @@ const useDataCategorization = () => {
 
 		selectedDocs.forEach((docId) => (visibleUniqueMap[docId] = []));
 
-		Object.entries(NEW_MOCK_JSON_DATA).forEach(([id, ranges]) => {
-			const type = qTypes[id];
-			const isRelevant = ranges.some((r) =>
-				selectedDocs.includes(r.docId)
+		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+			const type = qTypes[questionId];
+
+			const docKeys = Object.keys(docMap);
+			const isRelevant = docKeys.some((docHash) =>
+				selectedDocs.includes(docHash)
 			);
+
 			if (!isRelevant) return;
 
 			if (type === "shared") {
-				if (!visibleSharedList.includes(id)) {
-					visibleSharedList.push(id);
+				if (!visibleSharedList.includes(questionId)) {
+					visibleSharedList.push(questionId);
 				}
 			} else {
-				const docId = ranges[0].docId;
+				// It's unique to one doc
+				const docId = docKeys[0];
 				if (visibleUniqueMap[docId]) {
-					visibleUniqueMap[docId].push(id);
+					visibleUniqueMap[docId].push(questionId);
 				}
 			}
 		});
@@ -435,6 +373,8 @@ const useDropdownBehavior = (
 
 	return ref;
 };
+
+// --- Components ---
 
 const CategoryButton: React.FC<ICategoryButtonProps> = ({
 	id,
@@ -475,8 +415,6 @@ const EmptyState: React.FC<{ message?: string }> = ({ message = "None" }) => (
 	<div style={EmptyStateStyle}>{message}</div>
 );
 
-// --- Sub-Components (List Renderers) ---
-
 const AttributeList: React.FC<{
 	ids: THighlightId[];
 	prefix: string;
@@ -500,7 +438,7 @@ const SidebarUniqueSection: React.FC<{
 	ids: THighlightId[];
 }> = ({ docId, ids }) => {
 	const themeColor = DOC_THEME_COLORS[docId] || "#ccc";
-	const formattedLabel = `Unique to ${docId}}`;
+	const formattedLabel = `Unique to ${DOC_LOOKUP[docId].label}`;
 
 	return (
 		<div style={SidebarSectionStyle}>
@@ -515,8 +453,6 @@ const SidebarUniqueSection: React.FC<{
 		</div>
 	);
 };
-
-// --- Container Components ---
 
 const UniqueAttrsSidebar: React.FC = () => {
 	const { uniqueMap } = useDataCategorization();
@@ -577,7 +513,7 @@ const DropdownItemList: React.FC = () => {
 	const { selectedDocs, toggleDoc } = useAnalysisContext();
 	return (
 		<div style={DropdownMenuStyle}>
-			{Object.keys(DOCUMENTS).map((docId) => {
+			{Object.keys(DOC_LOOKUP).map((docId) => {
 				const isSelected = selectedDocs.includes(docId);
 				return (
 					<div
@@ -591,7 +527,7 @@ const DropdownItemList: React.FC = () => {
 							readOnly
 							style={{ pointerEvents: "none" }}
 						/>
-						{docId}
+						{DOC_LOOKUP[docId].label}
 					</div>
 				);
 			})}
@@ -643,45 +579,55 @@ const AnalysisTopBar: React.FC = () => {
 		</div>
 	);
 };
-
+const MemoizedMarkdownViewer = React.memo(
+	({ content, segments }: { content: string; segments: IFlatSegment[] }) => {
+		return (
+			<ReactMarkdown
+				remarkPlugins={[
+					[remarkHighlightPlugin, { segments }],
+					remarkGfm,
+				]}
+				components={
+					{
+						highlight: ({ node, ...props }: any) => (
+							<span {...props} />
+						),
+					} as Components
+				}
+			>
+				{content}
+			</ReactMarkdown>
+		);
+	}
+);
 const DocumentColumn: React.FC<{ docId: TDocId }> = ({ docId }) => {
-	const content = DOCUMENTS[docId];
-	const segments = useMemo(
-		() => flattenRanges(docId, NEW_MOCK_JSON_DATA),
-		[docId]
-	);
+	// USE LOOKUP for Content
+	const content = DOC_LOOKUP[docId].content;
+
+	const segments = useMemo(() => flattenRanges(docId, RAW_ANALYSIS), [docId]);
 	const themeColor = DOC_THEME_COLORS[docId] || "#ccc";
 
 	const scrollRef = useRef<HTMLDivElement>(null);
-
 	useAutoScroll(scrollRef as any);
 
 	return (
 		<div style={DocColumnWrapperStyle}>
-			<div style={getDocHeaderStyle(themeColor)}>{docId}</div>
+			<div style={getDocHeaderStyle(themeColor)}>
+				{DOC_LOOKUP[docId].label}
+			</div>
 			<div
 				style={DocScrollStyle}
 				ref={scrollRef}
 			>
-				<ReactMarkdown
-					remarkPlugins={[
-						[remarkHighlightPlugin, { segments }],
-						remarkGfm,
-					]}
-					components={
-						{
-							highlight: ({ node, ...props }: any) => (
-								<span {...props} />
-							),
-						} as Components
-					}
-				>
-					{content}
-				</ReactMarkdown>
+				<MemoizedMarkdownViewer
+					content={content}
+					segments={segments}
+				/>
 			</div>
 		</div>
 	);
 };
+
 const DocumentGrid: React.FC = () => {
 	const { selectedDocs } = useAnalysisContext();
 
@@ -729,4 +675,5 @@ const DocumentAnalysisViewer: React.FC = () => (
 		</div>
 	</AnalysisCTX>
 );
+
 export { DocumentAnalysisViewer };
