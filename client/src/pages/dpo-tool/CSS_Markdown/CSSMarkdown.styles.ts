@@ -5,6 +5,7 @@ import { THighlightId, THighlightRules } from "./CSSMarkdown.types";
 import { toCssClass } from "./mardown-viewer/MarkDownViewer";
 const MainContainerStyle: React.CSSProperties = {
 	display: "flex",
+	paddingTop: "5vh",
 	flexDirection: "column",
 	fontFamily: "sans-serif",
 	width: "100%",
