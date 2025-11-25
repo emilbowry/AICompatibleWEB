@@ -58,13 +58,17 @@ import {
 	ICategoryButtonProps,
 } from "./CSSMarkdown.types";
 
+// --- Data Pre-Processing ---
+
 const RAW_DOCS = local_policy_data as unknown as IRawDocLibrary;
 const RAW_ANALYSIS = local_question_data as unknown as IRawAnalysisData;
 
+// 1. Flatten Documents for O(1) Lookup and Flat UI List
 const DOC_LOOKUP: Record<TDocId, IDocMeta> = {};
 
 Object.entries(RAW_DOCS).forEach(([policyName, versions]) => {
 	Object.entries(versions).forEach(([hash, data]) => {
+		// We format the label here once: "Privacy Policy (2024-01-01)"
 		DOC_LOOKUP[hash] = {
 			content: data.policy_content,
 			label: `${policyName} (${data.fetch_date})`,
@@ -72,6 +76,7 @@ Object.entries(RAW_DOCS).forEach(([policyName, versions]) => {
 	});
 });
 
+// 2. Color Generation
 const ANALYSIS_KEYS = Object.keys(RAW_ANALYSIS);
 const GRADIENT_COLORS = generateGradient(ANALYSIS_KEYS.length);
 
@@ -92,16 +97,21 @@ DOC_HASHES.forEach((hash, index) => {
 	DOC_THEME_COLORS[hash] = DOC_COLORS_LIST[index];
 });
 
+// --- Logic Update: Flatten Ranges (New Structure) ---
+
 const flattenRanges = (
 	docId: TDocId,
 	data: IRawAnalysisData
 ): IFlatSegment[] => {
 	const points = new Set<number>();
 
+	// Temporary map to hold ranges before segmentation
 	// [ { id: "Question A", start: 10, end: 20 }, ... ]
 	const rangeMap: { id: THighlightId; start: number; end: number }[] = [];
 
+	// Iterate over every question in the analysis
 	Object.entries(data).forEach(([questionId, docMap]) => {
+		// Direct Access: Check if this question applies to our specific docHash
 		const occurrences = docMap[docId];
 
 		if (occurrences) {
@@ -114,6 +124,7 @@ const flattenRanges = (
 		}
 	});
 
+	// Standard segmentation logic (unchanged)
 	const sortedPoints = Array.from(points).sort((a, b) => a - b);
 	const segments: IFlatSegment[] = [];
 
@@ -133,6 +144,115 @@ const flattenRanges = (
 
 	return segments;
 };
+
+const AnalysisCTX = createContext<IAnalysisUIState>(undefined as any);
+
+const useAnalysisState = (): IAnalysisUIState => {
+	const [activeIds, setActiveIds] = useState<THighlightId[]>([]);
+	const [selectedDocs, setSelectedDocs] = useState<TDocId[]>([]);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [scrollToId, setScrollToId] = useState<THighlightId | null>(null);
+
+	const toggleDoc = (docId: TDocId) => {
+		setSelectedDocs((prev) =>
+			prev.includes(docId)
+				? prev.filter((d) => d !== docId)
+				: [...prev, docId]
+		);
+	};
+
+	const toggleId = (id: THighlightId) => {
+		const isTurningOn = !activeIds.includes(id);
+
+		setActiveIds((prev) =>
+			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+		);
+
+		if (isTurningOn) {
+			setScrollToId(id);
+			setTimeout(() => setScrollToId(null), 100);
+		}
+	};
+
+	return {
+		activeIds,
+		setActiveIds,
+		selectedDocs,
+		setSelectedDocs,
+		isDropdownOpen,
+		setIsDropdownOpen,
+		toggleDoc,
+		toggleId,
+		scrollToId,
+	};
+};
+
+const useAnalysisContext = () => {
+	const context = useContext(AnalysisCTX);
+	if (!context) {
+		throw new Error(
+			"useAnalysisContext must be used within an AnalysisCTX Provider"
+		);
+	}
+	return context;
+};
+
+// --- Logic Update: Categorization (New Structure) ---
+
+const useDataCategorization = () => {
+	const { selectedDocs } = useAnalysisContext();
+
+	return useMemo(() => {
+		const qTypes: Record<THighlightId, "unique" | "shared"> = {};
+
+		// A. Determine Global Type using Nested Structure
+		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+			const uniqueDocsForQuestion = new Set(Object.keys(docMap)); // Keys are hashes
+			if (uniqueDocsForQuestion.size > 1) {
+				qTypes[questionId] = "shared";
+			} else {
+				qTypes[questionId] = "unique";
+			}
+		});
+
+		const visibleUniqueMap: Record<TDocId, THighlightId[]> = {};
+		const visibleSharedList: THighlightId[] = [];
+
+		selectedDocs.forEach((docId) => (visibleUniqueMap[docId] = []));
+
+		// B. Filter for Current View
+		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+			const type = qTypes[questionId];
+
+			// Is this question relevant to ANY selected doc?
+			const docKeys = Object.keys(docMap);
+			const isRelevant = docKeys.some((docHash) =>
+				selectedDocs.includes(docHash)
+			);
+
+			if (!isRelevant) return;
+
+			if (type === "shared") {
+				if (!visibleSharedList.includes(questionId)) {
+					visibleSharedList.push(questionId);
+				}
+			} else {
+				// It's unique to one doc
+				const docId = docKeys[0];
+				if (visibleUniqueMap[docId]) {
+					visibleUniqueMap[docId].push(questionId);
+				}
+			}
+		});
+
+		return {
+			uniqueMap: visibleUniqueMap,
+			sharedList: visibleSharedList,
+		};
+	}, [selectedDocs]);
+};
+
+// --- Logic Update: Remark Plugin (Unchanged Logic, just types) ---
 
 const remarkHighlightPlugin = (options: { segments: IFlatSegment[] }) => {
 	return (tree: any) => {
@@ -210,47 +330,7 @@ const remarkHighlightPlugin = (options: { segments: IFlatSegment[] }) => {
 	};
 };
 
-const AnalysisCTX = createContext<IAnalysisUIState>(undefined as any);
-
-const useAnalysisState = (): IAnalysisUIState => {
-	const [activeIds, setActiveIds] = useState<THighlightId[]>([]);
-	const [selectedDocs, setSelectedDocs] = useState<TDocId[]>([]);
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const [scrollToId, setScrollToId] = useState<THighlightId | null>(null);
-
-	const toggleDoc = (docId: TDocId) => {
-		setSelectedDocs((prev) =>
-			prev.includes(docId)
-				? prev.filter((d) => d !== docId)
-				: [...prev, docId]
-		);
-	};
-
-	const toggleId = (id: THighlightId) => {
-		const isTurningOn = !activeIds.includes(id);
-
-		setActiveIds((prev) =>
-			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-		);
-
-		if (isTurningOn) {
-			setScrollToId(id);
-			setTimeout(() => setScrollToId(null), 100);
-		}
-	};
-
-	return {
-		activeIds,
-		setActiveIds,
-		selectedDocs,
-		setSelectedDocs,
-		isDropdownOpen,
-		setIsDropdownOpen,
-		toggleDoc,
-		toggleId,
-		scrollToId,
-	};
-};
+// --- Context & Hooks ---
 
 const useAutoScroll = (containerRef: React.RefObject<HTMLDivElement>) => {
 	const { scrollToId } = useAnalysisContext();
@@ -291,66 +371,6 @@ const useDynamicStyles = () => {
 	return useMemo(() => styleObjectToString(highlightRules), [highlightRules]);
 };
 
-const useAnalysisContext = () => {
-	const context = useContext(AnalysisCTX);
-	if (!context) {
-		throw new Error(
-			"useAnalysisContext must be used within an AnalysisCTX Provider"
-		);
-	}
-	return context;
-};
-
-const useDataCategorization = () => {
-	const { selectedDocs } = useAnalysisContext();
-
-	return useMemo(() => {
-		const qTypes: Record<THighlightId, "unique" | "shared"> = {};
-
-		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
-			const uniqueDocsForQuestion = new Set(Object.keys(docMap)); // Keys are hashes
-			if (uniqueDocsForQuestion.size > 1) {
-				qTypes[questionId] = "shared";
-			} else {
-				qTypes[questionId] = "unique";
-			}
-		});
-
-		const visibleUniqueMap: Record<TDocId, THighlightId[]> = {};
-		const visibleSharedList: THighlightId[] = [];
-
-		selectedDocs.forEach((docId) => (visibleUniqueMap[docId] = []));
-
-		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
-			const type = qTypes[questionId];
-
-			const docKeys = Object.keys(docMap);
-			const isRelevant = docKeys.some((docHash) =>
-				selectedDocs.includes(docHash)
-			);
-
-			if (!isRelevant) return;
-
-			if (type === "shared") {
-				if (!visibleSharedList.includes(questionId)) {
-					visibleSharedList.push(questionId);
-				}
-			} else {
-				// It's unique to one doc
-				const docId = docKeys[0];
-				if (visibleUniqueMap[docId]) {
-					visibleUniqueMap[docId].push(questionId);
-				}
-			}
-		});
-
-		return {
-			uniqueMap: visibleUniqueMap,
-			sharedList: visibleSharedList,
-		};
-	}, [selectedDocs]);
-};
-
 const useDropdownBehavior = (
 	isOpen: boolean,
 	setIsOpen: (v: boolean) => void
@@ -389,7 +409,7 @@ const CategoryButton: React.FC<ICategoryButtonProps> = ({
 			onClick={() => toggleId(id)}
 			style={categoryButtonStyle(isActive, color, StyleOverrides)}
 		>
-			{id}
+			{labelPrefix} {id.toUpperCase()}
 		</button>
 	);
 };
@@ -415,6 +435,8 @@ const EmptyState: React.FC<{ message?: string }> = ({ message = "None" }) => (
 	<div style={EmptyStateStyle}>{message}</div>
 );
 
+// --- Sub-Components ---
+
 const AttributeList: React.FC<{
 	ids: THighlightId[];
 	prefix: string;
@@ -438,6 +460,7 @@ const SidebarUniqueSection: React.FC<{
 	ids: THighlightId[];
 }> = ({ docId, ids }) => {
 	const themeColor = DOC_THEME_COLORS[docId] || "#ccc";
+	// USE LOOKUP for Label
 	const formattedLabel = `Unique to ${DOC_LOOKUP[docId].label}`;
 
 	return (
@@ -511,6 +534,7 @@ const SharedAttrsFooter: React.FC = () => {
 
 const DropdownItemList: React.FC = () => {
 	const { selectedDocs, toggleDoc } = useAnalysisContext();
+	// Iterate LOOKUP keys for flat list
 	return (
 		<div style={DropdownMenuStyle}>
 			{Object.keys(DOC_LOOKUP).map((docId) => {
@@ -527,6 +551,7 @@ const DropdownItemList: React.FC = () => {
 							readOnly
 							style={{ pointerEvents: "none" }}
 						/>
+						{/* USE LOOKUP for Label */}
 						{DOC_LOOKUP[docId].label}
 					</div>
 				);
@@ -579,7 +604,7 @@ const AnalysisTopBar: React.FC = () => {
 		</div>
 	);
 };
-const MemoizedMarkdownViewer = React.memo(
+const MarkdownViewer = React.memo(
 	({ content, segments }: { content: string; segments: IFlatSegment[] }) => {
 		return (
 			<ReactMarkdown
@@ -608,6 +633,7 @@ const DocumentColumn: React.FC<{ docId: TDocId }> = ({ docId }) => {
 	const themeColor = DOC_THEME_COLORS[docId] || "#ccc";
 
 	const scrollRef = useRef<HTMLDivElement>(null);
+	// This hook triggers re-renders when context changes
 	useAutoScroll(scrollRef as any);
 
 	return (
@@ -619,7 +645,8 @@ const DocumentColumn: React.FC<{ docId: TDocId }> = ({ docId }) => {
 				style={DocScrollStyle}
 				ref={scrollRef}
 			>
-				<MemoizedMarkdownViewer
+				{/* 2. Use the memoized component here */}
+				<MarkdownViewer
 					content={content}
 					segments={segments}
 				/>

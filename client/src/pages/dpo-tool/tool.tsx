@@ -439,6 +439,6 @@ export const PolicyAnalyzer: React.FC = () => {
 // 		useCursor={false}
 // 	/>
 // );
-
-const F = () => <div>Hello</div>;
+import { DocumentAnalysisViewer } from "./CSS_Markdown/CSSMarkdown";
+const F = () => <DocumentAnalysisViewer />;
 export default F;
