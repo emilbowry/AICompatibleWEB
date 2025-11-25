@@ -17,49 +17,31 @@ import { ExperimentScene } from "./DemoCube";
 const CONFIG = {
 	itemHeight: 10,
 	itemWidth: 20,
-	radius: 100,
+	radius: 60,
 	containerHeightRatio: 1,
 };
 
-const DEMO_STRINGS = [
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	"T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
+const TestFC = () => <>T</>;
+const DemoComponents = [
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
+	<TestFC />,
 ];
 
 const getContainerStyle = (): React.CSSProperties => ({
 	position: "fixed",
 	width: "100%",
 	height: "100%",
-
-	// overflow: "hidden",
 });
 
 const container_style: React.CSSProperties = {
-	// width: "100vw * 1vh/1vw",
 	height: `calc(${100}%)`,
-	// marginBottom: `${2 * CONFIG.itemHeight}%`,
 	aspectRatio: "1",
-	// marginLeft: "50vh",
 };
 const getItemStyle = (
 	marginTop: number,
@@ -69,13 +51,13 @@ const getItemStyle = (
 ): React.CSSProperties => ({
 	position: "absolute",
 
-	height: `${CONFIG.itemHeight}%`,
-	width: `${CONFIG.itemWidth}%`,
+	height: `${CONFIG.itemHeight}vh`,
+	width: `${CONFIG.itemWidth}vh`,
 	display: "flex",
-	marginTop: `${marginTop - CONFIG.itemHeight / 2}%`,
+	marginTop: `${marginTop - CONFIG.itemHeight / 2}vh`,
 	// transform: `translateY(${marginTop - CONFIG.itemHeight / 2}%)`, // doesnt work since its now wrt to item height
 	// marginBottom: `${-CONFIG.itemHeight / 2}%`,
-	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}%)`,
+	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}vh)`,
 
 	textAlign: "center",
 	justifyContent: "center",
@@ -97,15 +79,15 @@ const getHelperLineStyle = (): React.CSSProperties => ({
 });
 
 interface WheelItemProps {
-	text: string;
+	Component: React.ReactNode;
 	index: number;
 }
 
 interface ScrollWheelProps {
-	items: string[];
+	items: React.ReactNode[];
 }
 
-const WheelItem: React.FC<WheelItemProps> = ({ text, index }) => {
+const WheelItem: React.FC<WheelItemProps> = ({ Component, index }) => {
 	const [isActive, setIsActive] = useState(false);
 	const { rotation } = useContext(ScrollWheelContext);
 	const theta =
@@ -134,7 +116,7 @@ const WheelItem: React.FC<WheelItemProps> = ({ text, index }) => {
 			style={style}
 			onClick={() => setIsActive(!isActive)}
 		>
-			{text}
+			{Component}
 		</div>
 	);
 };
@@ -193,11 +175,11 @@ const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
 					style={containerStyle}
 					ref={ref}
 				>
-					{items.map((text, i) => {
+					{items.map((Comp, i) => {
 						return (
 							<WheelItem
 								key={i}
-								text={text}
+								Component={Comp}
 								index={i}
 							/>
 						);
@@ -209,12 +191,17 @@ const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
 		</ScrollWheelContext>
 	);
 };
-const DemoWheelScroll = () => <ArcScrollWheel items={DEMO_STRINGS} />;
+const DemoWheelScroll = () => <ArcScrollWheel items={DemoComponents} />;
 export { ArcScrollWheel, DemoWheelScroll };
 const DemoContainer = () => {
 	return (
-		<div style={{ height: "800px", width: "100vh" }}>
-			<ArcScrollWheel items={DEMO_STRINGS} />
+		<div
+			style={{
+				height: `calc(${CONFIG.radius + CONFIG.itemHeight}vh)`,
+				width: `calc(${CONFIG.radius / 2 + CONFIG.itemWidth / 2}vh)`,
+			}}
+		>
+			<ArcScrollWheel items={DemoComponents} />
 		</div>
 	);
 };

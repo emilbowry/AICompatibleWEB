@@ -2,9 +2,7 @@
 
 import { THighlightId, THighlightRules } from "./CSSMarkdown.types";
 
-const toCssClass = (id: string) => {
-	return `hl-${id.replace(/[^a-zA-Z0-9]/g, "_")}`;
-};
+import { toCssClass } from "./mardown-viewer/MarkDownViewer";
 const MainContainerStyle: React.CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
@@ -278,5 +276,4 @@ export {
 	dropdownItemStyle,
 	dynamicHighlightStyles,
 	categoryButtonStyle,
-	toCssClass,
 };

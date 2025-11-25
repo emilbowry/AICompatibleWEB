@@ -19,4 +19,5 @@ temp
 tool/embedings.ipynb
 tool/.env
 tool/old_runs
+tool/data
 .env
