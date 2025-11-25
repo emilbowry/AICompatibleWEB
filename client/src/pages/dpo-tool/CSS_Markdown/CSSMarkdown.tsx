@@ -131,7 +131,7 @@ const CategoryButton: React.FC<ICategoryButtonProps> = ({
 			onClick={() => toggleId(id)}
 			style={categoryButtonStyle(isActive, color, StyleOverrides)}
 		>
-			{labelPrefix} {id.toUpperCase()}
+			{id}
 		</button>
 	);
 };
