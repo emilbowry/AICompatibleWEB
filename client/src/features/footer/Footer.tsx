@@ -196,6 +196,7 @@ const FooterPartershipBar: React.FC = () => (
 			/>
 		}
 		StyleOverrides={{
+			// Inline just for testing
 			position: "relative",
 			minWidth: 0,
 			isolation: "isolate",

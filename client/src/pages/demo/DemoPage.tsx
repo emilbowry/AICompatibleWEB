@@ -10,15 +10,13 @@ import React, {
 	useState,
 } from "react";
 // import { DocumentAnalysisViewer } from "../dpo-tool/css_dual";
-import { DocumentAnalysisViewer } from "../dpo-tool/css_dual2";
+// import { ExperimentScene } from "./DemoCube";
 
 // import { DocumentAnalysisViewer } from "../dpo-tool/dual";
 const CONFIG = {
 	itemHeight: 10,
 	itemWidth: 10,
-
-	itemGap: 5,
-	radius: 50,
+	radius: 80,
 	containerHeightRatio: 1,
 };
 
@@ -34,23 +32,23 @@ const DEMO_STRINGS = [
 	"T",
 	"T",
 	"T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
-	// "T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
+	"T",
 ];
 
 const getContainerStyle = (): React.CSSProperties => ({
 	position: "fixed",
-	width: "50vh",
-	height: "50vh",
+	width: "100%",
+	height: "100%",
 
 	// overflow: "hidden",
 });
@@ -71,7 +69,7 @@ const getItemStyle = (
 	height: `${CONFIG.itemHeight}vh`,
 	width: `${CONFIG.itemWidth}vh`,
 	display: "flex",
-	marginTop: `${marginTop}vh`,
+	marginTop: `${marginTop - CONFIG.itemHeight / 2}vh`,
 	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}vh)`,
 
 	textAlign: "center",
@@ -104,25 +102,27 @@ interface ScrollWheelProps {
 
 const WheelItem: React.FC<WheelItemProps> = ({ text, index }) => {
 	const [isActive, setIsActive] = useState(false);
-	const { items_per_half_turn, rotation } = useContext(ScrollWheelContext);
+	const { rotation } = useContext(ScrollWheelContext);
+	const theta =
+		2 *
+		Math.asin(
+			Math.sqrt(CONFIG.itemHeight ** 2 + CONFIG.itemWidth ** 2) /
+				CONFIG.radius
+		);
+	// testing minimal distance
+	const items_per_half_turn = Math.PI / theta;
 	const total_items = 31;
 	const total_turns = Math.floor(total_items / (items_per_half_turn * 2)) + 1;
-	const theta = Math.PI / items_per_half_turn;
+	// const theta = Math.PI / items_per_half_turn;
 
 	const current_angle = theta * -index + rotation;
-	const current_progress = current_angle % (2 * Math.PI * total_turns);
-	const z_score =
-		Math.floor(current_progress / (2 * Math.PI)) === 0
-			? Math.sin(current_progress) ** 2
-			: 0;
-
-	const factor = 5;
-	const marginLeft = items_per_half_turn * Math.sin(current_angle) * factor; // ASSUME SQUARE FOR NOW
-	const marginTop =
-		(items_per_half_turn - items_per_half_turn * Math.cos(current_angle)) *
-			factor -
-		CONFIG.itemHeight / 2;
-	const style = getItemStyle(marginTop, marginLeft, isActive, z_score);
+	const z_score = current_angle % (2 * Math.PI * total_turns);
+	const opacity_score =
+		Math.floor(z_score / (2 * Math.PI)) === 0 ? Math.sin(z_score) ** 2 : 0;
+	const factor = CONFIG.radius / 2;
+	const marginLeft = 1 * Math.sin(current_angle) * factor; // ASSUME SQUARE FOR NOW
+	const marginTop = (1 - 1 * Math.cos(current_angle)) * factor;
+	const style = getItemStyle(marginTop, marginLeft, isActive, opacity_score);
 
 	return (
 		<div
@@ -134,13 +134,14 @@ const WheelItem: React.FC<WheelItemProps> = ({ text, index }) => {
 	);
 };
 const ScrollWheelContext = createContext({
-	items_per_half_turn: 6,
 	rotation: 0,
 	total_items: 0,
 });
 
-const useScrollController = (initialIndex: number = 0) => {
-	const [rotation, setRotation] = useState(initialIndex);
+// const useScrollController = (initialIndex: number = 0) => {
+// 	const [rotation, setRotation] = useState(initialIndex);
+const useScrollController = () => {
+	const [rotation, setRotation] = useState(() => 0);
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -168,17 +169,15 @@ const useScrollController = (initialIndex: number = 0) => {
 
 	return { rotation, ref };
 };
-export const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
+const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
 	const containerStyle = getContainerStyle();
 	const helperLineStyle = getHelperLineStyle();
-	const items_per_half_turn = 6;
 	const total_items = items.length;
 	const { rotation, ref } = useScrollController();
 
 	return (
 		<ScrollWheelContext
 			value={{
-				items_per_half_turn: items_per_half_turn,
 				rotation,
 				total_items,
 			}}
@@ -207,9 +206,10 @@ export const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
 		</ScrollWheelContext>
 	);
 };
-const DemoContainer = () => {
-	return <DocumentAnalysisViewer />; // <ArcScrollWheel items={DEMO_STRINGS} />;
-};
-const F = () => <DocumentAnalysisViewer />;
-export { DemoContainer };
+import { DocumentAnalysisViewer } from "../dpo-tool/CSS_Markdown/CSSMarkdown";
+const DemoWheelScroll = () => <DocumentAnalysisViewer />; //<ArcScrollWheel items={DEMO_STRINGS} />;
+export { ArcScrollWheel, DemoWheelScroll };
+
+const F = () => <DocumentAnalysisViewer />; //<ArcScrollWheel items={DEMO_STRINGS} />;
+// export { DemoContainer };
 export default F;
