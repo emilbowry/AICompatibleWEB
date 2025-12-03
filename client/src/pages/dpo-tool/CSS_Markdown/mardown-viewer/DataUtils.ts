@@ -60,13 +60,9 @@ const flattenRanges = (
 ): IFlatSegment[] => {
 	const points = new Set<number>();
 
-	// Temporary map to hold ranges before segmentation
-	// [ { id: "Question A", start: 10, end: 20 }, ... ]
 	const rangeMap: { id: THighlightId; start: number; end: number }[] = [];
 
-	// Iterate over every question in the analysis
 	Object.entries(data).forEach(([questionId, docMap]) => {
-		// Direct Access: Check if this question applies to our specific docHash
 		const occurrences = docMap[docId];
 
 		if (occurrences) {
@@ -104,7 +100,11 @@ const AnalysisCTX = createContext<IAnalysisUIState>(undefined as any);
 
 const useAnalysisState = (): IAnalysisUIState => {
 	const [activeIds, setActiveIds] = useState<THighlightId[]>([]);
+	const [syntheticDocs, setSyntheticDocs] = useState<TDocId[]>([]);
+
 	const [selectedDocs, setSelectedDocs] = useState<TDocId[]>([]);
+	const [activeDoc, setActiveDoc] = useState<TDocId | null>(null);
+
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [scrollToId, setScrollToId] = useState<THighlightId | null>(null);
 
@@ -115,10 +115,29 @@ const useAnalysisState = (): IAnalysisUIState => {
 				: [...prev, docId]
 		);
 	};
+	const toggleActiveDoc = (docId: TDocId | null) => () => {
+		// selectedDocs.includes(docId)
+		setActiveDoc(docId);
+	};
+	// const toggleActiveDoc = (docId: string | null) => () => {
+	// 	// 1. Allow clearing explicitly
+	// 	if (docId === null) {
+	// 		setActiveDoc(null);
+	// 		return;
+	// 	}
 
+	// 	// 2. Check if valid (Real Doc OR Synthetic Group)
+	// 	const isValidReal = selectedDocs.includes(docId as TDocId);
+	// 	const isValidSynthetic = syntheticDocs.includes(docId);
+
+	// 	if (isValidReal || isValidSynthetic) {
+	// 		// 3. Toggle behavior: If clicking the one already open, close it.
+	// 		setActiveDoc((prev) => (prev === docId ? null : docId));
+	// 	}
+	// };
 	const toggleId = (id: THighlightId) => {
 		const isTurningOn = !activeIds.includes(id);
-
+		console.log("toggling id");
 		setActiveIds((prev) =>
 			prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
 		);
@@ -132,6 +151,8 @@ const useAnalysisState = (): IAnalysisUIState => {
 	return {
 		activeIds,
 		setActiveIds,
+		syntheticDocs,
+		setSyntheticDocs,
 		selectedDocs,
 		setSelectedDocs,
 		isDropdownOpen,
@@ -139,6 +160,8 @@ const useAnalysisState = (): IAnalysisUIState => {
 		toggleDoc,
 		toggleId,
 		scrollToId,
+		activeDoc,
+		toggleActiveDoc,
 	};
 };
 const useAnalysisContext = () => {
@@ -153,59 +176,155 @@ const useAnalysisContext = () => {
 
 // --- Logic Update: Categorization (New Structure) ---
 
+// const useDataCategorization = () => {
+// 	const { selectedDocs } = useAnalysisContext();
+
+// 	return useMemo(() => {
+// 		const qTypes: Record<THighlightId, "unique" | "shared"> = {};
+
+// 		// A. Determine Global Type using Nested Structure
+// 		const visibleSharedMap: Record<THighlightId, TDocId[]> = {};
+
+// 		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+// 			const uniqueDocsForQuestion = new Set(Object.keys(docMap)); // Keys are hashes
+// 			visibleSharedMap[questionId] = [];
+// 			if (uniqueDocsForQuestion.size > 1) {
+// 				qTypes[questionId] = "shared";
+// 			} else {
+// 				qTypes[questionId] = "unique";
+// 			}
+// 		});
+
+// 		const visibleUniqueMap: Record<TDocId, THighlightId[]> = {};
+
+// 		const visibleSharedList: THighlightId[] = [];
+
+// 		selectedDocs.forEach((docId) => (visibleUniqueMap[docId] = []));
+// 		// RAW_ANALYSIS.forEach() => (visibleSharedMap[questionId] = []));
+
+// 		// B. Filter for Current View
+// 		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
+// 			const type = qTypes[questionId];
+
+// 			// Is this question relevant to ANY selected doc?
+// 			const docKeys = Object.keys(docMap);
+// 			const isRelevant = docKeys.some((docHash) =>
+// 				selectedDocs.includes(docHash)
+// 			);
+
+// 			if (!isRelevant) return;
+
+// 			if (type === "shared") {
+// 				if (!visibleSharedList.includes(questionId)) {
+// 					visibleSharedList.push(questionId);
+// 				}
+// 				const docId = docKeys[0];
+// 				if (visibleSharedMap[questionId]) {
+// 					visibleSharedMap[questionId].push(docId);
+// 				}
+// 			} else {
+// 				// It's unique to one doc
+// 				const docId = docKeys[0];
+// 				if (visibleUniqueMap[docId]) {
+// 					visibleUniqueMap[docId].push(questionId);
+// 				}
+// 			}
+// 		});
+
+// 		return {
+// 			uniqueMap: visibleUniqueMap,
+// 			sharedList: visibleSharedList,
+// 			sharedMap: visibleSharedMap,
+// 		};
+// 	}, [selectedDocs]);
+// };
+// client/src/pages/dpo-tool/CSS_Markdown/DataUtils.ts (or wherever this lives)
+// CSSMarkdown/DataUtils.ts
+
 const useDataCategorization = () => {
 	const { selectedDocs } = useAnalysisContext();
 
 	return useMemo(() => {
-		const qTypes: Record<THighlightId, "unique" | "shared"> = {};
+		const uniqueMap: Record<string, THighlightId[]> = {};
+		const localSharedGroups: Record<string, THighlightId[]> = {};
+		const globalSharedGroups: Record<string, THighlightId[]> = {};
 
-		// A. Determine Global Type using Nested Structure
+		// We will store all pretty labels here
+		const groupLabels: Record<string, string> = {};
+
+		selectedDocs.forEach((docId) => (uniqueMap[docId] = []));
+
 		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
-			const uniqueDocsForQuestion = new Set(Object.keys(docMap)); // Keys are hashes
-			if (uniqueDocsForQuestion.size > 1) {
-				qTypes[questionId] = "shared";
-			} else {
-				qTypes[questionId] = "unique";
-			}
-		});
+			const allDocKeys = Object.keys(docMap);
 
-		const visibleUniqueMap: Record<TDocId, THighlightId[]> = {};
-		const visibleSharedList: THighlightId[] = [];
-
-		selectedDocs.forEach((docId) => (visibleUniqueMap[docId] = []));
-
-		// B. Filter for Current View
-		Object.entries(RAW_ANALYSIS).forEach(([questionId, docMap]) => {
-			const type = qTypes[questionId];
-
-			// Is this question relevant to ANY selected doc?
-			const docKeys = Object.keys(docMap);
-			const isRelevant = docKeys.some((docHash) =>
+			// Docs for this attribute that are CURRENTLY visible
+			const visibleDocs = allDocKeys.filter((docHash) =>
 				selectedDocs.includes(docHash)
 			);
 
-			if (!isRelevant) return;
+			// Skip if not present in any selected doc
+			if (visibleDocs.length === 0) return;
 
-			if (type === "shared") {
-				if (!visibleSharedList.includes(questionId)) {
-					visibleSharedList.push(questionId);
+			// --- CATEGORIZATION LOGIC ---
+
+			if (visibleDocs.length > 1) {
+				// CATEGORY A: LOCAL SHARED
+				// The attribute is shared visibly between 2+ selected docs.
+				// We group by the visible combination (e.g., "DocA|DocB")
+				visibleDocs.sort();
+				const key = visibleDocs.join("|");
+
+				if (!localSharedGroups[key]) {
+					localSharedGroups[key] = [];
+					const names = visibleDocs.map(
+						(d) => DOC_LOOKUP[d]?.label || d
+					);
+					groupLabels[key] = `Shared: ${names.join(" & ")}`;
 				}
+				localSharedGroups[key].push(questionId);
 			} else {
-				// It's unique to one doc
-				const docId = docKeys[0];
-				if (visibleUniqueMap[docId]) {
-					visibleUniqueMap[docId].push(questionId);
+				// The attribute is visible in EXACTLY 1 selected doc.
+				const docId = visibleDocs[0];
+
+				if (allDocKeys.length === 1) {
+					// CATEGORY B: TRULY UNIQUE
+					// It only exists in this doc, period.
+					uniqueMap[docId].push(questionId);
+				} else {
+					// CATEGORY C: GLOBAL SHARED (Other Shared Factors)
+					// It is visible in 1 doc, but exists in other hidden docs.
+					// We create a group key based on the FULL intersection to show who it's shared with.
+					allDocKeys.sort();
+					const key = allDocKeys.join("|");
+
+					if (!globalSharedGroups[key]) {
+						globalSharedGroups[key] = [];
+						const names = allDocKeys.map(
+							(d) => DOC_LOOKUP[d]?.label || d
+						);
+						groupLabels[key] = `Shared (Hidden): ${names.join(
+							" & "
+						)}`;
+					}
+					globalSharedGroups[key].push(questionId);
 				}
 			}
 		});
 
+		// Combine keys for the "Synthetic Docs" whitelist so clicking works for both types
+		const localKeys = Object.keys(localSharedGroups);
+		const globalKeys = Object.keys(globalSharedGroups);
+		const syntheticDocs = [...localKeys, ...globalKeys];
+
 		return {
-			uniqueMap: visibleUniqueMap,
-			sharedList: visibleSharedList,
+			uniqueMap,
+			localSharedGroups,
+			globalSharedGroups,
+			syntheticDocs,
+			groupLabels,
 		};
 	}, [selectedDocs]);
 };
-
 export {
 	useAnalysisContext,
 	ID_COLORS,

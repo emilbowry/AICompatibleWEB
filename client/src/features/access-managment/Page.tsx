@@ -7,15 +7,16 @@ import { CursorContext } from "../../components/cursor/Cursor";
 import { useNarrowLayout } from "../../hooks/WindowSizeDependent";
 import { Footer } from "../footer/Footer";
 import { MainStyle, PageStyle } from "../page/Page.styles";
-import { PillTitleBar } from "../titlebar/TitleBar";
+import { PillTitleBar, ExpandableTitleBar } from "../titlebar/TitleBar";
 import { VISIBLE_TITLEBAR_HEIGHT } from "../titlebar/TitleBar.consts";
 import { useAccessRoutes, useRoles } from "./router";
 
 const Page: React.FC<{
 	page: React.FC;
 	bg?: boolean;
+	useAltTitleBar?: boolean;
 	useCursor?: boolean;
-}> = ({ page: Page, bg = true, useCursor = true }) => {
+}> = ({ page: Page, bg = true, useCursor = true, useAltTitleBar = false }) => {
 	const { setHasCustomCursor } = useContext(CursorContext);
 	useEffect(() => {
 		setHasCustomCursor(useCursor);
@@ -26,10 +27,17 @@ const Page: React.FC<{
 	const routes = useAccessRoutes(roles);
 	return (
 		<>
-			<PillTitleBar
-				logo_src={logo}
-				Links={routes}
-			/>
+			{useAltTitleBar ? (
+				<ExpandableTitleBar
+					logo_src={logo}
+					Links={routes}
+				/>
+			) : (
+				<PillTitleBar
+					logo_src={logo}
+					Links={routes}
+				/>
+			)}
 			<main
 				key={location}
 				style={{

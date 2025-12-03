@@ -51,3 +51,25 @@ export type {
 	IGridItemProps,
 	IHeaderProps,
 };
+
+type TQuestionString = `Does the privacy policy affirm that ${string}?`;
+type TEmbedding = `embedding_vector` | `${string}_embedding_vector`;
+
+type TStartIndex = number;
+type TEndIndex = number;
+type TEmbeddingData = Record<TEmbedding, number[]>;
+interface IData {
+	[question_string: TQuestionString]: {
+		policy_data: {
+			[document_hash: string]: {
+				[subsection_hash: string]: {
+					substring: string;
+					substring_indices: [TStartIndex, TEndIndex];
+				}[];
+			};
+		} & TEmbeddingData;
+	};
+}
+
+// TEndIndex > TStartIndex, TEndIndex <= len(Document)
+// interface TData

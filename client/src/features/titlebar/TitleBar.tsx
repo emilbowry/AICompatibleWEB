@@ -28,4 +28,4 @@ const PillTitleBar: React.FC<ITitleBarProps> = (props) => (
 	/>
 );
 
-export { PillTitleBar };
+export { PillTitleBar, ExpandableTitleBar };

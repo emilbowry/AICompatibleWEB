@@ -30,7 +30,12 @@ const default_routes: [IRoutes[][], IRoutes[]] = [
 				alias: "Demo Page",
 				component: DemoPage,
 			},
-			{ path: "/dpotool", alias: "DPO Tool", component: ToolPage },
+			{
+				path: "/dpotool",
+				alias: "DPO Tool",
+				component: ToolPage,
+				altTitleBar: true,
+			},
 		],
 		[
 			{

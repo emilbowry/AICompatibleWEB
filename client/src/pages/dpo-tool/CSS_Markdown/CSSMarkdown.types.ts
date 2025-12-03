@@ -68,17 +68,21 @@ interface IAnalysisUIState {
 
 	selectedDocs: TDocId[];
 	setSelectedDocs: React.Dispatch<React.SetStateAction<TDocId[]>>;
+	syntheticDocs: TDocId[];
+	setSyntheticDocs: React.Dispatch<React.SetStateAction<TDocId[]>>;
 	isDropdownOpen: boolean;
 	setIsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	toggleDoc: (docId: TDocId) => void;
 	toggleId: (id: THighlightId) => void;
+	activeDoc: string | null;
+	toggleActiveDoc: (docId: string | null) => () => void;
 }
 
 type THighlightRules = TValidStyle<TClassSelector | TAllPseudos>;
 
 interface ICategoryButtonProps {
 	id: THighlightId;
-	labelPrefix: string;
+	labelPrefix?: string;
 	StyleOverrides?: React.CSSProperties;
 }
 

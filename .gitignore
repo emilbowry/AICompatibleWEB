@@ -20,4 +20,7 @@ tool/embedings.ipynb
 tool/.env
 tool/old_runs
 tool/data
+tool/distances
+tool/embedding_data
+
 .env

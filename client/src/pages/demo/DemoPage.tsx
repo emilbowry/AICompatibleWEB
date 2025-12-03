@@ -14,10 +14,10 @@ import { DocumentAnalysisViewer } from "../dpo-tool/CSS_Markdown/CSSMarkdown";
 import { ExperimentScene } from "./DemoCube";
 
 // import { DocumentAnalysisViewer } from "../dpo-tool/dual";
-const CONFIG = {
+export const CONFIG = {
 	itemHeight: 10,
-	itemWidth: 20,
-	radius: 60,
+	itemWidth: 15,
+	radius: 70,
 	containerHeightRatio: 1,
 };
 
@@ -36,36 +36,42 @@ const DemoComponents = [
 const getContainerStyle = (): React.CSSProperties => ({
 	position: "fixed",
 	width: "100%",
+	overflow: "visible",
+
 	height: "100%",
 });
 
 const container_style: React.CSSProperties = {
 	height: `calc(${100}%)`,
 	aspectRatio: "1",
+	overflow: "visible",
 };
 const getItemStyle = (
 	marginTop: number,
 	marginLeft: number,
-	isActive: boolean,
-	opacity = 1
+	z_score: number,
+
+	opacity_function: (z_score: number) => number
 ): React.CSSProperties => ({
 	position: "absolute",
 
 	height: `${CONFIG.itemHeight}vh`,
 	width: `${CONFIG.itemWidth}vh`,
 	display: "flex",
-	marginTop: `${marginTop - CONFIG.itemHeight / 2}vh`,
+	marginTop: `${marginTop}vh`,
 	// transform: `translateY(${marginTop - CONFIG.itemHeight / 2}%)`, // doesnt work since its now wrt to item height
-	// marginBottom: `${-CONFIG.itemHeight / 2}%`,
 	marginLeft: `calc(${marginLeft - CONFIG.itemWidth / 2}vh)`,
 
 	textAlign: "center",
 	justifyContent: "center",
 	alignItems: "center",
-	// backgroundColor: `rgb(${color_index % 255},0,0)`,
-	backgroundColor: "red",
-	opacity: opacity,
+
+	opacity: opacity_function(z_score),
+	visibility: opacity_function(z_score) > 0 ? "visible" : "hidden",
+	// background: "red",
 	color: "#ffffff",
+	zIndex: 200 + z_score,
+	overflow: "visible",
 });
 
 const getHelperLineStyle = (): React.CSSProperties => ({
@@ -75,7 +81,6 @@ const getHelperLineStyle = (): React.CSSProperties => ({
 	height: "1px",
 	// background: "red",
 	opacity: 0.3,
-	pointerEvents: "none",
 });
 
 interface WheelItemProps {
@@ -86,10 +91,11 @@ interface WheelItemProps {
 interface ScrollWheelProps {
 	items: React.ReactNode[];
 }
-
+export const opacityFunc = (z_score: number) =>
+	Math.floor(z_score / (2 * Math.PI)) === 0 ? Math.sin(z_score) : 0;
 const WheelItem: React.FC<WheelItemProps> = ({ Component, index }) => {
-	const [isActive, setIsActive] = useState(false);
-	const { rotation } = useContext(ScrollWheelContext);
+	const { rotation, opacity_function, total_items } =
+		useContext(ScrollWheelContext);
 	const theta =
 		2 *
 		Math.asin(
@@ -98,35 +104,47 @@ const WheelItem: React.FC<WheelItemProps> = ({ Component, index }) => {
 		);
 	// testing minimal distance
 	const items_per_half_turn = Math.PI / theta;
-	const total_items = 31;
+	// const total_items = 31;
 	const total_turns = Math.floor(total_items / (items_per_half_turn * 2)) + 1;
 	// const theta = Math.PI / items_per_half_turn;
 
 	const current_angle = theta * -index + rotation;
 	const z_score = current_angle % (2 * Math.PI * total_turns);
-	const opacity_score =
-		Math.floor(z_score / (2 * Math.PI)) === 0 ? Math.sin(z_score) ** 2 : 0;
+	// const opacity_score =
+	// 	Math.floor(z_score / (2 * Math.PI)) === 0 ? Math.sin(z_score) : 0;
 	const factor = CONFIG.radius / 2;
 	const marginLeft = 1 * Math.sin(current_angle) * factor; // ASSUME SQUARE FOR NOW
 	const marginTop = (1 - 1 * Math.cos(current_angle)) * factor;
-	const style = getItemStyle(marginTop, marginLeft, isActive, opacity_score);
+	const style = getItemStyle(
+		marginTop,
+		marginLeft,
+		z_score,
+		opacity_function
+	);
 
 	return (
 		<div
 			style={style}
-			onClick={() => setIsActive(!isActive)}
+			// onClick={() => setIsActive(!isActive)}
 		>
-			{Component}
+			<div
+				style={{ height: "unset", width: "unset", overflow: "visible" }}
+			>
+				{Component}
+			</div>
 		</div>
 	);
 };
 const ScrollWheelContext = createContext({
 	rotation: 0,
 	total_items: 0,
+	opacity_function: opacityFunc,
 });
 
-const useScrollController = () => {
-	const [rotation, setRotation] = useState(() => 0);
+const useScrollController = (initial_rotation = 0) => {
+	const [rotation, setRotation] = useState(
+		() => (initial_rotation * Math.PI) / 180
+	);
 	const ref = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -134,7 +152,6 @@ const useScrollController = () => {
 		if (!element) return;
 
 		const handleWheel = (e: WheelEvent) => {
-			// 1. Prevent the browser from scrolling the page
 			e.preventDefault();
 			const innerHeight = window.innerHeight;
 			const delta_y = e.deltaY;
@@ -154,22 +171,34 @@ const useScrollController = () => {
 
 	return { rotation, ref };
 };
-const ArcScrollWheel: React.FC<ScrollWheelProps> = ({ items }) => {
+
+interface ScrollWheelProps {
+	items: React.ReactNode[];
+	initial_rotation?: number;
+	opacity_function?: (z_score: number) => number;
+}
+const ArcScrollWheel: React.FC<ScrollWheelProps> = ({
+	items,
+	initial_rotation = 0,
+	opacity_function = opacityFunc,
+}) => {
 	const containerStyle = getContainerStyle();
 	const helperLineStyle = getHelperLineStyle();
 	const total_items = items.length;
-	const { rotation, ref } = useScrollController();
+	const { rotation, ref } = useScrollController(initial_rotation);
 
 	return (
 		<ScrollWheelContext
 			value={{
 				rotation,
 				total_items,
+				opacity_function,
 			}}
 		>
 			<div
 				style={container_style}
 				className="no-aos"
+				onMouseLeave={() => console.log("left")}
 			>
 				<div
 					style={containerStyle}

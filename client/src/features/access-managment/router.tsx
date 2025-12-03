@@ -128,6 +128,7 @@ const DRouter: React.FC = () => {
 									page={Comp}
 									useCursor={false}
 									bg={false}
+									useAltTitleBar={item.altTitleBar}
 								/>
 							}
 							key={i}
