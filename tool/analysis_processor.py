@@ -670,7 +670,9 @@ class AnalysisProcessor:
 					for _policy_name, v in self.policy_data.items():
 						for _policy_hash, w in v.items():
 							for i in w["policy_chunks"]:
-								if chunk_hash in i["chunk_content"]:
+								if (
+									chunk_hash in i["chunk_content"]
+								):	# actually should merge with higher similarity
 									policy = w["policy_content"]
 									policy_hash = _policy_hash
 									# policy_name = _policy_name
